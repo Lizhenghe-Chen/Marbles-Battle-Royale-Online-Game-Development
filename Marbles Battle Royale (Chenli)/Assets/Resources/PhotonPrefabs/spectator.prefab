@@ -723,6 +723,8 @@ MonoBehaviour:
   ScoreBoardCanvas: {fileID: 5711898759036463855}
   scoreBoardPrefabs: {fileID: 496995621298539841, guid: 9fdf1f5dd83351340a0fa4497264a2b1, type: 3}
   container: {fileID: 6797137681621031441}
+  pV: {fileID: 0}
+  ScoreboardText: {fileID: 0}
 --- !u!1 &5715817286608226931
 GameObject:
   m_ObjectHideFlags: 0

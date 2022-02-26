@@ -29,7 +29,7 @@ public class CollisionDetect : MonoBehaviour
 
     double hitDirection;
     [SerializeField] float currentHealth;
-    [SerializeField] float damageTimer = 1f;
+    float damageTimer = 50f;
     Vector3 other_Player_Velocity;
     [SerializeField] Vector3 Player_Velocity;
     float hitForce;
@@ -42,6 +42,7 @@ public class CollisionDetect : MonoBehaviour
             Z_velocity,
             TotalSpeed;
     PlayerManager playerManager;
+    MovementController movementController;
     // Start is called before the first frame update
     void Awake()
     {
@@ -57,7 +58,8 @@ public class CollisionDetect : MonoBehaviour
 
         if (photonView.IsMine)
         {
-            playerManager = GetComponent<MovementController>().playerManager;
+            movementController = GetComponent<MovementController>();
+            playerManager = movementController.playerManager;
             // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
             // Debug.Log(healthBarImage);
             // UI = GameObject.Find("Canvas");
@@ -92,12 +94,7 @@ public class CollisionDetect : MonoBehaviour
         currentHealth = playerManager.currentHealth;
         // billboardvalue = playerManager.currentHealth / playerHealth;// this will display user's current health for all players, check Billboard.cs
         DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
-        if (currentHealth <= 0)
-        {
-            Invoke("Die", 0.2f);
-
-            return;
-        }
+       
         // healthBarImage.fillAmount = billboardvalue;
     }
     void Update()
@@ -126,8 +123,9 @@ public class CollisionDetect : MonoBehaviour
             hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
 
             var finalDamage = judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection) * damageTimer;
-            if (ISufferDamage)
+            if (ISufferDamage)//if player get damage
             {
+                // movementController.takeDamageMask.enabled = true;
                 var hitessage = photonView.Owner.NickName + " got damage from " + other_Player_Name + " with value:" + finalDamage;
                 Debug.Log(hitessage);
                 //currentHealth -= finalDamage;
@@ -137,12 +135,21 @@ public class CollisionDetect : MonoBehaviour
                 currentHealth = playerManager.currentHealth;
                 if (currentHealth <= 0)
                 {
-                    Invoke("Die", 0.2f);
                     PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
+                    //Debug.Log("Player dead" + otherPlayerManager);
                     otherPlayerManager.Kill(other_Player_Name);
+                    //otherPlayerManager.killCount++;
+                    //Invoke("Die", 0.2f);
                     return;
                 }
             }
+            // else
+            // {//This is a not proper method because the death is judged locally, Howeversome time the otherplayer actually don't get hitted due to the network issue
+            //     if (finalDamage >= collision.collider.GetComponent<MovementController>().playerManager.currentHealth)
+            //     {
+            //         playerManager.killCount++;
+            //     }
+            // }
 
             // judgeDamage (Player_Velocity, other_Player_Velocity, hitDirection);
             // Vector3 otherV =
@@ -159,15 +166,16 @@ public class CollisionDetect : MonoBehaviour
             //collision.gameObject.GetComponent<getspeed>().enabled = true;
             Debug.Log("changed Parent to " + collision.gameObject.name);
         }
+        // movementController.takeDamageMask.enabled = false;
     }
-    [PunRPC]
-    void Damage(float finalDamage, string message)
-    {
-        currentHealth -= finalDamage;
+    // [PunRPC]
+    // void Damage(float finalDamage, string message)
+    // {
+    //     currentHealth -= finalDamage;
 
-        Debug.Log("**************** " + message + " ****************");
+    //     Debug.Log("**************** " + message + " ****************");
 
-    }
+    // }
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.name == "Transfer platform")
@@ -230,11 +238,8 @@ public class CollisionDetect : MonoBehaviour
     // }
     public float judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
     {
-        hitForce = collision.relativeVelocity.magnitude;
-        var damage =
-            Mathf
-                .Abs(Player_Velocity.magnitude -
-                other_Player_Velocity.magnitude);
+        hitForce = collision.relativeVelocity.magnitude * collision.collider.GetComponent<Rigidbody>().mass;
+        // var damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
 
         //++++++++++++++++
         if (
@@ -245,7 +250,7 @@ public class CollisionDetect : MonoBehaviour
                 Player_Velocity.magnitude > other_Player_Velocity.magnitude //player speed is higher
             )
             {
-                damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
+                // damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
                 // Debug.Log(name + " same direction hit " + other_Player_Name + " with differ Force:" + damage);
                 ISufferDamage = false;
 
@@ -311,21 +316,22 @@ public class CollisionDetect : MonoBehaviour
     {
         if (transform.localPosition.y < deathAltitude)
         {
-            Die();
+            playerManager.Die();
             // gameObject.transform.position =
             //     new Vector3(target.x + Random.Range(3, 10),
             //         100,
             //         target.z + Random.Range(3, 10));
         }
     }
-    void Die()
-    {
-        if (!playerManager)
-        {
-            Debug.Log("No playerManager");
-            return;
-        }
-        else
-            playerManager.Die();
-    }
+    // void Die()
+    // {
+    //     if (!playerManager)
+    //     {
+    //         Debug.LogWarning("No playerManager");
+    //         return;
+    //     }
+    //     else
+    //         playerManager.Die();
+    // }
+
 }

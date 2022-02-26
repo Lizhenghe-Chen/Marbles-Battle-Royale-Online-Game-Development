@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class MovementController : MonoBehaviour
 {
 
@@ -14,17 +14,26 @@ public class MovementController : MonoBehaviour
     public PlayerManager playerManager;
     public Transform Camera;
     PhotonView photonView;
+    [HideInInspector] public float horizontalInput, verticalInput;
     [SerializeField] float angularVelocity;
-    [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")] public float initial_torque, torque_timer, rushForce;
+
+    //===============================
+    [Header("**Below for players rush function,rushPane need attach menually **\n")]
+    [SerializeField] Image rushPanel;
+    [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
+    public float initial_torque, torque_timer, rushForce;
 
     // public float torque_tim = 10f; //the timer for the torque
     // public float rushForce = 2500;
     private float torque;
 
-    [HideInInspector] public float horizontalInput, verticalInput;
-
-
-
+    [SerializeField] float coolingTime = 2, time, rushValue;//player rush cooling time
+                                                            //===============================
+    [SerializeField] bool inHealthArea = false, inDamageZone = false;
+    [SerializeField] GameObject damagearea;
+    [SerializeField] Vector3 damageareaPosition, playerPosition;
+    [SerializeField] float damagearea_playerDistance;
+    public GameObject takeDamageMask, getHealthMask;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -51,28 +60,54 @@ public class MovementController : MonoBehaviour
     {
         //https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_view.html#a67184424cffe2daae9001e06a6192d21
         //is the photon View is hadle on the local player?
+        time = coolingTime;
         if (!photonView.IsMine)
         {
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up
         }
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
+        rushPanel = transform.Find("Canvas/RushLoading/rushPanel").GetComponent<Image>();
+
+        damagearea = GameObject.Find("DamageArea");
+        takeDamageMask = transform.Find("Canvas/TakeDamageMask").gameObject;
+        getHealthMask = transform.Find("Canvas/GetHealthMask").gameObject;
+        takeDamageMask.SetActive(false);
+        getHealthMask.SetActive(false);
     }
 
     void Update()
     {
+
         if (!photonView.IsMine)
         {
             return;
         }
+        RushMethod();
         TurningTorque();
-        rush();
+        Break();
+        HealthEffect();
+        PoisoningEffect();
+        // playerManager.Damage(0.01f);
     }
 
-    void FixedUpdate()
+    // void FixedUpdate()
+    // {
+
+    // }
+    void OnTriggerStay(Collider collision)
     {
+        if (collision.name == "HealthArea")
+        {
+            inHealthArea = true;
+            // Debug.LogWarning("Inside Area");
+        }
 
     }
+    void OnTriggerExit(Collider collision)
+    {
+        if (collision.name == "HealthArea") { inHealthArea = false; Debug.LogWarning("Outside HealthArea"); }
 
+    }
     void TurningTorque()
     {
         angularVelocity = rb.angularVelocity.magnitude;
@@ -81,10 +116,10 @@ public class MovementController : MonoBehaviour
         //Debug.Log (angularVelocity);
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        if (Input.GetKey(KeyCode.LeftShift) )
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             torque = speedUpTorque;
-          //  Debug.Log("speed Up");
+            //  Debug.Log("speed Up");
         }
         else if (angularVelocity <= initial_torque)
         {
@@ -100,20 +135,56 @@ public class MovementController : MonoBehaviour
         rb.AddTorque(Camera.transform.right * torque * verticalInput);
         rb.AddTorque(-Camera.transform.forward * torque * horizontalInput);
     }
+    void RushMethod()
+    {
+        time += Time.deltaTime;
+        rushValue = time / coolingTime;
+        rushPanel.fillAmount = rushValue;
+        if (time >= coolingTime)
+        {
+            time = coolingTime;
+            rush();
+        }
+    }
 
     void rush()
+    {
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
+        {
+            rb.AddForce(Camera.transform.forward * rushForce);
+            time = 0;
+            //Debug.Log("Rush!");
+        }
+    }
+    void Break()
     {
         if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))
         {
             rb.angularVelocity = new Vector3(0, 0, 0);
         }
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
+    }
+    void PoisoningEffect()
+    {
+        damageareaPosition = damagearea.transform.position;
+        playerPosition = transform.position;
+        damagearea_playerDistance = playerPosition.x - damageareaPosition.x;
+        if (damagearea_playerDistance < 0)
         {
-            rb.AddForce(Camera.transform.forward * rushForce);
-
-            //Debug.Log("Rush!");
+            takeDamageMask.SetActive(true);
+            playerManager.Damage(0.05f);
+        }
+        else { takeDamageMask.SetActive(false); }
+    }
+    void HealthEffect()
+    {
+        if (inHealthArea)
+        {
+            getHealthMask.SetActive(true);
+            playerManager.Health(0.01f);
+        }
+        else
+        {
+            getHealthMask.SetActive(false);
         }
     }
-
-
 }

@@ -5,12 +5,11 @@ using UnityEngine;
 public class AnimateLoading : MonoBehaviour
 {
     public Animator aimator;
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-
+        // transform.enabled = true;
+      //  this.gameObject.SetActive(true);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -20,7 +19,7 @@ public class AnimateLoading : MonoBehaviour
     {
         aimator.SetTrigger("FadeOut");
     }
-      public void LoadingLevel()
+    public void LoadingLevel()
     {
         aimator.SetTrigger("FadeIn");
     }

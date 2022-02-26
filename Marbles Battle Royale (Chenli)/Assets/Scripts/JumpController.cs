@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 public class JumpController : MonoBehaviour
 {
     Vector3 target;
@@ -14,15 +13,22 @@ public class JumpController : MonoBehaviour
 
     Rigidbody rg;
 
-   [SerializeField] const float distanceBetweenGround = 0.5f;
-
+    [SerializeField] const float distanceBetweenGround = 0.5f;
+    [SerializeField] float angularVelocity;
+    //[SerializeField] Transform Camera;
     public float sliteForce = 2f;
     public float extra_gravity = 10f;
 
     private MovementController movementController;
 
     private CollisionTrigger CollisionTrigger;
+    public bool Grounded;
+    PlayerManager playerManager;
 
+    //===============================
+    [Header("**Below for players Jump function,jumpPane need attach menually **\n")]
+    [SerializeField] Image jumpPanel;
+    [SerializeField] float coolingTime = 2, time, rushValue;//player jump cooling time
     //AudioSource audio;
     // Start is called before the first frame update
     void Awake()
@@ -32,11 +38,16 @@ public class JumpController : MonoBehaviour
 
     void Start()
     {
+        time = coolingTime;
+        if (!photonView.IsMine)
+        { return; }
+
+        playerManager = GetComponent<MovementController>().playerManager;
         movementController = GetComponent<MovementController>();
         CollisionTrigger = GetComponentInChildren<CollisionTrigger>();
         rg = GetComponent<Rigidbody>(); //find the Rigidbody object
         jumpThreshold = GetComponent<SphereCollider>().radius + distanceBetweenGround;
-        
+        jumpPanel = transform.Find("Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
         // Debug.Log(GetComponent<SphereCollider>().radius);
     }
 
@@ -60,8 +71,8 @@ public class JumpController : MonoBehaviour
         {
             return;
         }
-        JumpCommand();
-
+        JumpMethod();
+        //ParticleSystemJudge();
         // rg.AddForce(Vector3.down * extra_gravity);
 
         target = transform.localPosition;
@@ -98,12 +109,10 @@ public class JumpController : MonoBehaviour
 
     void JumpCommand()
     {
-        //Debug.Log(CollisionTrigger.onTheGround);
         if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
         {
             rg.AddForce(Vector3.up * jumpforce);
-
-            //   Debug.Log(a + "Space pressed and jump" + jumpCount);
+            time = 0;
         }
     }
 
@@ -114,11 +123,13 @@ public class JumpController : MonoBehaviour
         Color rayColor;
         if (Physics.Raycast(checkGround, out hit, jumpThreshold))
         {
+            Grounded = true;
             rayColor = Color.green;
             //Debug.Log("i'm grounded");
         }
         else
         {
+            Grounded = false;
             rayColor = Color.red;
             //Debug.Log("not grounded");
         }
@@ -127,4 +138,30 @@ public class JumpController : MonoBehaviour
 
         return hit.collider;
     }
+    void JumpMethod()
+    {
+        time += Time.deltaTime;
+        rushValue = time / coolingTime;
+        jumpPanel.fillAmount = rushValue;
+        if (time >= coolingTime)
+        {
+            time = coolingTime;
+            JumpCommand();
+
+        }
+    }
+    // public void ParticleSystemJudge()
+    // {
+    //     angularVelocity = rg.angularVelocity.magnitude;
+    //     if (angularVelocity >= 15f && onTheGround())
+    //     {
+    //         playerManager.SetParticle(true);
+
+    //     }
+    //     else
+    //     {
+    //         playerManager.SetParticle(false);
+
+    //     }
+    // }
 }

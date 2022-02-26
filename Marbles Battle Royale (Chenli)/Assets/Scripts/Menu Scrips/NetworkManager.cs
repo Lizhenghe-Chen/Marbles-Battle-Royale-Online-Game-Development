@@ -71,14 +71,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         ErrorMenu = GameObject.Find(nameof(ErrorMenu));
         FindRoomMenu = GameObject.Find(nameof(FindRoomMenu));
         if (IsInDebugMode) { roomNameInput.text = "Test Room"; }
-
+        MenuManager.OpenMenu(LoadingMenu);
     }
 
     int start = 0;
 
     void Start()
     {
-        MenuManager.OpenMenu(LoadingMenu);
+
         // Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
         userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
@@ -229,7 +229,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
-        if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsOpen = true; else PhotonNetwork.CurrentRoom.IsOpen = false;
+        if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
 
         //  PhotonNetwork.JoinRoom(arena);
     }

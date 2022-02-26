@@ -69,8 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killCount: 0
   deathCount: 0
+  PS: 0
   currentHealth: 0
   isDead: 0
   billboardvalue: 0
-  frequency: 0.5
-  time: 0
+  playerList: []
