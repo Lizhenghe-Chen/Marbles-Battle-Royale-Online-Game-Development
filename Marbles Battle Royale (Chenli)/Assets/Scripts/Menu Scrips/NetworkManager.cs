@@ -7,16 +7,17 @@ using UnityEngine;
 using UnityEngine.UI;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")] [SerializeField] bool IsInDebugMode = false;
+    PhotonView pV;
+    [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")][SerializeField] bool IsInDebugMode = false;
     public static NetworkManager Instance;
 
     public GameObject Start_Debug_Meun;
 
     public TextMeshProUGUI infoText;
-
+    public string moreInfoURL;
     MenuManager MenuManager;
 
-
+    public bool isLeaveRoom = false;
 
     //================================================================
     [SerializeField] TMP_InputField roomNameInput;
@@ -38,22 +39,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     //================================================================
     [SerializeField] GameObject startGameButton;
+    [SerializeField] TMP_Text startGameNotice;
 
     //========== when add a new menu page, enter new name manually and find their object================
+    //[Header("when add a new menu page, enter new name manually and find their object\n")]
     public GameObject
 
-            TitleMenu,
-            LoadingMenu,
-            CreateRoomMenu,
-            RoomMenu,
-            ErrorMenu,
-            FindRoomMenu;
+            TitleMenu, LoadingMenu, CreateRoomMenu, RoomMenu, ErrorMenu, FindRoomMenu;
 
     // [SerializeField]
     // GameObject[]
     //     menus = { TitleMenu, LoadingMenu, RoomMenu, ErrorMenu, FindRoomMenu };
     void Awake()
     {
+        pV = GetComponent<PhotonView>();
+        isLeaveRoom = false;
         Instance = this;
         MenuManager = this.GetComponent<MenuManager>();
         GameObject[] _menus = MenuManager.menuList;
@@ -73,7 +73,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (IsInDebugMode) { roomNameInput.text = "Test Room"; }
         MenuManager.OpenMenu(LoadingMenu);
     }
+    void Update()
+    {
+        if (isLeaveRoom) { MenuManager.OpenMenu(LoadingMenu); }
+        //  Debug.Log(PhotonNetwork.LevelLoadingProgress);
+        //Debug.Log(PhotonNetwork.NetworkingClient);
 
+    }
     int start = 0;
 
     void Start()
@@ -169,8 +175,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 .GetComponent<PlayerListItem>() //get PlayerListItem.cs
                 .SetUp(player); //call .SetUp to get player's name to show
         }
-        startGameButton.SetActive(PhotonNetwork.IsMasterClient); //only host clients can start game
+        IsMasterInfo();
+
         Debug.Log("Joined Arena!");
+    }
+    void IsMasterInfo()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startGameButton.SetActive(true); //only host clients can start game
+            startGameNotice.text = "You are the Master, you can Start the Game!";
+        }
+        else
+        {
+            startGameButton.SetActive(false); startGameNotice.text = "waiting the Master Start the Game...";
+        }
     }
     void CheckName(Player[] players)
     {
@@ -219,18 +238,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             //if the room has been removed, then skip this for loop
             if (roomInfo.RemovedFromList) continue;
-            Instantiate(roomListItemPrefab, roomListContent)
-                .GetComponent<RoomListItem>()
-                .SetUp(roomInfo);
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomInfo);
         }
     }
     public Toggle m_Toggle;
 
     public void StartGame()
     {
+        pV.RPC("SendInRoomInfo", RpcTarget.All);
+        MenuManager.OpenMenu(LoadingMenu);
+        Invoke("LodingGameScene", 1f);
+    }
+    [PunRPC]
+    void SendInRoomInfo() { isLeaveRoom = true; }
+    void LodingGameScene()
+    {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
-        if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
 
+        //if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
         //  PhotonNetwork.JoinRoom(arena);
     }
 
@@ -249,13 +275,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved, let new master client handle the start game right
     {
-        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        IsMasterInfo();
     }
     //================================================================
     public void ForceQuit()
     {
-        PhotonNetwork.Disconnect();
-        MenuManager.OpenMenu(Start_Debug_Meun);
+        Destroy(GameObject.Find("RoomManager").gameObject);
+        PhotonNetwork.LoadLevel(0);
+        PhotonNetwork.LeaveRoom();
+
+        // PhotonNetwork.Disconnect();
+
         Debug.Log("ForceQuit");
     }
+    public void OpenURL() { Application.OpenURL(moreInfoURL); }
 }

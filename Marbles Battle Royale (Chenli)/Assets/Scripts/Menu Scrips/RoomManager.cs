@@ -8,11 +8,14 @@ using UnityEngine.SceneManagement;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
+    //  public AudioSource backGroundMusic;
 
     public string playerType;
 
     void Awake()
     {
+
+        //   backGroundMusic = GameObject.Find("BackGroundMusic").GetComponent<AudioSource>();
         //check if there is another RoomManager exists
         if (Instance)
         {
@@ -23,6 +26,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         else
         {
             DontDestroyOnLoad(gameObject); //if there is only one,
+
             Instance = this;
         }
 
@@ -36,6 +40,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     //https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnEnable.html
     public override void OnEnable()
     {
+       // MenuManager.OpenMenu(LoadingMenu);
         base.OnEnable();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -67,4 +72,5 @@ public class RoomManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(0);
         Debug.Log("Leaved Room");
     }
+
 }

@@ -47,7 +47,7 @@ public class JumpController : MonoBehaviour
         CollisionTrigger = GetComponentInChildren<CollisionTrigger>();
         rg = GetComponent<Rigidbody>(); //find the Rigidbody object
         jumpThreshold = GetComponent<SphereCollider>().radius + distanceBetweenGround;
-        jumpPanel = transform.Find("Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
+        jumpPanel = transform.Find("UI/Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
         // Debug.Log(GetComponent<SphereCollider>().radius);
     }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
 public class InGameUIManager : MonoBehaviour
 {
     [Header("InGameUIList & InGameUICanvas need Manually attach: ")]
@@ -14,13 +15,13 @@ public class InGameUIManager : MonoBehaviour
     private void Awake()
     {
         Debug.Log("Paraent " + transform.parent);
-        photonView = transform.parent.GetComponent<PhotonView>();
+        photonView = transform.parent.parent.GetComponent<PhotonView>();
 
     }
     void Start()
     {
-
-        playerManager = transform.parent.GetComponent<MovementController>().playerManager;
+        InGameUI = transform.Find("InGameMenu").gameObject;
+        playerManager = transform.parent.parent.GetComponent<MovementController>().playerManager;
     }
 
     // Update is called once per frame
@@ -63,5 +64,17 @@ public class InGameUIManager : MonoBehaviour
                 InGameUIList[i].SetActive(false);
             }
         }
+    }
+    public void LeaveRoom()
+    {
+        playerManager.LeaveRoom();
+        // Destroy(GameObject.Find("RoomManager").gameObject);
+        // //PhotonNetwork.Disconnect();
+        // // PhotonNetwork.LeaveRoom();
+        // //PhotonNetwork.LoadLevel(0);
+        // PhotonNetwork.LeaveRoom();
+        // //if (PhotonNetwork.CurrentRoom != null) { PhotonNetwork.Disconnect(); }
+        //  SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
+        // Debug.Log("Leaved Room");
     }
 }

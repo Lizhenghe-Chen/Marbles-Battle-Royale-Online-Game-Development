@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class MovementController : MonoBehaviour
 {
 
@@ -21,6 +22,7 @@ public class MovementController : MonoBehaviour
     [Header("**Below for players rush function,rushPane need attach menually **\n")]
     [SerializeField] Image rushPanel;
     [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
+    [SerializeField] TMP_Text LeftLifeText;
     public float initial_torque, torque_timer, rushForce;
 
     // public float torque_tim = 10f; //the timer for the torque
@@ -66,18 +68,34 @@ public class MovementController : MonoBehaviour
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up
         }
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
-        rushPanel = transform.Find("Canvas/RushLoading/rushPanel").GetComponent<Image>();
+        rushPanel = transform.Find("UI/Canvas/RushLoading/rushPanel").GetComponent<Image>();
+        LeftLifeText = transform.Find("UI/Canvas/LeftLifeText").GetComponent<TMP_Text>();
 
         damagearea = GameObject.Find("DamageArea");
-        takeDamageMask = transform.Find("Canvas/TakeDamageMask").gameObject;
-        getHealthMask = transform.Find("Canvas/GetHealthMask").gameObject;
+        takeDamageMask = transform.Find("UI/Canvas/TakeDamageMask").gameObject;
+        getHealthMask = transform.Find("UI/Canvas/GetHealthMask").gameObject;
         takeDamageMask.SetActive(false);
         getHealthMask.SetActive(false);
     }
 
     void Update()
     {
+        if (!isInDebugMode)
+        {
+            LeftLifeText.text = playerManager.leftLifeTextContent;
+        }
+        if (!photonView.IsMine)
+        {
+            return;
+        }
 
+
+
+        // playerManager.Damage(0.01f);
+    }
+
+    void FixedUpdate()
+    {
         if (!photonView.IsMine)
         {
             return;
@@ -87,13 +105,7 @@ public class MovementController : MonoBehaviour
         Break();
         HealthEffect();
         PoisoningEffect();
-        // playerManager.Damage(0.01f);
     }
-
-    // void FixedUpdate()
-    // {
-
-    // }
     void OnTriggerStay(Collider collision)
     {
         if (collision.name == "HealthArea")
@@ -171,7 +183,7 @@ public class MovementController : MonoBehaviour
         if (damagearea_playerDistance < 0)
         {
             takeDamageMask.SetActive(true);
-            playerManager.Damage(0.05f);
+            playerManager.Damage(0.03f);
         }
         else { takeDamageMask.SetActive(false); }
     }
@@ -180,7 +192,7 @@ public class MovementController : MonoBehaviour
         if (inHealthArea)
         {
             getHealthMask.SetActive(true);
-            playerManager.Health(0.01f);
+            playerManager.Health(0.02f);
         }
         else
         {

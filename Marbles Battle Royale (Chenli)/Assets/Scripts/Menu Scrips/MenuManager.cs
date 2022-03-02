@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
     {
         TitledMenu = GetComponent<NetworkManager>().TitleMenu;
         userNameInput = GetComponent<NetworkManager>().userNameInput;
+        Cursor.visible = true;
     }
 
     void Update()
@@ -32,19 +33,32 @@ public class MenuManager : MonoBehaviour
     public void OpenMenu(GameObject menuName)
     {
         //Debug.Log("Go to " + menuName);
-        for (int i = 0; i < menuList.Length; i++)
+        foreach (GameObject menu in menuList)
         {
-            if (menuList[i] == menuName)
+            if (menu == menuName)
             {
-                // Debug.Log("set " + menuList[i] + "Active");
-                menuList[i].SetActive(true);
+                menu.SetActive(true);
             }
             else
             {
-                // Debug.Log("set " + menuList[i] + "DeActive");
-                menuList[i].SetActive(false);
+                menu.SetActive(false);
             }
         }
+        // for (int i = 0; i < menuList.Length; i++)
+        // {
+        //     if (menuList[i] == menuName)
+        //     {
+
+
+        //         // Debug.Log("set " + menuList[i] + "Active");
+        //         menuList[i].SetActive(true);
+        //     }
+        //     else
+        //     {
+        //         // Debug.Log("set " + menuList[i] + "DeActive");
+        //         menuList[i].SetActive(false);
+        //     }
+        // }
     }
 
     void CheckInfo()

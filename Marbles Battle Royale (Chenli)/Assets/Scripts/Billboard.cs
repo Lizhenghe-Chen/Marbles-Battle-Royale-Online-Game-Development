@@ -11,6 +11,8 @@ public class Billboard : MonoBehaviour
     [SerializeField] Transform Player;
     [SerializeField] PhotonView playerPhotonView;
     [SerializeField] TMP_Text playerNickname;
+    
+   
     [SerializeField] Image healthBarImage;
     [SerializeField] CollisionDetect collisionDetect_healthBarImage;
     PlayerManager playerManager;
@@ -19,12 +21,12 @@ public class Billboard : MonoBehaviour
     void Start()
     {
         Player = transform.parent;
-        playerPhotonView = transform.parent.GetComponent<PhotonView>();
+        playerPhotonView = transform.parent.parent.GetComponent<PhotonView>();
         playerNickname = transform.Find("PlayerName").GetComponent<TMP_Text>();
         playerNickname.text = playerPhotonView.Owner.NickName;
         healthBarImage = this.transform.Find("showHealthbarBackground/Healthbar").GetComponent<Image>();
-        playerManager = transform.parent.GetComponent<MovementController>().playerManager;
-        collisionDetect_healthBarImage = transform.parent.GetComponent<CollisionDetect>();
+        playerManager = transform.parent.parent.GetComponent<MovementController>().playerManager;
+        collisionDetect_healthBarImage = transform.parent.parent.GetComponent<CollisionDetect>();
         if (playerPhotonView.IsMine)
         {
 

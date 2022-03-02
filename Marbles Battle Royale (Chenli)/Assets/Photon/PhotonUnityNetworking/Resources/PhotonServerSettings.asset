@@ -50,6 +50,11 @@ MonoBehaviour:
   - SentData
   - Flash
   - SendKill
+  - SendInRoomInfo
+  - AddHealth
+  - DecreaseHealth
+  - OnDeath
+  - IsDead
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

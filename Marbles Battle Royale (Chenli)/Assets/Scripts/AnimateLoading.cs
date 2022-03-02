@@ -5,10 +5,12 @@ using UnityEngine;
 public class AnimateLoading : MonoBehaviour
 {
     public Animator aimator;
+
     private void Start()
     {
+        aimator.SetTrigger("FadeIn");
         // transform.enabled = true;
-      //  this.gameObject.SetActive(true);
+        //  this.gameObject.SetActive(true);
     }
     // Update is called once per frame
     void Update()
@@ -18,6 +20,7 @@ public class AnimateLoading : MonoBehaviour
     public void LeavingLevel()
     {
         aimator.SetTrigger("FadeOut");
+        //  Debug.Log("Palyersssssssssssssssss");
     }
     public void LoadingLevel()
     {

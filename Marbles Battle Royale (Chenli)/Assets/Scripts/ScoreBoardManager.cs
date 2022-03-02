@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Photon.Realtime;
 using Photon.Pun;
 
 public class ScoreBoardManager : MonoBehaviourPunCallbacks
@@ -16,7 +15,14 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        pV = transform.parent.GetComponent<PhotonView>();
+        if (this.name == "ScoreBoardCanvas (1)") { pV = transform.parent.parent.parent.parent.GetComponent<PhotonView>(); }
+        else if (this.name == "ScoreBoardCanvas (3)")
+        {
+            //Debug.Log("!!@#$!@$!$!@$#@!$!$!$!@$!$!@$!" + transform.parent.name);
+             pV = this.transform.parent.GetComponent<PhotonView>();
+        }
+        else
+            pV = transform.parent.parent.GetComponent<PhotonView>();
 
     }
     void Start()
@@ -64,7 +70,7 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
             var nickName = obj.GetComponent<PhotonView>().Owner.NickName;
             // Debug.Log(nickName + "death" + playermanManager.deathCount);
 
-            list.Add(new ScoreBoardItem(nickName, playermanManager.killCount, playermanManager.deathCount));
+            list.Add(new ScoreBoardItem(nickName, playermanManager.killCount, playermanManager.deathCount, playermanManager.isDead));
             // AddScoreboardItem(nickName, playermanManager.deathCount, playermanManager.killCount);
         }
         list.Sort();
@@ -74,17 +80,17 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
         {
             // message += item.ToString() + "\n";
 
-            AddScoreboardItem(item.playerName, item.killCount, item.deathCount);
+            AddScoreboardItem(item.playerName, item.killCount, item.deathCount, item.isDead);
         }
         // ScoreboardText.text = message;
         // message = string.Empty;
     }
-    void AddScoreboardItem(string playerName, int killCount, int deathCount)
+    void AddScoreboardItem(string playerName, int killCount, int deathCount, bool isDead)
     {
         bool isLocalPlayer = false;
-        if (playerName == pV.Owner.NickName) { isLocalPlayer = true;  }
+        if (playerName == pV.Owner.NickName) { isLocalPlayer = true; }
         ScoreBoard item = Instantiate(scoreBoardPrefabs, container).GetComponent<ScoreBoard>();
-        item.Initialize(playerName, killCount, deathCount, isLocalPlayer);
+        item.Initialize(playerName, killCount, deathCount, isLocalPlayer, isDead);
         // scoreBoardItems[playerName] = item;
 
     }

@@ -16,11 +16,7 @@ public class LeftandRight : MonoBehaviour
 
     public float downRange = 5f;
 
-    static float
-
-            locationX,
-            locationY,
-            locationZ;
+    [SerializeField] float locationX, locationY, locationZ;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +27,7 @@ public class LeftandRight : MonoBehaviour
     }
 
     // Update is called once per frame
-    Vector3 newPosition = new Vector3(locationX + 10, locationY, locationZ);
+    //Vector3 newPosition = new Vector3(locationX + 10, locationY, locationZ);
 
     void Update()
     {

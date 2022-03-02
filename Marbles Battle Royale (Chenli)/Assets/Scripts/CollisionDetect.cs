@@ -29,7 +29,7 @@ public class CollisionDetect : MonoBehaviour
 
     double hitDirection;
     [SerializeField] float currentHealth;
-    float damageTimer = 50f;
+    float damageTimer;
     Vector3 other_Player_Velocity;
     [SerializeField] Vector3 Player_Velocity;
     float hitForce;
@@ -44,13 +44,15 @@ public class CollisionDetect : MonoBehaviour
     PlayerManager playerManager;
     MovementController movementController;
     // Start is called before the first frame update
+    [SerializeField] Image FadeIn_OutImage;
     void Awake()
     {
+        UI = transform.Find("UI/Canvas").gameObject;
         rb = GetComponent<Rigidbody>();
         healthBarImage = UI.transform.Find("HealthbarBackground/Healthbar").GetComponent<Image>();
         // Debug.Log(UI.transform.Find("HealthbarBackground/Healthbar"));
         photonView = GetComponent<PhotonView>();
-
+        FadeIn_OutImage = UI.transform.Find("Image").GetComponent<Image>();
     }
 
     void Start()
@@ -60,6 +62,7 @@ public class CollisionDetect : MonoBehaviour
         {
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
+            damageTimer = playerManager.damageTimer;
             // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
             // Debug.Log(healthBarImage);
             // UI = GameObject.Find("Canvas");
@@ -94,7 +97,7 @@ public class CollisionDetect : MonoBehaviour
         currentHealth = playerManager.currentHealth;
         // billboardvalue = playerManager.currentHealth / playerHealth;// this will display user's current health for all players, check Billboard.cs
         DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
-       
+
         // healthBarImage.fillAmount = billboardvalue;
     }
     void Update()
@@ -103,6 +106,7 @@ public class CollisionDetect : MonoBehaviour
         {
             return;
         }
+        if (playerManager.currentHealth <= 0) { FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel(); }
         BelowDeathAltitude();
     }
 
@@ -135,6 +139,7 @@ public class CollisionDetect : MonoBehaviour
                 currentHealth = playerManager.currentHealth;
                 if (currentHealth <= 0)
                 {
+                    playerManager.deadPosition = transform.position;//send death position to it's player Manager
                     PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
                     //Debug.Log("Player dead" + otherPlayerManager);
                     otherPlayerManager.Kill(other_Player_Name);
@@ -316,6 +321,8 @@ public class CollisionDetect : MonoBehaviour
     {
         if (transform.localPosition.y < deathAltitude)
         {
+            playerManager.deadPosition = transform.position;//send death position to it's player Manager
+            FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
             playerManager.Die();
             // gameObject.transform.position =
             //     new Vector3(target.x + Random.Range(3, 10),
