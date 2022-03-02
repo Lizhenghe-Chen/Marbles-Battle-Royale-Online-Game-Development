@@ -1,8 +1,11 @@
 # Marbles-Battle-Royale-Online-Game-Development
 This is an individual online game development using Unity and Photon.
 
-![image](https://user-images.githubusercontent.com/61171413/155316198-56dd15b7-a43a-4794-8a16-355a20aec262.png)
+[Check Website!](https://doggychen.com/personal-unity-online-game-development/)
 
+
+
+![image](https://user-images.githubusercontent.com/61171413/156077061-5d53d7c0-d110-461b-819e-3546e438ff49.png)
 
 
 Assets used:
