@@ -24,7 +24,7 @@ public class PlayerManager : MonoBehaviour
 
     public Vector3 deadPosition;
 
-    // RoomManager RoomManager;
+    [SerializeField] RoomManager RoomManager;
     //[Header("Below are each players data, should be sycn to all players in a room \n")]
 
     [Tooltip("Player's kill and death data, will be sync to all players in a room.")]
@@ -61,10 +61,12 @@ public class PlayerManager : MonoBehaviour
         GameOverText = GameOverCanvas.transform.Find("GameOverText").GetComponent<TMP_Text>();
         GameOverCanvas.enabled = false;
         currentHealth = playerHealth;
+        RoomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         if (photonView.IsMine) //is the photon View is hadle on the local player?
         {
             //make sure all players have this playerManager data
-            PlayerSelection = GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType;
+            
+            PlayerSelection = RoomManager.playerType;
             // Debug.Log(startPoints.Length);
             for (int i = 0; i <= startPointsSize; i++)
             {
@@ -101,7 +103,7 @@ public class PlayerManager : MonoBehaviour
     }
     void FixedUpdate()
     {
-        
+        if (RoomManager.isTrainingGround) { return; }
         Invoke("CheckPlayerList", 2f);
     }
 

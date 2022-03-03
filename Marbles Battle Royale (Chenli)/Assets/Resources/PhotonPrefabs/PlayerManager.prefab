@@ -70,6 +70,7 @@ MonoBehaviour:
   startPointsSize: 3
   startPoints: []
   deadPosition: {x: 0, y: 0, z: 0}
+  RoomManager: {fileID: 0}
   killCount: 0
   deathCount: 0
   damageTimer: 1

@@ -7,19 +7,22 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     public TMP_Text PlayerSelection;
-    [SerializeField] TMP_InputField userNameInput;
+    [SerializeField] TMP_InputField userNameInput, roomNameInput;
 
     [SerializeField]
     public GameObject[] menuList;
 
     private string playerType;
 
-    GameObject TitledMenu;
+    [SerializeField] GameObject TitledMenu;
+    NetworkManager networkManager;
     public bool isNameDublicated = false;
     void Start()
     {
-        TitledMenu = GetComponent<NetworkManager>().TitleMenu;
-        userNameInput = GetComponent<NetworkManager>().userNameInput;
+        networkManager = GetComponent<NetworkManager>();
+        TitledMenu = networkManager.Start_Debug_Meun;
+        userNameInput = networkManager.userNameInput;
+        roomNameInput = networkManager.roomNameInput;
         Cursor.visible = true;
     }
 
@@ -37,6 +40,7 @@ public class MenuManager : MonoBehaviour
         {
             if (menu == menuName)
             {
+               if(menu.name=="TitleMenu"){ roomNameInput.text = "TestRoom";}
                 menu.SetActive(true);
             }
             else

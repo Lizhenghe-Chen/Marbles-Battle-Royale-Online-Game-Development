@@ -11,6 +11,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     //  public AudioSource backGroundMusic;
 
     public string playerType;
+    public bool isTrainingGround = false;
 
     void Awake()
     {
@@ -40,7 +41,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     //https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnEnable.html
     public override void OnEnable()
     {
-       // MenuManager.OpenMenu(LoadingMenu);
+        // MenuManager.OpenMenu(LoadingMenu);
         base.OnEnable();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }

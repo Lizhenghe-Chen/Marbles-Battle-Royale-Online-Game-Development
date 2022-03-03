@@ -16,11 +16,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TextMeshProUGUI infoText;
     public string moreInfoURL;
     MenuManager MenuManager;
-
+    RoomManager roomManager;
     public bool isLeaveRoom = false;
 
     //================================================================
-    [SerializeField] TMP_InputField roomNameInput;
+    public TMP_InputField roomNameInput;
     public TMP_InputField userNameInput;
 
     [SerializeField] TMP_Text ErrorText;
@@ -53,6 +53,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Awake()
     {
         pV = GetComponent<PhotonView>();
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         isLeaveRoom = false;
         Instance = this;
         MenuManager = this.GetComponent<MenuManager>();
@@ -141,9 +142,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
+        if (message == "A game with the specified id already exist." && roomManager.isTrainingGround)
+        {
+            MenuManager.OpenMenu(LoadingMenu);
+            PhotonNetwork.JoinRoom("TrainingGround"); //if joined successfully, OnJoinedRoom() will be called
+            return;
+        }
         ErrorText.text = "Tried to join Arena, but failed!\n" + message;
         MenuManager.OpenMenu(ErrorMenu);
-        Debug.Log("Tried to join Arena, but failed!");
+        Debug.Log("Tried to join Arena, but failed!" + message);
     }
 
     //================================================================
@@ -157,8 +164,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Player[] players = PhotonNetwork.PlayerList;
-
-
         MenuManager.OpenMenu(RoomMenu);
         roomNameText.text = "Room " + PhotonNetwork.CurrentRoom.Name;
         CheckName(players);
@@ -236,6 +241,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //
         foreach (RoomInfo roomInfo in roomList)
         {
+
             //if the room has been removed, then skip this for loop
             if (roomInfo.RemovedFromList) continue;
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomInfo);
@@ -254,9 +260,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void LodingGameScene()
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
-
         //if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
+        if (roomManager.isTrainingGround) { PhotonNetwork.CurrentRoom.IsVisible = true; } else { PhotonNetwork.CurrentRoom.IsVisible = false; }
         //  PhotonNetwork.JoinRoom(arena);
     }
 
@@ -288,5 +293,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         Debug.Log("ForceQuit");
     }
-    public void OpenURL() { Application.OpenURL(moreInfoURL); }
+    public void JoinTrainingGround()
+    {
+
+        roomNameInput.text = "TrainingGround";
+        // PhotonNetwork.CreateRoom("TrainingGround");
+        // CheckName();
+        roomManager.isTrainingGround = true;
+        // PhotonNetwork.LoadLevel(1);
+    }
+    public void OpenURL() { }
 }
