@@ -15,11 +15,11 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if (this.name == "ScoreBoardCanvas (1)") { pV = transform.parent.parent.parent.parent.GetComponent<PhotonView>(); }
+        if (this.name == "InGameMenu") { pV = transform.parent.parent.parent.GetComponent<PhotonView>(); }
         else if (this.name == "ScoreBoardCanvas (3)")
         {
             //Debug.Log("!!@#$!@$!$!@$#@!$!$!$!@$!$!@$!" + transform.parent.name);
-             pV = this.transform.parent.GetComponent<PhotonView>();
+            pV = this.transform.parent.GetComponent<PhotonView>();
         }
         else
             pV = transform.parent.parent.GetComponent<PhotonView>();

@@ -29,9 +29,7 @@ public class Billboard : MonoBehaviour
         collisionDetect_healthBarImage = transform.parent.parent.GetComponent<CollisionDetect>();
         if (playerPhotonView.IsMine)
         {
-
             GetComponent<Canvas>().enabled = false; //this make sure player no need to see their own billboard
-
         }
     }
     void Update()
@@ -43,8 +41,6 @@ public class Billboard : MonoBehaviour
         CollisionDetect.DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
         BillBoardFollow();
         transform.LookAt(cam.transform);
-
-
     }
     void BillBoardFollow()
     {

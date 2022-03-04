@@ -687,6 +687,7 @@ MonoBehaviour:
   sliteForce: 1
   extra_gravity: 4
   Grounded: 0
+  OnCollisionGrounded: 0
   jumpPanel: {fileID: 0}
   coolingTime: 2
   time: 0
@@ -706,6 +707,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UI: {fileID: 0}
   healthBarImage: {fileID: 0}
+  deathAltitude: 0
   rb: {fileID: 0}
   other_Player_Name: 
   currentHealth: 100

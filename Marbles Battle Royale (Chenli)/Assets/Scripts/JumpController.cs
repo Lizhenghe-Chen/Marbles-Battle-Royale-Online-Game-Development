@@ -22,7 +22,7 @@ public class JumpController : MonoBehaviour
     private MovementController movementController;
 
     private CollisionTrigger CollisionTrigger;
-    public bool Grounded;
+    public bool Grounded, OnCollisionGrounded;
     PlayerManager playerManager;
 
     //===============================
@@ -80,15 +80,17 @@ public class JumpController : MonoBehaviour
         // Debug.Log(target.x + "," + target.y + "," + target.z);
     }
 
-    // void OnCollisionStay(Collision col)
-    // {
-    //     jumpCount = 1;
-    // }
-    // void OnCollisionExit(Collision col)
-    // {
-    //     jumpCount = 0;
-    //     //  Debug.Log( " In the Air" );
-    // }
+    void OnCollisionStay(Collision col)
+    {
+     //   if (col.collider.tag == "Terrain")
+         OnCollisionGrounded = true;
+    }
+    void OnCollisionExit(Collision col)
+    {
+      //  if (col.collider.tag == "Terrain")
+            OnCollisionGrounded = false;
+        //  Debug.Log( " In the Air" );
+    }
     void GiveLittileForce()
     {
         if (onTheGround() == false)
@@ -121,7 +123,7 @@ public class JumpController : MonoBehaviour
         Ray checkGround = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
         Color rayColor;
-        if (Physics.Raycast(checkGround, out hit, jumpThreshold))
+        if (Physics.Raycast(checkGround, out hit, jumpThreshold) || (!Physics.Raycast(checkGround, out hit, jumpThreshold) && OnCollisionGrounded))
         {
             Grounded = true;
             rayColor = Color.green;
@@ -136,7 +138,7 @@ public class JumpController : MonoBehaviour
         Debug
             .DrawRay(transform.position, Vector3.down, rayColor, jumpThreshold);
 
-        return hit.collider;
+        return Grounded;
     }
     void JumpMethod()
     {

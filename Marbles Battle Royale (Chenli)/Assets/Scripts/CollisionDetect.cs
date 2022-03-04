@@ -22,7 +22,7 @@ public class CollisionDetect : MonoBehaviour
     [SerializeField] GameObject UI;
     [Tooltip("This is for player's Health display, should be an image")]
     [SerializeField] Image healthBarImage;
-    [SerializeField] const double deathAltitude = -40f;
+    [SerializeField] double deathAltitude;
 
     [SerializeField] Rigidbody rb; // player
     public string other_Player_Name;
@@ -63,6 +63,7 @@ public class CollisionDetect : MonoBehaviour
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
             damageTimer = playerManager.damageTimer;
+            deathAltitude = playerManager.deathAltitude;
             // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
             // Debug.Log(healthBarImage);
             // UI = GameObject.Find("Canvas");
@@ -243,7 +244,7 @@ public class CollisionDetect : MonoBehaviour
     // }
     public float judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
     {
-        hitForce = collision.relativeVelocity.magnitude * collision.collider.GetComponent<Rigidbody>().mass;
+        hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
         // var damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
 
         //++++++++++++++++

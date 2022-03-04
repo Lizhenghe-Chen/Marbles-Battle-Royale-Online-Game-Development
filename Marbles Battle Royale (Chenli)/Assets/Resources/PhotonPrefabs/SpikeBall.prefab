@@ -145,6 +145,7 @@ MonoBehaviour:
   sliteForce: 1
   extra_gravity: 4
   Grounded: 0
+  OnCollisionGrounded: 0
   jumpPanel: {fileID: 0}
   coolingTime: 2
   time: 0

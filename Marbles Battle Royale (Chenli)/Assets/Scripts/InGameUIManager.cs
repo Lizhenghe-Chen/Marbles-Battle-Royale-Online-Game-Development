@@ -10,6 +10,7 @@ public class InGameUIManager : MonoBehaviour
 
     [SerializeField] PhotonView photonView;
     PlayerManager playerManager;
+    Rigidbody rb;
     [SerializeField] bool menueOpen = false;
     [SerializeField] GameObject InGameUI;
     private void Awake()
@@ -21,7 +22,10 @@ public class InGameUIManager : MonoBehaviour
     void Start()
     {
         InGameUI = transform.Find("InGameMenu").gameObject;
+        rb = transform.parent.parent.GetComponent<MovementController>().rb;
         playerManager = transform.parent.parent.GetComponent<MovementController>().playerManager;
+        menueOpen = true;
+        InGameMenu();
     }
 
     // Update is called once per frame
@@ -31,22 +35,32 @@ public class InGameUIManager : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) { menueOpen = !menueOpen; }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            InGameMenu();
+        }
+        if (menueOpen == true) { rb.angularVelocity = Vector3.zero; }
         //  Debug.Log(counter);
 
+
+        //if (playerManager.isDead == true) { OpenMenu("DeadInfo"); } 
+
+    }
+    public void InGameMenu()
+    {
+        menueOpen = !menueOpen;
         if (!menueOpen)
         {
             InGameUI.SetActive(false);
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
         else
         {
             InGameUI.SetActive(true);
             Cursor.visible = true;
-
+            Cursor.lockState = CursorLockMode.None;
         }
-        //if (playerManager.isDead == true) { OpenMenu("DeadInfo"); } 
-
     }
     public void OpenMenu(string menuName)
     {
