@@ -39,6 +39,7 @@ public class PlayerManager : MonoBehaviour
     public float billboardvalue;
     public int maxLife = 5;
     public string leftLifeTextContent;
+    public double deathAltitude = -40f;
 
     //================================================================
     //[Tooltip("How frequently (second) send player's information to server")]
@@ -65,7 +66,7 @@ public class PlayerManager : MonoBehaviour
         if (photonView.IsMine) //is the photon View is hadle on the local player?
         {
             //make sure all players have this playerManager data
-            
+
             PlayerSelection = RoomManager.playerType;
             // Debug.Log(startPoints.Length);
             for (int i = 0; i <= startPointsSize; i++)
@@ -129,7 +130,12 @@ public class PlayerManager : MonoBehaviour
         else
         {
             var temp = RebirthPosition(deadPosition);
-            position = new Vector3(temp.x + Random.Range(-10.0f, 10.0f), 20f, temp.z + Random.Range(-10.0f, 10f));
+            if (temp == startPoints[0].position) //if player born in start position
+            {
+                position = new Vector3(temp.x + Random.Range(-10.0f, 10.0f), 20f, temp.z + Random.Range(-100.0f, 100.0f));
+            }
+            else
+                position = new Vector3(temp.x + Random.Range(-10.0f, 10.0f), 20f, temp.z + Random.Range(-10.0f, 10f));
         }
 
         controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", PlayerSelection), position, Quaternion.identity, 0,

@@ -6,7 +6,7 @@ PhysicMaterial:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sand 1
+  m_Name: Ice
   dynamicFriction: 0.08
   staticFriction: 0.1
   bounciness: 0.2

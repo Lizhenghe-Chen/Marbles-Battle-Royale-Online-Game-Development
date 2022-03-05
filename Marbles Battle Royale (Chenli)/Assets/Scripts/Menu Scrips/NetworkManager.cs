@@ -8,7 +8,9 @@ using UnityEngine.UI;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     PhotonView pV;
-    [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")][SerializeField] bool IsInDebugMode = false;
+    [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")]
+    public int maxRoomPlayers = 2;
+    [SerializeField] bool IsInDebugMode = false;
     public static NetworkManager Instance;
 
     public GameObject Start_Debug_Meun;
@@ -39,13 +41,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     //================================================================
     [SerializeField] GameObject startGameButton;
-    [SerializeField] TMP_Text startGameNotice;
+    [SerializeField] TMP_Text startGameNotice, CreateRoomNotice;
 
     //========== when add a new menu page, enter new name manually and find their object================
     //[Header("when add a new menu page, enter new name manually and find their object\n")]
-    public GameObject
-
-            TitleMenu, LoadingMenu, CreateRoomMenu, RoomMenu, ErrorMenu, FindRoomMenu;
+    [Tooltip("Find Automatically, when add a new menu page, add new name manually and find their object ")]
+    public GameObject TitleMenu, LoadingMenu, CreateRoomMenu, RoomMenu, ErrorMenu, FindRoomMenu;
 
     // [SerializeField]
     // GameObject[]
@@ -131,6 +132,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //================================================================
     public void createRoom()
     {
+
         if (string.IsNullOrEmpty(roomNameInput.text))
         {
             Debug.Log("IsNullOrEmpty!");
@@ -164,9 +166,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Player[] players = PhotonNetwork.PlayerList;
+        CheckName(players);
         MenuManager.OpenMenu(RoomMenu);
         roomNameText.text = "Room " + PhotonNetwork.CurrentRoom.Name;
-        CheckName(players);
+
         //refresh the playerListContent
         foreach (Transform child in playerListContent)
         {
@@ -186,6 +189,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     void IsMasterInfo()
     {
+        if (roomManager.isTrainingGround)
+        {
+            startGameNotice.text = "All players can join to 'TrainingGround', No winner in this mode";
+
+        }
+        else
         if (PhotonNetwork.IsMasterClient)
         {
             startGameButton.SetActive(true); //only host clients can start game
@@ -198,7 +207,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     void CheckName(Player[] players)
     {
-
+        if (players.Length > maxRoomPlayers)// maximum number of players
+        {
+            Debug.Log("Tried to join Arena, but failed because full room!");
+            GetComponent<MenuManager>().errorColorRed = true;
+            GetComponent<MenuManager>().PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+             + "because the room reached maxium " + maxRoomPlayers + " players!";
+            LeaveRoom();
+        }
         List<Player> checkList = new List<Player>();
         foreach (Player player in players)
         {
@@ -208,12 +224,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (Player player in checkList)
         {
             if (PhotonNetwork.NickName == player.NickName) { index++; }
+
             if (index >= 2)
             {
                 // ErrorText.text = "Tried to join Arena, but failed!\n" + "because your Name: " + PhotonNetwork.NickName + "is same as another player.";
                 // MenuManager.OpenMenu(ErrorMenu);
                 Debug.Log("Tried to join Arena, but failed because dupicate name!");
-                GetComponent<MenuManager>().isNameDublicated = true;
+                GetComponent<MenuManager>().errorColorRed = true;
                 GetComponent<MenuManager>().PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
                  + "because your Name: '" + PhotonNetwork.NickName + "' is same as another player."; ;
                 LeaveRoom();
@@ -261,7 +278,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
         //if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
-        if (roomManager.isTrainingGround) { PhotonNetwork.CurrentRoom.IsVisible = true; } else { PhotonNetwork.CurrentRoom.IsVisible = false; }
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+        // if (roomManager.isTrainingGround) { PhotonNetwork.CurrentRoom.IsVisible = true; } else { PhotonNetwork.CurrentRoom.IsVisible = false; }
         //  PhotonNetwork.JoinRoom(arena);
     }
 
@@ -295,12 +313,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void JoinTrainingGround()
     {
-
+        CreateRoomNotice.text = "Tip: All players will be added and join to 'TrainingGround' room Automatically. No winner in this mode";
         roomNameInput.text = "TrainingGround";
         // PhotonNetwork.CreateRoom("TrainingGround");
         // CheckName();
         roomManager.isTrainingGround = true;
         // PhotonNetwork.LoadLevel(1);
     }
+    public void JoinNormalRoom() { CreateRoomNotice.text = "Tip: Room Name must not NULL and dupicate"; }
     public void OpenURL() { }
 }

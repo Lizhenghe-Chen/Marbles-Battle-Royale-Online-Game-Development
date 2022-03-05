@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject TitledMenu;
     NetworkManager networkManager;
-    public bool isNameDublicated = false;
+    public bool errorColorRed = false;
     void Start()
     {
         networkManager = GetComponent<NetworkManager>();
@@ -24,6 +24,7 @@ public class MenuManager : MonoBehaviour
         userNameInput = networkManager.userNameInput;
         roomNameInput = networkManager.roomNameInput;
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void Update()
@@ -40,7 +41,7 @@ public class MenuManager : MonoBehaviour
         {
             if (menu == menuName)
             {
-               if(menu.name=="TitleMenu"){ roomNameInput.text = "TestRoom";}
+                if (menu.name == "TitleMenu") { roomNameInput.text = "TestRoom"; }
                 menu.SetActive(true);
             }
             else
@@ -79,7 +80,7 @@ public class MenuManager : MonoBehaviour
             PlayerSelection.text = "Name cannot NULL !";
             OpenMenu(TitledMenu);
         }
-        else if (isNameDublicated) { PlayerSelection.color = Color.red; }
+        else if (errorColorRed) { PlayerSelection.color = Color.red; }
         else
         {
             PlayerSelection.color = Color.white;
@@ -101,7 +102,7 @@ public class MenuManager : MonoBehaviour
                     //Select stage
                     if (hit.transform && hit.transform.tag == "Player")
                     {
-                        isNameDublicated = false;
+                        errorColorRed = false;
                         playerType = hit.transform.gameObject.name;
                         GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType = playerType;
                         //   Debug.Log(hit.transform.gameObject.name);

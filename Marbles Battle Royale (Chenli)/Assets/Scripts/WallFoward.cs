@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WallFoward : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 0.05f;
+    [SerializeField] float moveSpeed = 0.015f;
     [SerializeField] Transform endPoint;
     [SerializeField] RoomManager roomManager;
     void Start()

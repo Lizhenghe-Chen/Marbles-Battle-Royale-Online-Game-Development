@@ -22,7 +22,7 @@ public class CollisionDetect : MonoBehaviour
     [SerializeField] GameObject UI;
     [Tooltip("This is for player's Health display, should be an image")]
     [SerializeField] Image healthBarImage;
-    [SerializeField] const double deathAltitude = -40f;
+    [SerializeField] double deathAltitude;
 
     [SerializeField] Rigidbody rb; // player
     public string other_Player_Name;
@@ -63,6 +63,7 @@ public class CollisionDetect : MonoBehaviour
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
             damageTimer = playerManager.damageTimer;
+            deathAltitude = playerManager.deathAltitude;
             // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
             // Debug.Log(healthBarImage);
             // UI = GameObject.Find("Canvas");
@@ -163,15 +164,19 @@ public class CollisionDetect : MonoBehaviour
             // Vector3 TesterPosition = collision.transform.position;
             // Vector3 direction = (TesterPosition - PlayerPosition);
         }
-        if (collision.gameObject.name == "Transfer platform")
+
+        // movementController.takeDamageMask.enabled = false;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Transfer platform")
         {
             //This will make the player a child of the Obstacle
-            transform.parent = collision.gameObject.transform.parent; //Change "myPlayer" to your player
+            transform.parent = other.gameObject.transform.parent; //Change "myPlayer" to your player
 
             //collision.gameObject.GetComponent<getspeed>().enabled = true;
-            Debug.Log("changed Parent to " + collision.gameObject.name);
+            Debug.Log("changed Parent to " + other.gameObject.name);
         }
-        // movementController.takeDamageMask.enabled = false;
     }
     // [PunRPC]
     // void Damage(float finalDamage, string message)
@@ -181,7 +186,7 @@ public class CollisionDetect : MonoBehaviour
     //     Debug.Log("**************** " + message + " ****************");
 
     // }
-    void OnCollisionExit(Collision collision)
+    void OnTriggerExit(Collider collision)
     {
         if (collision.gameObject.name == "Transfer platform")
         {
@@ -243,7 +248,7 @@ public class CollisionDetect : MonoBehaviour
     // }
     public float judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
     {
-        hitForce = collision.relativeVelocity.magnitude * collision.collider.GetComponent<Rigidbody>().mass;
+        hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
         // var damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
 
         //++++++++++++++++

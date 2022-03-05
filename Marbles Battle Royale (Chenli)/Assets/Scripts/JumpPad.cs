@@ -9,7 +9,7 @@ public class JumpPad : MonoBehaviour
     {
         if (collider.GetComponent<Rigidbody>())
         {
-            collider.GetComponent<Rigidbody>().AddForce(Vector3.up * Force);
+            collider.GetComponent<Rigidbody>().AddForce(transform.up * Force);
         }
     }
 }

@@ -79,6 +79,7 @@ MonoBehaviour:
   billboardvalue: 0
   maxLife: 5
   leftLifeTextContent: 
+  deathAltitude: -20
   playerList: []
   GameOverCanvas: {fileID: 0}
   GameOverText: {fileID: 0}

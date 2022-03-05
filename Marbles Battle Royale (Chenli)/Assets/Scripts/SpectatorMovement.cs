@@ -54,16 +54,22 @@ public class SpectatorMovement : MonoBehaviour
     }
     void MovingCommand()
     {
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && speed <= 30f) { initial_speed += 1f; }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && speed >= 3f) { initial_speed -= 1f; }
+
+        if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))
+        {
+            rb.velocity = Vector3.zero;
+            return;
+        }
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = initial_speed * 5;
         }
         else speed = initial_speed;
 
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && speed <= 30f) { initial_speed += 1f; }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && speed >= 3f) { initial_speed -= 1f; }
         rb.AddForce(cam.transform.forward * speed * verticalInput);
         rb.AddForce(cam.transform.right * speed * horizontalInput);
     }
@@ -87,11 +93,13 @@ public class SpectatorMovement : MonoBehaviour
         {
             // InGameUI.SetActive(false);
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
         else
         {
             // InGameUI.SetActive(true);
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
         }
     }

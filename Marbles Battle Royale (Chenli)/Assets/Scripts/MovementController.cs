@@ -10,7 +10,7 @@ public class MovementController : MonoBehaviour
     [Tooltip("when In Locoal debug state, mark this")]
     [SerializeField] bool isInDebugMode = false;
     [Header("**Below Parameters should find by themsleves at the Start()**\n")]
-    [SerializeField] Rigidbody rb; // player
+    public Rigidbody rb; // player
     [Header("Below compoments will manage player's movement\n")]
     public PlayerManager playerManager;
     public Transform Camera;
@@ -88,7 +88,9 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-
+        Break();
+        RushMethod();
+        TurningTorque();
 
 
         // playerManager.Damage(0.01f);
@@ -100,9 +102,7 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-        RushMethod();
-        TurningTorque();
-        Break();
+
         HealthEffect();
         PoisoningEffect();
     }
@@ -172,7 +172,7 @@ public class MovementController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))
         {
-            rb.angularVelocity = new Vector3(0, 0, 0);
+            rb.angularVelocity = Vector3.zero;
         }
     }
     void PoisoningEffect()
@@ -183,7 +183,7 @@ public class MovementController : MonoBehaviour
         if (damagearea_playerDistance < 0)
         {
             takeDamageMask.SetActive(true);
-            playerManager.Damage(0.03f);
+            playerManager.Damage(0.06f);
         }
         else { takeDamageMask.SetActive(false); }
     }
