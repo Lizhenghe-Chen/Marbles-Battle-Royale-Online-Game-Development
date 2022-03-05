@@ -89,7 +89,7 @@ public class MovementController : MonoBehaviour
             return;
         }
         Break();
-        RushMethod();
+  RushMethod();
         TurningTorque();
 
 
@@ -102,9 +102,9 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-
+      
         HealthEffect();
-        PoisoningEffect();
+        PoisoningEffect();// low FPS will affect damgae and health speed, so move it to FixedUpdate
     }
     void OnTriggerStay(Collider collision)
     {

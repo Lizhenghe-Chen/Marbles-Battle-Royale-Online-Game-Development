@@ -33,7 +33,7 @@ public class SpectatorMovement : MonoBehaviour
     {
         Menu_Cursor();
         MovingCommand();
-        UpDownCommand();
+
 
     }
     void UpDownCommand()
@@ -72,6 +72,7 @@ public class SpectatorMovement : MonoBehaviour
 
         rb.AddForce(cam.transform.forward * speed * verticalInput);
         rb.AddForce(cam.transform.right * speed * horizontalInput);
+        UpDownCommand();
     }
     public void LeaveRoom()
     {

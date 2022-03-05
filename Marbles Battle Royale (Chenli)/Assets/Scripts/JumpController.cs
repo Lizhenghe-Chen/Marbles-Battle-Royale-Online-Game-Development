@@ -71,24 +71,19 @@ public class JumpController : MonoBehaviour
         {
             return;
         }
+
         JumpMethod();
-        //ParticleSystemJudge();
-        // rg.AddForce(Vector3.down * extra_gravity);
-
-        target = transform.localPosition;
-
-        // Debug.Log(target.x + "," + target.y + "," + target.z);
     }
 
     void OnCollisionStay(Collision col)
     {
-     //   if (col.collider.tag == "Terrain")
-         OnCollisionGrounded = true;
+        //   if (col.collider.tag == "Terrain")
+        OnCollisionGrounded = true;
     }
     void OnCollisionExit(Collision col)
     {
-      //  if (col.collider.tag == "Terrain")
-            OnCollisionGrounded = false;
+        //  if (col.collider.tag == "Terrain")
+        OnCollisionGrounded = false;
         //  Debug.Log( " In the Air" );
     }
     void GiveLittileForce()
