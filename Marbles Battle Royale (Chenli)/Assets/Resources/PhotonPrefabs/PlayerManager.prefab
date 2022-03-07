@@ -71,6 +71,8 @@ MonoBehaviour:
   startPoints: []
   deadPosition: {x: 0, y: 0, z: 0}
   RoomManager: {fileID: 0}
+  GameInfoManager: {fileID: 0}
+  player_Name: 
   killCount: 0
   deathCount: 0
   damageTimer: 1

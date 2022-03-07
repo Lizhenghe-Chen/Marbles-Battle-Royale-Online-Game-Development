@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 5731719107171202343}
   - component: {fileID: 5731719107171202342}
   - component: {fileID: 5731719107171202341}
+  - component: {fileID: 4147319402149290096}
   m_Layer: 7
   m_Name: JumpPad
   m_TagString: Untagged
@@ -191,12 +192,12 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5731719107171202340}
-  m_Material: {fileID: 13400000, guid: b6b0ad20a0b638f43a5cac4a69e5cf29, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  m_Height: 0.27
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5731719107171202341
 MonoBehaviour:
@@ -210,4 +211,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b90f44ac921244c4d95260c89c2db829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Force: 1000
+  Force: 100
+--- !u!64 &4147319402149290096
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731719107171202340}
+  m_Material: {fileID: 13400000, guid: b6b0ad20a0b638f43a5cac4a69e5cf29, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: -1
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}

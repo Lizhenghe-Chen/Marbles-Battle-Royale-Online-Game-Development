@@ -10,5 +10,5 @@ PhysicMaterial:
   dynamicFriction: 0.5
   staticFriction: 0.7
   bounciness: 0.2
-  frictionCombine: 1
+  frictionCombine: 2
   bounceCombine: 1

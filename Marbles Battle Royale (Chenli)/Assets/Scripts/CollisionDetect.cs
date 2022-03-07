@@ -20,12 +20,13 @@ public class CollisionDetect : MonoBehaviour
 
     [Header("UI need Manually attach, this is for player's UI display,\n this will make sure player only get their own UI panel")]
     [SerializeField] GameObject UI;
+    [SerializeField] GameInfoManager GameInfoManager;
     [Tooltip("This is for player's Health display, should be an image")]
     [SerializeField] Image healthBarImage;
     [SerializeField] double deathAltitude;
 
     [SerializeField] Rigidbody rb; // player
-    public string other_Player_Name;
+    public string player_Name, other_Player_Name;
 
     double hitDirection;
     [SerializeField] float currentHealth;
@@ -48,10 +49,12 @@ public class CollisionDetect : MonoBehaviour
     void Awake()
     {
         UI = transform.Find("UI/Canvas").gameObject;
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
         rb = GetComponent<Rigidbody>();
         healthBarImage = UI.transform.Find("HealthbarBackground/Healthbar").GetComponent<Image>();
         // Debug.Log(UI.transform.Find("HealthbarBackground/Healthbar"));
         photonView = GetComponent<PhotonView>();
+        player_Name = photonView.Owner.NickName;
         FadeIn_OutImage = UI.transform.Find("Image").GetComponent<Image>();
     }
 
@@ -144,6 +147,7 @@ public class CollisionDetect : MonoBehaviour
                     PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
                     //Debug.Log("Player dead" + otherPlayerManager);
                     otherPlayerManager.Kill(other_Player_Name);
+                   // GameInfoManager.Refresh(other_Player_Name + " Killed " + player_Name);
                     //otherPlayerManager.killCount++;
                     //Invoke("Die", 0.2f);
                     return;
@@ -328,6 +332,7 @@ public class CollisionDetect : MonoBehaviour
         {
             playerManager.deadPosition = transform.position;//send death position to it's player Manager
             FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
+            GameInfoManager.Refresh(player_Name + " Drop dead");
             playerManager.Die();
             // gameObject.transform.position =
             //     new Vector3(target.x + Random.Range(3, 10),

@@ -89,7 +89,7 @@ public class MovementController : MonoBehaviour
             return;
         }
         Break();
-  RushMethod();
+        RushMethod();
         TurningTorque();
 
 
@@ -102,7 +102,7 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-      
+
         HealthEffect();
         PoisoningEffect();// low FPS will affect damgae and health speed, so move it to FixedUpdate
     }
@@ -183,7 +183,7 @@ public class MovementController : MonoBehaviour
         if (damagearea_playerDistance < 0)
         {
             takeDamageMask.SetActive(true);
-            playerManager.Damage(0.06f);
+            playerManager.Damage(0.06f, true);
         }
         else { takeDamageMask.SetActive(false); }
     }

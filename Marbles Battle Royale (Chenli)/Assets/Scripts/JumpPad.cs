@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class JumpPad : MonoBehaviour
 {
-    [SerializeField] float Force = 1000f;
-    void OnTriggerEnter(Collider collider)
+    [SerializeField] float Force = 100f;
+    void OnTriggerStay(Collider collider)
     {
         if (collider.GetComponent<Rigidbody>())
         {

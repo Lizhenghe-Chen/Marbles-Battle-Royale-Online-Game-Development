@@ -10,14 +10,14 @@ using UnityEngine.SceneManagement;
 * For personal study or educational use.
 * Email: Lizhenghe.Chen@qq.com
 */
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     // public static PlayerManager instance;
 
     string PlayerSelection;
 
     GameObject controller;
-    PhotonView photonView;
+    PhotonView pV;
     [Header("Below are each players's start points, must in order")]
     [SerializeField] int startPointsSize = 3;
     [SerializeField] List<Transform> startPoints;//must in order!
@@ -25,12 +25,16 @@ public class PlayerManager : MonoBehaviour
     public Vector3 deadPosition;
 
     [SerializeField] RoomManager RoomManager;
+    [SerializeField] GameInfoManager GameInfoManager;
+    [SerializeField] string player_Name;
+
     //[Header("Below are each players data, should be sycn to all players in a room \n")]
 
     [Tooltip("Player's kill and death data, will be sync to all players in a room.")]
     public int killCount = 0, deathCount = 0;
     const float playerHealth = 100f; //this cannot be changed
     public float damageTimer = 1f;// this could change hit damage
+    public static int avoidloop = 0;
 
     //================================================================
     [Header("Below parameter will be referenced by other scripts\n")]
@@ -52,7 +56,8 @@ public class PlayerManager : MonoBehaviour
 
     void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        pV = GetComponent<PhotonView>();
+        player_Name = pV.Owner.NickName;
     }
 
     void Start()
@@ -62,8 +67,9 @@ public class PlayerManager : MonoBehaviour
         GameOverText = GameOverCanvas.transform.Find("GameOverText").GetComponent<TMP_Text>();
         GameOverCanvas.enabled = false;
         currentHealth = playerHealth;
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
         RoomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
-        if (photonView.IsMine) //is the photon View is hadle on the local player?
+        if (pV.IsMine) //is the photon View is hadle on the local player?
         {
             //make sure all players have this playerManager data
 
@@ -83,22 +89,22 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if (!photonView.IsMine) { return; }
+        if (!pV.IsMine) { return; }
         billboardvalue = currentHealth / playerHealth;
 
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-        else if (currentHealth >= playerHealth) { currentHealth = playerHealth; }
+        // if (currentHealth <= 0)
+        // {
+        //     Die();
+        // }
+        if (currentHealth >= playerHealth) { currentHealth = playerHealth; }
 
-        photonView.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue);//death and kill count no need to use here to decrease some server pressure
+        pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue);//death and kill count no need to use here to decrease some server pressure
 
         // time += Time.deltaTime;
         // if (time >= frequency)
         // {
         //     // Debug.Log("Sent Message");
-        //     photonView.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);
+        //     pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);
         //     time = 0;
         // }
     }
@@ -139,34 +145,35 @@ public class PlayerManager : MonoBehaviour
         }
 
         controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", PlayerSelection), position, Quaternion.identity, 0,
-        new object[] { photonView.ViewID });//bring the current plaerManagerID to the game, it could let controllers & ClollisionDetect read and find their playerManager later
+        new object[] { pV.ViewID });//bring the current plaerManagerID to the game, it could let controllers & ClollisionDetect read and find their playerManager later
         //  Debug.Log("Instantiated player controller");
-        //  Debug.Log(photonView.ViewID);
+        //  Debug.Log(pV.ViewID);
     }
     void CreateSpectator()
     {
 
         var position = new Vector3(0, 10f, 0);
         controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "spectator"), position, Quaternion.identity, 0,
-        new object[] { photonView.ViewID });//bring the current plaerManagerID to the game, it could let controllers & ClollisionDetect read and find their playerManager later
+        new object[] { pV.ViewID });//bring the current plaerManagerID to the game, it could let controllers & ClollisionDetect read and find their playerManager later
         Debug.Log("Instantiated player Spectator");
-        //  Debug.Log(photonView.ViewID);
+        //  Debug.Log(pV.ViewID);
     }
 
     public void TakeDamage(float finalDamage, string message)
     {
-        Damage(finalDamage);
-        //photonView.RPC("Damage", RpcTarget.All, finalDamage);
+        Damage(finalDamage, false);
+        //pV.RPC("Damage", RpcTarget.All, finalDamage);
         Debug.Log("**************** " + message + " ****************");
     }
 
     public void Die()
     {
-        Debug.Log(this.photonView.Controller.NickName + " Dead!");
+        avoidloop = 0;
+        Debug.Log(this.pV.Controller.NickName + " Dead!");
 
         Death();
         Invoke("LateDeadOption", 0);
-        //photonView.RPC("Death", RpcTarget.All);
+        //pV.RPC("Death", RpcTarget.All);
 
     }
     void LateDeadOption()
@@ -177,33 +184,46 @@ public class PlayerManager : MonoBehaviour
         if (deathCount >= maxLife)
         {
             //isDead = true;
-            photonView.RPC("IsDead", RpcTarget.All);
+            pV.RPC("IsDead", RpcTarget.All);
             CreateSpectator();
+            GameInfoManager.Refresh(player_Name + " is eliminated ");
         }
         else CreateController(false);
     }
+
     public void Kill(string killerName)
     {
         Debug.Log(" !!!!!!!!!!!!!!!!!!Killed by: " + killerName + " !!!!!!!!!!!!!!!!!!");
-
+        avoidloop++;
         //OnKill();
-        photonView.RPC("OnKill", RpcTarget.All);
+        pV.RPC("OnKill", RpcTarget.All);
+        GameInfoManager.Refresh(killerName + " X -> " + player_Name);
     }
 
-    public void Damage(float finalDamage)
+    public void Damage(float finalDamage, bool isDamagedByDamageZone)
     {
         // currentHealth -= finalDamage;
-        photonView.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
+        if (currentHealth <= 0)
+        {// to avoid player dead in zone and killd by other message show in same time:
+            if (isDamagedByDamageZone && avoidloop == 0)
+            {
+
+                GameInfoManager.Refresh(player_Name + " Dead in Damage zone...");
+                Die();
+            }
+            else Die();
+        }
+        pV.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
     }
     public void Health(float addHealth)
     {
         //  currentHealth += addHealth;
-        photonView.RPC("AddHealth", RpcTarget.All, addHealth);
+        pV.RPC("AddHealth", RpcTarget.All, addHealth);
     }
     void Death()
     {
         // deathCount++;
-        photonView.RPC("OnDeath", RpcTarget.All);
+        pV.RPC("OnDeath", RpcTarget.All);
     }
     [PunRPC]
     void DecreaseHealth(float finalDamage)
@@ -243,9 +263,9 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    public void isMyPhotonView(PhotonView photonView)
+    public void isMyPhotonView(PhotonView pV)
     {
-        if (!photonView.IsMine && photonView)
+        if (!pV.IsMine && pV)
         {
             return;
         }
@@ -271,12 +291,12 @@ public class PlayerManager : MonoBehaviour
     }
     void Countdown()
     {
-        if (!photonView.IsMine) { return; }
+        if (!pV.IsMine) { return; }
         if (gameOverBackMenuTimer > 0)
         {
             gameOverBackMenuTimer -= Time.fixedDeltaTime;
             string GameOverInfo;
-            if (currentWinnerName == photonView.Owner.NickName)
+            if (currentWinnerName == pV.Owner.NickName)
             {
                 Debug.LogWarning("SameName");
                 GameOverInfo = "Game Over!!\n" + "You Are The Winner!\n Back to Menu in " + (int)gameOverBackMenuTimer;
@@ -297,13 +317,21 @@ public class PlayerManager : MonoBehaviour
         Destroy(GameObject.Find("RoomManager").gameObject);
 
         // PhotonNetwork.LeaveRoom();
-
+        GameInfoManager.Refresh(player_Name + " Left the game...");
         PhotonNetwork.LeaveRoom();
         //PhotonNetwork.Disconnect();
         //if (PhotonNetwork.CurrentRoom != null) { PhotonNetwork.Disconnect(); }
         SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
                                    // PhotonNetwork.LoadLevel(0);
         Debug.Log("Leaved Room");
+    }
+    public override void OnLeftRoom() // when current player leaves current room successfully
+    {
+        GameInfoManager.Refresh(player_Name + " Left the game...");
+    }
+    public override void OnJoinedRoom()
+    {
+        GameInfoManager.Refresh(player_Name + " Joined the game...");
     }
     // public void SetParticle(bool particleSystemJudge)
     // {
