@@ -132,12 +132,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //================================================================
     public void createRoom()
     {
-
         if (string.IsNullOrEmpty(roomNameInput.text))
         {
             Debug.Log("IsNullOrEmpty!");
             return;
         }
+        else if (roomManager.isTrainingGround) { roomNameInput.text = "TrainingGround"; }
         MenuManager.OpenMenu(LoadingMenu);
         PhotonNetwork.CreateRoom(roomNameInput.text);
     }
@@ -268,6 +268,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        if (roomManager.isTrainingGround) { PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Master to current"); }
+
         pV.RPC("SendInRoomInfo", RpcTarget.All);
         MenuManager.OpenMenu(LoadingMenu);
         Invoke("LodingGameScene", 1f);
@@ -321,5 +323,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // PhotonNetwork.LoadLevel(1);
     }
     public void JoinNormalRoom() { CreateRoomNotice.text = "Tip: Room Name must not NULL and dupicate"; }
-    public void OpenURL() { }
+    public void OpenURL() { Application.OpenURL("https://doggychen.com/personal-unity-online-game-development"); }
 }

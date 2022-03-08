@@ -114,7 +114,17 @@ public class CollisionDetect : MonoBehaviour
         BelowDeathAltitude();
     }
 
+    void OnCollisionStay(Collision collision)
+    {
 
+        if (collision.collider.name == "funnel")
+        {
+            rb.drag = 0;
+            //Debug.Log(collision.collider.name);
+        }
+        else { rb.drag = 0.1f; }
+
+    }
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     void OnCollisionEnter(Collision collision)
     {
@@ -122,6 +132,7 @@ public class CollisionDetect : MonoBehaviour
         {
             return;
         }
+
         // Debug.Log(target.photonView.Owner.NickName);
 
         if (collision.rigidbody)
@@ -147,7 +158,7 @@ public class CollisionDetect : MonoBehaviour
                     PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
                     //Debug.Log("Player dead" + otherPlayerManager);
                     otherPlayerManager.Kill(other_Player_Name);
-                   // GameInfoManager.Refresh(other_Player_Name + " Killed " + player_Name);
+                    // GameInfoManager.Refresh(other_Player_Name + " Killed " + player_Name);
                     //otherPlayerManager.killCount++;
                     //Invoke("Die", 0.2f);
                     return;

@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 197822509115994902}
-  m_LocalRotation: {x: -0.1470713, y: 0.04224217, z: 0.36543185, w: 0.9181749}
+  m_LocalRotation: {x: -0.13468987, y: 0.0066288114, z: 0.36970025, w: 0.919313}
   m_LocalPosition: {x: -0.00000037890098, y: -0.00000040614546, z: -0.00000011643813}
   m_LocalScale: {x: 3.1737962, y: 3.173797, z: 3.173797}
   m_ConstrainProportionsScale: 0
@@ -229,7 +229,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2530989470572914491}
-  m_LocalRotation: {x: 0.0019031167, y: 0.10023245, z: 0.35394678, w: 0.92987716}
+  m_LocalRotation: {x: 0.014307008, y: 0.06576265, z: 0.3638647, w: 0.9290173}
   m_LocalPosition: {x: -0.00000037890098, y: -0.00000040614546, z: -0.00000011643813}
   m_LocalScale: {x: 3.1737962, y: 3.173797, z: 3.173797}
   m_ConstrainProportionsScale: 0
@@ -339,7 +339,11 @@ MonoBehaviour:
   playerRadius: 0
   total_Offset: 0
   smoothSpeed: 2
-  currentDistance:
+  currentRadius:
+  - 0
+  - 0
+  - 0
+  currentHeight:
   - 0
   - 0
   - 0
@@ -468,13 +472,13 @@ MonoBehaviour:
     m_Bits: 256
   m_MinimumDistanceFromTarget: 0.1
   m_AvoidObstacles: 1
-  m_DistanceLimit: 5
-  m_MinimumOcclusionTime: 10
+  m_DistanceLimit: 10
+  m_MinimumOcclusionTime: 0
   m_CameraRadius: 0.1
   m_Strategy: 0
   m_MaximumEffort: 2
-  m_SmoothingTime: 0.5
-  m_Damping: 1
+  m_SmoothingTime: 0
+  m_Damping: 0.5
   m_DampingWhenOccluded: 0.5
   m_OptimalTargetDistance: 0
 --- !u!1 &4019870370171175563
@@ -5685,8 +5689,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5908190560158887075}
-  m_LocalRotation: {x: 0.0019031316, y: 0.10023239, z: 0.35394678, w: 0.92987716}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.014307022, y: 0.06576258, z: 0.36386466, w: 0.9290173}
+  m_LocalPosition: {x: 2.5519755, y: 1.0272675, z: 12.059516}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6149,6 +6153,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8265380607961242576}
     m_Modifications:
+    - target: {fileID: 1742053595675783700, guid: 421c56528d4717b43ab4302c58f4c059, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2037011988661491273, guid: 421c56528d4717b43ab4302c58f4c059, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.01

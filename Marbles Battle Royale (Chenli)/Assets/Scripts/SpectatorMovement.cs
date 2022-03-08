@@ -56,8 +56,8 @@ public class SpectatorMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && speed <= 30f) { initial_speed += 1f; }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && speed >= 3f) { initial_speed -= 1f; }
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && initial_speed <= 30f) { initial_speed += 1f; }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && initial_speed >= 3f) { initial_speed -= 1f; }
 
         if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))
         {
