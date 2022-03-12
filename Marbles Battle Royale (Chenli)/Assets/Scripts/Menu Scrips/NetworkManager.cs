@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
     PhotonView pV;
     [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")]
     public int maxRoomPlayers = 2;
@@ -195,15 +196,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         }
         else
-        if (PhotonNetwork.IsMasterClient)
         {
-            startGameButton.SetActive(true); //only host clients can start game
-            startGameNotice.text = "You are the Master, you can Start the Game!";
+            if (PhotonNetwork.IsMasterClient)
+            {
+                startGameButton.SetActive(true); //only host clients can start game
+                startGameNotice.text = "You are the Master, you can Start the Game!";
+            }
+            else
+            {
+                startGameButton.SetActive(false); startGameNotice.text = "waiting the Master Start the Game...";
+            }
         }
-        else
-        {
-            startGameButton.SetActive(false); startGameNotice.text = "waiting the Master Start the Game...";
-        }
+
     }
     void CheckName(Player[] players)
     {
@@ -264,11 +268,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomInfo);
         }
     }
-    public Toggle m_Toggle;
+    // public Toggle m_Toggle;
 
     public void StartGame()
     {
-        if (roomManager.isTrainingGround) { PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Master to current"); }
+        if (roomManager.isTrainingGround)
+        {
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Master to current");
+        }
+        else { PhotonNetwork.CurrentRoom.IsVisible = false; }
 
         pV.RPC("SendInRoomInfo", RpcTarget.All);
         MenuManager.OpenMenu(LoadingMenu);
@@ -279,8 +288,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void LodingGameScene()
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
-        //if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
+                                    //if (m_Toggle.isOn) PhotonNetwork.CurrentRoom.IsVisible = true; else PhotonNetwork.CurrentRoom.IsVisible = false;
+
         // if (roomManager.isTrainingGround) { PhotonNetwork.CurrentRoom.IsVisible = true; } else { PhotonNetwork.CurrentRoom.IsVisible = false; }
         //  PhotonNetwork.JoinRoom(arena);
     }

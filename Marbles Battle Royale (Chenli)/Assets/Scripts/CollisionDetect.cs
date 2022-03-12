@@ -32,7 +32,7 @@ public class CollisionDetect : MonoBehaviour
     [SerializeField] float currentHealth;
     float damageTimer;
     Vector3 other_Player_Velocity;
-    [SerializeField] Vector3 Player_Velocity;
+    public Vector3 Player_Velocity;
     float hitForce;
     //================================================================
     //private CollisionTrigger CollisionTrigger;
@@ -135,7 +135,7 @@ public class CollisionDetect : MonoBehaviour
 
         // Debug.Log(target.photonView.Owner.NickName);
 
-        if (collision.rigidbody)
+        if (collision.rigidbody && collision.collider.tag == "Player")
         {//&& collision.GetType() == typeof(SphereCollider)
             other_Player_Name = collision.collider.GetComponent<PhotonView>().Owner.NickName;
             other_Player_Velocity = collision.gameObject.GetComponent<CollisionDetect>().Player_Velocity;
@@ -337,7 +337,7 @@ public class CollisionDetect : MonoBehaviour
         }
         return hitForce;
     }
-    void BelowDeathAltitude()
+    public void BelowDeathAltitude()
     {
         if (transform.localPosition.y < deathAltitude)
         {

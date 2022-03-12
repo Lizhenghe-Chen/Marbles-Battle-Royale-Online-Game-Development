@@ -1,0 +1,59 @@
+Date : 2022-03-09 00:19:26
+Directory : f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts
+Total : 34 files,  2338 codes, 502 comments, 436 blanks, all 3276 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |         34 |      2,338 |        502 |        436 |      3,276 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                                              | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                                                 |         34 |      2,338 |        502 |        436 |      3,276 |
+| Menu Scrips                                                                                                                                                       |          8 |        788 |        112 |        146 |      1,046 |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                                                          | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\AnimateLoading.cs             | C#       |         22 |          4 |          4 |         30 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Billboard.cs                  | C#       |         46 |          3 |          3 |         52 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\ButtonSoundCtrl.cs            | C#       |         16 |          2 |          5 |         23 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\CameraMove.cs                 | C#       |         55 |          2 |         15 |         72 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\CollisionDetect.cs            | C#       |        227 |         94 |         45 |        366 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\CollisionTrigger.cs           | C#       |         36 |         41 |         17 |         94 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\GameInfoItem.cs               | C#       |         32 |          1 |          3 |         36 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\GameInfoManager.cs            | C#       |         27 |         15 |          4 |         46 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\GameSetting.cs                | C#       |         22 |          3 |          3 |         28 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\InGameUIManager.cs            | C#       |         74 |         14 |          7 |         95 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\JumpController.cs             | C#       |        118 |         25 |         22 |        165 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\JumpPad.cs                    | C#       |         14 |          0 |          2 |         16 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Keep.cs                       | C#       |         51 |         16 |         15 |         82 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\LeftandRight.cs               | C#       |         53 |         15 |         15 |         83 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\Menu.cs           | C#       |         24 |          1 |          7 |         32 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\MenuManager.cs    | C#       |         91 |         17 |         13 |        121 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\NetworkManager.cs | C#       |        252 |         32 |         44 |        328 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\PlayerListItem.cs | C#       |         24 |          4 |          6 |         34 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\PlayerManager.cs  | C#       |        256 |         47 |         39 |        342 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\RoomListItem.cs   | C#       |         19 |          0 |          6 |         25 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\RoomManager.cs    | C#       |         56 |          7 |         15 |         78 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\RotateAndShake.cs | C#       |         66 |          4 |         16 |         86 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\MovementController.cs         | C#       |        163 |         20 |         20 |        203 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\ParticleFollow.cs             | C#       |         47 |         15 |          9 |         71 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\QuickTransfer.cs              | C#       |         29 |          2 |          5 |         36 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\ScoreBoard.cs                 | C#       |         66 |          3 |          8 |         77 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\ScoreBoardManager.cs          | C#       |         61 |         37 |         13 |        111 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\SoundController.cs            | C#       |         25 |          6 |          6 |         37 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\SpectatorMovement.cs          | C#       |         84 |         12 |         12 |        108 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\TouchUp.cs                    | C#       |         44 |         30 |         15 |         89 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\WallFoward.cs                 | C#       |         18 |          1 |          5 |         24 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\cameraDist.cs                 | C#       |         73 |         12 |          6 |         91 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\getspeed.cs                   | C#       |         23 |          4 |          7 |         34 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\maincamera.cs                 | C#       |        124 |         13 |         24 |        161 |
+| Total                                                                                                                                                             |          |      2,338 |        502 |        436 |      3,276 |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

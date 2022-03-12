@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Photon.Pun;
+using Photon.Realtime;//will use Player Type
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -32,7 +33,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     [Tooltip("Player's kill and death data, will be sync to all players in a room.")]
     public int killCount = 0, deathCount = 0;
-    const float playerHealth = 100f; //this cannot be changed
+    public const float playerHealth = 100f; //this cannot be changed
     public float damageTimer = 1f;// this could change hit damage
     public static int avoidloop = 0;
 
@@ -57,6 +58,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     void Awake()
     {
         pV = GetComponent<PhotonView>();
+        RoomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         player_Name = pV.Owner.NickName;
     }
 
@@ -68,7 +70,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         GameOverCanvas.enabled = false;
         currentHealth = playerHealth;
         GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
-        RoomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+
         if (pV.IsMine) //is the photon View is hadle on the local player?
         {
             //make sure all players have this playerManager data
@@ -83,22 +85,25 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             deadPosition = startPoints[0].position;
 
             CreateController(true);
-
         }
+
+        billboardvalue = currentHealth / playerHealth;
+        // pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);
     }
 
     void Update()
     {
-        if (!pV.IsMine) { return; }
         billboardvalue = currentHealth / playerHealth;
-
+        if (!pV.IsMine) { return; }
         // if (currentHealth <= 0)
         // {
         //     Die();
         // }
-        if (currentHealth >= playerHealth) { currentHealth = playerHealth; }
 
-        pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue);//death and kill count no need to use here to decrease some server pressure
+        // if (currentHealth <= 5) { Damage(0, false); }// avoid 0 damage bug
+
+
+        // pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue);//death and kill count no need to use here to decrease some server pressure
 
         // time += Time.deltaTime;
         // if (time >= frequency)
@@ -131,7 +136,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         // Instantiate player controller
         if (isStart)
         {
-            position = new Vector3(startPoints[0].position.x + Random.Range(-10.0f, 10.0f), 20f, startPoints[0].position.z + Random.Range(-100.0f, 100.0f));
+            if (RoomManager.isTrainingGround) position = startPoints[0].position;
+            else
+                position = new Vector3(startPoints[0].position.x + Random.Range(-10.0f, 10.0f), 20f, startPoints[0].position.z + Random.Range(-100.0f, 100.0f));
         }
         else
         {
@@ -151,7 +158,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     void CreateSpectator()
     {
-
         var position = new Vector3(0, 10f, 0);
         controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "spectator"), position, Quaternion.identity, 0,
         new object[] { pV.ViewID });//bring the current plaerManagerID to the game, it could let controllers & ClollisionDetect read and find their playerManager later
@@ -165,9 +171,27 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //pV.RPC("Damage", RpcTarget.All, finalDamage);
         Debug.Log("**************** " + message + " ****************");
     }
+    public void Damage(float finalDamage, bool isDamagedByDamageZone)
+    {
+        // currentHealth -= finalDamage;
+        pV.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
+        if (currentHealth <= 0)
+        {// to avoid player dead in zone and killd by other message show in same time:
+            if (isDamagedByDamageZone && avoidloop == 0)
+            {
+                GameInfoManager.Refresh(player_Name + " Dead in Damage zone...");
+                Die();
+                // Invoke("Die", 0.5f);
+                return;
+            }
+            else Die();
+        }
 
+    }
     public void Die()
     {
+        currentHealth = playerHealth;// refresh the health;
+        pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);//
         avoidloop = 0;
         Debug.Log(this.pV.Controller.NickName + " Dead!");
 
@@ -179,7 +203,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     void LateDeadOption()
     {
         PhotonNetwork.Destroy(controller);
-        currentHealth = playerHealth;// refresh the health;
+
         leftLifeTextContent = "Rest Life: " + (maxLife - deathCount);
         if (deathCount >= maxLife)
         {
@@ -200,21 +224,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         GameInfoManager.Refresh(killerName + " X -> " + player_Name);
     }
 
-    public void Damage(float finalDamage, bool isDamagedByDamageZone)
-    {
-        // currentHealth -= finalDamage;
-        if (currentHealth <= 0)
-        {// to avoid player dead in zone and killd by other message show in same time:
-            if (isDamagedByDamageZone && avoidloop == 0)
-            {
 
-                GameInfoManager.Refresh(player_Name + " Dead in Damage zone...");
-                Die();
-            }
-            else Die();
-        }
-        pV.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
-    }
     public void Health(float addHealth)
     {
         //  currentHealth += addHealth;
@@ -230,10 +240,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         currentHealth -= finalDamage;
 
+
     }
     [PunRPC]
     void AddHealth(float addHealth)
     {
+        if (currentHealth >= playerHealth) {  return;}//avoid health exceeed max health
         currentHealth += addHealth;
 
     }
@@ -253,13 +265,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         isDead = true;
     }
     [PunRPC]
-    void SentData(float _currentHealth, float _billboardvalue)
+    void SentData(float _currentHealth, float _billboardvalue, int _killCount, int _deathCount, bool _isDead)
     {
         currentHealth = _currentHealth;
         billboardvalue = _billboardvalue;
-        //isDead = _isDead;
-        // deathCount = _deathCount;
-        // killCount = _killCount;
+        isDead = _isDead;
+        deathCount = _deathCount;
+        killCount = _killCount;
 
     }
 
@@ -298,7 +310,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             string GameOverInfo;
             if (currentWinnerName == pV.Owner.NickName)
             {
-                Debug.LogWarning("SameName");
+                //Debug.LogWarning("SameName");
                 GameOverInfo = "Game Over!!\n" + "You Are The Winner!\n Back to Menu in " + (int)gameOverBackMenuTimer;
             }
             else { GameOverInfo = "Game Over!!\n" + "The Winner is: \"" + currentWinnerName + "\"\n Back to Menu in " + (int)gameOverBackMenuTimer; }
@@ -317,7 +329,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         Destroy(GameObject.Find("RoomManager").gameObject);
 
         // PhotonNetwork.LeaveRoom();
-        GameInfoManager.Refresh(player_Name + " Left the game...");
+        // GameInfoManager.Refresh(player_Name + " Left the game...");
         PhotonNetwork.LeaveRoom();
         //PhotonNetwork.Disconnect();
         //if (PhotonNetwork.CurrentRoom != null) { PhotonNetwork.Disconnect(); }
@@ -325,13 +337,19 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                                    // PhotonNetwork.LoadLevel(0);
         Debug.Log("Leaved Room");
     }
-    public override void OnLeftRoom() // when current player leaves current room successfully
+    public override void OnPlayerLeftRoom(Player newPlayer) // when current player leaves current room successfully
     {
         GameInfoManager.Refresh(player_Name + " Left the game...");
     }
-    public override void OnJoinedRoom()
+    // public override void OnJoinedRoom()
+    // {
+    //     GameInfoManager.Refresh(player_Name + " Joined the game...");
+    // }
+    public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
     {
-        GameInfoManager.Refresh(player_Name + " Joined the game...");
+        pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);//let new player get exist players' information
+        GameInfoManager.Refresh(newPlayer.NickName + " Joined the game...");
+        // Debug.Log(newPlayer.NickName);
     }
     // public void SetParticle(bool particleSystemJudge)
     // {

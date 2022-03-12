@@ -10,22 +10,22 @@ public class ParticleFollow : MonoBehaviour
     [SerializeField] Transform Player;
     [SerializeField] SphereCollider playerCollider;
     [SerializeField] float angularVelocity;
-    [SerializeField] bool enableParticleSystem;
+    //[SerializeField] bool enableParticleSystem;
 
     Rigidbody player_rg;
     [SerializeField] ParticleSystem PS;
-    PhotonView photonView;
-    [SerializeField] PlayerManager playerManager;
+   // PhotonView photonView;
+   // [SerializeField] PlayerManager playerManager;
     void Awake()
     {
-        photonView = transform.parent.GetComponent<PhotonView>();
+     //   photonView = transform.parent.GetComponent<PhotonView>();
     }
     void Start()
     {
         // if (!photonView.IsMine) { return; }
 
         Player = transform.parent;
-        playerManager = Player.GetComponent<MovementController>().playerManager;
+      //  playerManager = Player.GetComponent<MovementController>().playerManager;
         playerCollider = Player.GetComponent<SphereCollider>();
         player_rg = Player.GetComponent<Rigidbody>();
         //jumpController = Player.GetComponent<JumpController>();
@@ -38,7 +38,7 @@ public class ParticleFollow : MonoBehaviour
     void Update()
     {
         //if (photonView.IsMine) { Emmission(); }
-        //Emmission();
+      //  Emmission();
         Follow();
 
     }

@@ -31,7 +31,7 @@ public class MovementController : MonoBehaviour
 
     [SerializeField] float coolingTime = 2, time, rushValue;//player rush cooling time
                                                             //===============================
-    [SerializeField] bool inHealthArea = false, inDamageZone = false;
+    [SerializeField] bool inHealthArea = false;
     [SerializeField] GameObject damagearea;
     [SerializeField] Vector3 damageareaPosition, playerPosition;
     [SerializeField] float damagearea_playerDistance;

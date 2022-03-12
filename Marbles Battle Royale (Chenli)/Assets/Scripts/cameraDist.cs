@@ -12,7 +12,7 @@ public class cameraDist : MonoBehaviour
     [SerializeField] float disdance; //for postProcessVolume Depth od Field use
     [SerializeField] float playerRadius;
     float maxRadius = 10; //should >0
-    float minRadius = -3; //should <0
+    float minRadius =-2; //should <0
     int offset_Value = 1; //offset when Mouse ScrollWheel
 
 
@@ -34,7 +34,7 @@ public class cameraDist : MonoBehaviour
     void Update()
     {
         ScrollWheeldetect();
-        if (virtualCamera.m_Orbits[0].m_Radius != currentRadius[0] && virtualCamera.m_Orbits[0].m_Height != currentHeight[0]) { SoftMoveCamera(); }
+        if (virtualCamera.m_Orbits[1].m_Radius != currentRadius[1] && virtualCamera.m_Orbits[1].m_Height != currentHeight[1]) { SoftMoveCamera(); }
 
         UpdatePS();
     }
@@ -51,19 +51,25 @@ public class cameraDist : MonoBehaviour
         if (Input.GetAxis("Mouse ScrollWheel") < 0 && total_Offset < maxRadius)
         {
             //SetDistance(1);
-            for (int i = 0; i < currentRadius.Length; i++)
+            currentRadius[0] += offset_Value * 0.1f;
+            currentRadius[1] += offset_Value;
+            currentRadius[2] += offset_Value;
+            for (int i = 0; i < currentRadius.Length - 1; i++)
             {
-                currentRadius[i] += offset_Value;
-                currentHeight[i] += offset_Value * 0.5f;
+                //currentRadius[i] += offset_Value;
+                currentHeight[i] += offset_Value;
             }
             total_Offset += offset_Value;
         }
         if (Input.GetAxis("Mouse ScrollWheel") > 0 && total_Offset > minRadius)
         {
-            for (int i = 0; i < currentRadius.Length; i++)
+            currentRadius[0] -= offset_Value * 0.1f;
+            currentRadius[1] -= offset_Value;
+            currentRadius[2] -= offset_Value;
+            for (int i = 0; i < currentRadius.Length - 1; i++)
             {
-                currentRadius[i] -= offset_Value;
-                currentHeight[i] -= offset_Value * 0.5f;
+                //currentRadius[i] -= offset_Value;
+                currentHeight[i] -= offset_Value;
             }
             total_Offset -= offset_Value;
             //SetDistance(-1);
