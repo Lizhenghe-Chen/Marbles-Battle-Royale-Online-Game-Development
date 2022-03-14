@@ -27,7 +27,7 @@ public class QuickTransfer : MonoBehaviour
         // else { Player.position = Vector3.MoveTowards(Player.position, transitionTarget.position, 1); }
 
     }
-  
+
     void OnTriggerEnter(Collider collision)
     {
 
@@ -35,14 +35,17 @@ public class QuickTransfer : MonoBehaviour
         playerAnimateLoading.LeavingLevel();
 
         Player = collision.transform;
-        Invoke("QuickTransfering", 1f);
+        Invoke("QuickTransfering",0);
+        playerAnimateLoading.LoadingLevel();
     }
 
 
 
     void QuickTransfering()
     {
-        GameInfoManager.Refresh(Player.GetComponent<CollisionDetect>().player_Name + " Transfered to fnnel");
+
+
+        GameInfoManager.Refresh(Player.GetComponent<CollisionDetect>().player_Name + " Transfered to " + transitionTarget.name);
         Player.position = transitionTarget.position;
     }
 }

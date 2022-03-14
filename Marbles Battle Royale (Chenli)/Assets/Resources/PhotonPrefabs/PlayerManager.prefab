@@ -67,12 +67,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c8540aded5ae94e96404f8df3df871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 0}
   startPointsSize: 3
   startPoints: []
   deadPosition: {x: 0, y: 0, z: 0}
   RoomManager: {fileID: 0}
   GameInfoManager: {fileID: 0}
   player_Name: 
+  FadeIn_OutImage: {fileID: 0}
   killCount: 0
   deathCount: 0
   damageTimer: 1
@@ -82,6 +84,7 @@ MonoBehaviour:
   maxLife: 5
   leftLifeTextContent: 
   deathAltitude: -20
+  initialScale: {x: 0, y: 0, z: 0}
   playerList: []
   GameOverCanvas: {fileID: 0}
   GameOverText: {fileID: 0}

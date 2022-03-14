@@ -16,14 +16,15 @@ public class MovementController : MonoBehaviour
     public Transform Camera;
     PhotonView photonView;
     [HideInInspector] public float horizontalInput, verticalInput;
-    [SerializeField] float angularVelocity;
+    public float angularVelocity;
 
     //===============================
     [Header("**Below for players rush function,rushPane need attach menually **\n")]
-    [SerializeField] Image rushPanel;
-    [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
+
+
     [SerializeField] TMP_Text LeftLifeText;
-    public float initial_torque, torque_timer, rushForce;
+    [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
+    public float initial_torque, torque_timer;
 
     // public float torque_tim = 10f; //the timer for the torque
     // public float rushForce = 2500;
@@ -68,7 +69,7 @@ public class MovementController : MonoBehaviour
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up
         }
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
-        rushPanel = transform.Find("UI/Canvas/RushLoading/rushPanel").GetComponent<Image>();
+
         LeftLifeText = transform.Find("UI/Canvas/LeftLifeText").GetComponent<TMP_Text>();
 
         damagearea = GameObject.Find("DamageArea");
@@ -89,7 +90,7 @@ public class MovementController : MonoBehaviour
             return;
         }
         Break();
-        RushMethod();
+
         TurningTorque();
 
 
@@ -147,27 +148,9 @@ public class MovementController : MonoBehaviour
         rb.AddTorque(Camera.transform.right * torque * verticalInput);
         rb.AddTorque(-Camera.transform.forward * torque * horizontalInput);
     }
-    void RushMethod()
-    {
-        time += Time.deltaTime;
-        rushValue = time / coolingTime;
-        rushPanel.fillAmount = rushValue;
-        if (time >= coolingTime)
-        {
-            time = coolingTime;
-            rush();
-        }
-    }
 
-    void rush()
-    {
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
-        {
-            rb.AddForce(Camera.transform.forward * rushForce);
-            time = 0;
-            //Debug.Log("Rush!");
-        }
-    }
+
+
     void Break()
     {
         if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))

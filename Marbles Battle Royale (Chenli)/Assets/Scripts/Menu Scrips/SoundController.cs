@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using Photon.Pun;
 public class SoundController : MonoBehaviour
 {
-    //public AudioSource buttonSound;
+    [SerializeField] PhotonView photonView;
     public GameObject Canvas;
     public AudioSource backGroundMusic;
     public Toggle playBackGroundMusictoggle;
@@ -28,6 +28,7 @@ public class SoundController : MonoBehaviour
     }
     void Start()
     {
+
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
         backGroundMusic = transform.Find("BackGroundMusic").GetComponent<AudioSource>();
         if (SceneManager.GetActiveScene().buildIndex == 0)
@@ -41,14 +42,16 @@ public class SoundController : MonoBehaviour
             backGroundMusicVolumeSlider.value = keepSetting.backGroundMusicVolume;
 
         }
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        if (SceneManager.GetActiveScene().buildIndex == 1)//when in game, Sound Controller is in each player's UI object
         {
+             photonView = transform.parent.parent.GetComponent<PhotonView>();
+            if (!photonView.IsMine) { Destroy(gameObject); return; }// other player should not hear local players' background music
+            Canvas = GameObject.Find("Canvas");
+            playBackGroundMusictoggle = Canvas.transform.Find("InGameMenu/playBackGroundMusic").GetComponent<Toggle>();
+            backGroundMusicVolumeSlider = Canvas.transform.Find("InGameMenu/BackGroundMusicVolume").GetComponent<Slider>();
 
-            // playBackGroundMusictoggle = Canvas.transform.Find("TitleMenu/Buttons/playBackGroundMusic").GetComponent<Toggle>();
-            // backGroundMusicVolumeSlider = Canvas.transform.Find("TitleMenu/Buttons/BackGroundMusicVolume").GetComponent<Slider>();
-
-            //   playBackGroundMusictoggle.isOn = keepSetting.playBackGroundMusic;
-            // backGroundMusicVolumeSlider.value = keepSetting.backGroundMusicVolume;
+            playBackGroundMusictoggle.isOn = keepSetting.playBackGroundMusic;
+            backGroundMusicVolumeSlider.value = keepSetting.backGroundMusicVolume;
 
 
         }

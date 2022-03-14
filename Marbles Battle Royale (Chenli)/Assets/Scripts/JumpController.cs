@@ -14,7 +14,7 @@ public class JumpController : MonoBehaviour
     Rigidbody rg;
 
     [SerializeField] const float distanceBetweenGround = 0.5f;
-    [SerializeField] float angularVelocity;
+
     //[SerializeField] Transform Camera;
     public float sliteForce = 2f;
     public float extra_gravity = 10f;
@@ -26,11 +26,20 @@ public class JumpController : MonoBehaviour
     PlayerManager playerManager;
 
     //===============================
+    public float jumpforce, rushForce;
     [Header("**Below for players Jump function,jumpPane need attach menually **\n")]
     [SerializeField] Image jumpPanel;
-    [SerializeField] float coolingTime = 2, time, rushValue;//player jump cooling time
-    //AudioSource audio;
-    // Start is called before the first frame update
+
+    [SerializeField] Image rushPanel;
+    [SerializeField] float RushcoolingTime = 4, Rushtime, JumpcoolingTime = 2, JumpTime, rushValue = 0.0f;//player jump cooling time
+    public Transform Camera;
+
+    //===============================
+    public AudioSource audioSource;
+    public AudioClip footStep, hitSound, brakeSound, jumpSound;
+    // [SerializeField] bool isPlaying;
+    public float Velocity, AngularVelocity;
+    public bool playHitSound = false;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -38,21 +47,28 @@ public class JumpController : MonoBehaviour
 
     void Start()
     {
-        time = coolingTime;
-        if (!photonView.IsMine)
-        { return; }
+
+        audioSource = GetComponent<AudioSource>();
+        rg = GetComponent<Rigidbody>(); //find the Rigidbody object
+        Rushtime = RushcoolingTime;
+        JumpTime = JumpcoolingTime;
+        // if (!photonView.IsMine)
+        // { return; }
 
         playerManager = GetComponent<MovementController>().playerManager;
         movementController = GetComponent<MovementController>();
         CollisionTrigger = GetComponentInChildren<CollisionTrigger>();
-        rg = GetComponent<Rigidbody>(); //find the Rigidbody object
+
         jumpThreshold = GetComponent<SphereCollider>().radius + distanceBetweenGround;
+
+        Camera = transform.Find("ThirdPersonCamera/MainCamera");
+        rushPanel = transform.Find("UI/Canvas/RushLoading/rushPanel").GetComponent<Image>();
         jumpPanel = transform.Find("UI/Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
         // Debug.Log(GetComponent<SphereCollider>().radius);
     }
 
     // int jumpCount = 0;
-    public float jumpforce;
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -67,12 +83,18 @@ public class JumpController : MonoBehaviour
 
     void Update()
     {
+        PlayFootstepSounds();//all players in the game should do this, so above the photonView.IsMine
+
+        //   isPlaying = audioSource.isPlaying;
+
+
         if (!photonView.IsMine)
         {
             return;
         }
 
         JumpMethod();
+        RushMethod();
     }
 
     void OnCollisionStay(Collision col)
@@ -104,14 +126,7 @@ public class JumpController : MonoBehaviour
         }
     }
 
-    void JumpCommand()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
-        {
-            rg.AddForce(Vector3.up * jumpforce);
-            time = 0;
-        }
-    }
+
 
     bool onTheGround()
     {
@@ -137,15 +152,125 @@ public class JumpController : MonoBehaviour
     }
     void JumpMethod()
     {
-        time += Time.deltaTime;
-        rushValue = time / coolingTime;
+        JumpTime += Time.deltaTime;
+        rushValue = JumpTime / JumpcoolingTime;
         jumpPanel.fillAmount = rushValue;
-        if (time >= coolingTime)
+        if (JumpTime >= JumpcoolingTime)
         {
-            time = coolingTime;
+            JumpTime = JumpcoolingTime;
             JumpCommand();
-
         }
+    }
+    void JumpCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
+        {
+            audioSource.clip = jumpSound;
+            audioSource.pitch = 2f;
+            audioSource.volume = 1f;
+            audioSource.Play();
+            rg.AddForce(Vector3.up * jumpforce);
+            JumpTime = 0;
+        }
+    }
+    void RushMethod()
+    {
+        Rushtime += Time.deltaTime;
+        rushValue = Rushtime / RushcoolingTime;
+        rushPanel.fillAmount = rushValue;
+        if (Rushtime >= RushcoolingTime)
+        {
+            Rushtime = RushcoolingTime;
+            RushCommand();
+        }
+    }
+    void RushCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
+        {
+            rg.AddForce(Camera.transform.forward * rushForce);
+            Rushtime = 0;
+            //Debug.Log("Rush!");
+        }
+    }
+    public float hitForce;
+    public void PlayFootstepSounds()
+    {
+
+        Velocity = rg.velocity.magnitude;
+        AngularVelocity = rg.angularVelocity.magnitude;
+        // var tempV = (float)System.Math.Tanh(Velocity);//between 0 to 1:https://en.wikipedia.org/wiki/Activation_function
+        //double.Parse(System.Math.Round(Velocity, 3).ToString());
+
+        if (playHitSound)
+        {
+            Debug.Log("HitSound");
+            audioSource.clip = hitSound;
+
+            audioSource.pitch = 1f;
+            if (hitForce < 10) { audioSource.volume = 0.2f; } else { audioSource.volume = 1f; }
+
+            audioSource.Play();
+
+            playHitSound = false;
+        }
+        if (!audioSource.isPlaying)
+        {
+            if (onTheGround() && AngularVelocity > 1)
+            {
+                // Debug.Log("Walking");
+                audioSource.clip = footStep;
+
+                if (1f < AngularVelocity && AngularVelocity < 5f)
+                {
+                    audioSource.pitch = 0.5f;
+                    audioSource.volume = 0.3f;
+                }
+                else if (3f <= AngularVelocity && AngularVelocity < 10f)
+                {
+                    audioSource.pitch = 1.5f;
+                    audioSource.volume = 0.6f;
+                }
+                else if (10f <= AngularVelocity && AngularVelocity < 15f)
+                {
+                    audioSource.pitch = 2f;
+                    audioSource.volume = 0.8f;
+                }
+                else if (AngularVelocity > 15f)
+                {
+                    audioSource.pitch = 3f;
+                    audioSource.volume = 1f;
+                }
+
+                audioSource.Play();
+            }
+            if (onTheGround() && Velocity > 5 && (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1)))
+            {
+                audioSource.clip = brakeSound;
+                audioSource.volume = 0.3f;
+                audioSource.pitch = 3f;
+                audioSource.Play();
+            }
+
+            // else if (onTheGround() && Velocity > 3 && AngularVelocity < 0.1)
+            // {
+            //     audioSource.pitch = 3f;
+            //     audioSource.volume = 1f;
+
+            //     audioSource.Play();
+            // }
+        }
+
+
+        // else
+        // {
+        //     if (audioSource.isPlaying)
+        //     {
+        //         audioSource.clip = null;
+        //         //if player does not touch the ground
+        //         audioSource.Pause();
+        //     }
+        // }
     }
     // public void ParticleSystemJudge()
     // {

@@ -6720,6 +6720,7 @@ MonoBehaviour:
   - {fileID: 845330536}
   TitledMenu: {fileID: 0}
   errorColorRed: 0
+  buttonSound: {fileID: 0}
 --- !u!114 &1151670676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8175,6 +8176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49a60637f009f984da964da8c61ab170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  photonView: {fileID: 0}
   Canvas: {fileID: 0}
   backGroundMusic: {fileID: 0}
   playBackGroundMusictoggle: {fileID: 0}
@@ -8609,7 +8611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.9387398, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10638,7 +10640,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0, g: 1, b: 0.89369106, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -11285,6 +11287,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6623507239682888784, guid: 5a83de9c72f28624ab151e4dd4aff4de, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6623507239682888786, guid: 5a83de9c72f28624ab151e4dd4aff4de, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6623507239682888788, guid: 5a83de9c72f28624ab151e4dd4aff4de, type: 3}

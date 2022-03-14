@@ -20,6 +20,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public string moreInfoURL;
     MenuManager MenuManager;
     RoomManager roomManager;
+    public KeepSetting keepSetting;
     public bool isLeaveRoom = false;
 
     //================================================================
@@ -60,7 +61,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Instance = this;
         MenuManager = this.GetComponent<MenuManager>();
         GameObject[] _menus = MenuManager.menuList;
-
+        keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
         // SetActive to make sure Find GameObject could work
         foreach (GameObject menu in _menus)
         {
@@ -90,7 +91,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         // Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
-        userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+        if (keepSetting.start == 0)
+        {
+            userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+        }
+        else
+        {
+            userNameInput.text = keepSetting.playerName;
+            MenuManager.playerType = keepSetting.playerType;
+        }
     }
 
     public void OnUserNameChanged()
@@ -121,6 +130,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         infoText.text = "connected to server: " + PhotonNetwork.CloudRegion;
 
         PhotonNetwork.NickName = userNameInput.text;
+
 
         Debug.Log("Joined!");
     }

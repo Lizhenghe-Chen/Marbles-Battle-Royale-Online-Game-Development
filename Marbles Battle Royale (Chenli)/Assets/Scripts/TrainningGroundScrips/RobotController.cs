@@ -43,7 +43,7 @@ public class RobotController : MonoBehaviour
             var Player_Velocity = rb.velocity;
             var other_Player_Velocity = collisionDetect.Player_Velocity;
             var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-            var finalDamage = collisionDetect.judgeDamage(other, Player_Velocity, other_Player_Velocity, hitDirection);
+            var finalDamage = collisionDetect.hitForce;
             robotCurrentHealth -= finalDamage;
 
 

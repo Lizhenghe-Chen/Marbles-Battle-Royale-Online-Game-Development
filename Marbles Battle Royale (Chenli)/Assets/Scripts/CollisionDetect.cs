@@ -33,7 +33,7 @@ public class CollisionDetect : MonoBehaviour
     float damageTimer;
     Vector3 other_Player_Velocity;
     public Vector3 Player_Velocity;
-    float hitForce;
+    public float hitForce;
     //================================================================
     //private CollisionTrigger CollisionTrigger;
     private static float
@@ -45,7 +45,11 @@ public class CollisionDetect : MonoBehaviour
     PlayerManager playerManager;
     MovementController movementController;
     // Start is called before the first frame update
-    [SerializeField] Image FadeIn_OutImage;
+
+
+    JumpController jumpController;
+    public Vector3 initialScale;
+    float maxScale = 4, minScale = 0.4f;
     void Awake()
     {
         UI = transform.Find("UI/Canvas").gameObject;
@@ -55,16 +59,18 @@ public class CollisionDetect : MonoBehaviour
         // Debug.Log(UI.transform.Find("HealthbarBackground/Healthbar"));
         photonView = GetComponent<PhotonView>();
         player_Name = photonView.Owner.NickName;
-        FadeIn_OutImage = UI.transform.Find("Image").GetComponent<Image>();
+
+        jumpController = GetComponent<JumpController>();
     }
 
     void Start()
     {
-
         if (photonView.IsMine)
         {
+            initialScale = transform.localScale;
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
+            playerManager.initialScale = initialScale;
             damageTimer = playerManager.damageTimer;
             deathAltitude = playerManager.deathAltitude;
             // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
@@ -87,7 +93,14 @@ public class CollisionDetect : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-
+        if (transform.localScale.magnitude > initialScale.magnitude)
+        {
+            transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
+        }
+       if (transform.localScale.magnitude < initialScale.magnitude)
+        {
+            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+        }
     }
     void FixedUpdate()
     {
@@ -106,16 +119,19 @@ public class CollisionDetect : MonoBehaviour
     }
     void Update()
     {
+
         if (!photonView.IsMine)
         {
             return;
         }
-        if (playerManager.currentHealth <= 0) { FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel(); }
+        // if (playerManager.currentHealth <= 0) { FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel(); }
         BelowDeathAltitude();
     }
 
     void OnCollisionStay(Collision collision)
     {
+        if (collision.collider.name == "Enlarge" && transform.localScale.x < initialScale.x * maxScale) { transform.localScale += new Vector3(0.1f, 0.1f, 0.1f); }
+        if (collision.collider.name == "Shrink" && transform.localScale.x > initialScale.x * minScale) { transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f); }
 
         if (collision.collider.name == "funnel")
         {
@@ -136,12 +152,20 @@ public class CollisionDetect : MonoBehaviour
         // Debug.Log(target.photonView.Owner.NickName);
 
         if (collision.rigidbody && collision.collider.tag == "Player")
-        {//&& collision.GetType() == typeof(SphereCollider)
+        {
+            hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
+
+            jumpController.playHitSound = true;
+            jumpController.hitForce = hitForce;
+
+            //&& collision.GetType() == typeof(SphereCollider)
             other_Player_Name = collision.collider.GetComponent<PhotonView>().Owner.NickName;
             other_Player_Velocity = collision.gameObject.GetComponent<CollisionDetect>().Player_Velocity;
             hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
 
-            var finalDamage = judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection) * damageTimer;
+            var finalDamage = hitForce;
+
+            judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection);
             if (ISufferDamage)//if player get damage
             {
                 // movementController.takeDamageMask.enabled = true;
@@ -261,9 +285,9 @@ public class CollisionDetect : MonoBehaviour
     //     }
     //     Debug.Log("ohhh took damage: " + damage);
     // }
-    public float judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
+    public void judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
     {
-        hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
+
         // var damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
 
         //++++++++++++++++
@@ -335,14 +359,14 @@ public class CollisionDetect : MonoBehaviour
             //return damage;
 
         }
-        return hitForce;
+
     }
     public void BelowDeathAltitude()
     {
         if (transform.localPosition.y < deathAltitude)
         {
             playerManager.deadPosition = transform.position;//send death position to it's player Manager
-            FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
+                                                            //   FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
             GameInfoManager.Refresh(player_Name + " Drop dead");
             playerManager.Die();
             // gameObject.transform.position =
@@ -361,5 +385,6 @@ public class CollisionDetect : MonoBehaviour
     //     else
     //         playerManager.Die();
     // }
+
 
 }

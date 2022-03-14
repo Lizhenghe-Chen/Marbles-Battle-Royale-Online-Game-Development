@@ -48,7 +48,8 @@ public class Billboard : MonoBehaviour
     {
 
         //float lerpValue = Mathf.Lerp(transform.position, Player.position, 0.0005f);
-        aboveOffset = Player.GetComponent<SphereCollider>().radius * 5f * Player.transform.localScale.y;
+        // aboveOffset = Player.GetComponent<SphereCollider>().radius * 5f * Player.transform.localScale.y;
+        aboveOffset = 3 * Player.transform.localScale.y;
         Vector3 target = new Vector3(Player.position.x, Player.position.y + aboveOffset, Player.position.z);
         transform.position = Vector3.MoveTowards(transform.position, target, 100);
     }

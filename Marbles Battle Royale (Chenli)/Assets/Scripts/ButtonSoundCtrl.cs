@@ -8,7 +8,6 @@ public class ButtonSoundCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         buttonSound = GameObject.Find("ButtonSound").GetComponent<AudioSource>();
         DontDestroyOnLoad(buttonSound);
     }

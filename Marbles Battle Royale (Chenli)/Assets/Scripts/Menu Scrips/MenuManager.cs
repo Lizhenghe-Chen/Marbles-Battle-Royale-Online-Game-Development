@@ -12,17 +12,19 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     public GameObject[] menuList;
 
-    private string playerType;
+    public string playerType;
 
     [SerializeField] GameObject TitledMenu;
     NetworkManager networkManager;
     public bool errorColorRed = false;
+    public AudioSource buttonSound;
     void Start()
     {
         networkManager = GetComponent<NetworkManager>();
         TitledMenu = networkManager.Start_Debug_Meun;
         userNameInput = networkManager.userNameInput;
         roomNameInput = networkManager.roomNameInput;
+        buttonSound = GameObject.Find("ButtonSound").GetComponent<AudioSource>();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -83,6 +85,8 @@ public class MenuManager : MonoBehaviour
         else if (errorColorRed) { PlayerSelection.color = Color.red; }
         else
         {
+            networkManager.keepSetting.playerName = userNameInput.text;
+            networkManager.keepSetting.playerType = playerType;
             PlayerSelection.color = Color.white;
             PlayerSelection.text = "Selected Player: " + playerType;
         }
@@ -102,6 +106,7 @@ public class MenuManager : MonoBehaviour
                     //Select stage
                     if (hit.transform && hit.transform.tag == "Player")
                     {
+                        buttonSound.Play();
                         errorColorRed = false;
                         playerType = hit.transform.gameObject.name;
                         GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType = playerType;

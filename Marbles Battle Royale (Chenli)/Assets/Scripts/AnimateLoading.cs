@@ -8,7 +8,7 @@ public class AnimateLoading : MonoBehaviour
 
     private void Start()
     {
-        aimator.SetTrigger("FadeIn");
+        //aimator.SetTrigger("FadeIn");
         // transform.enabled = true;
         //  this.gameObject.SetActive(true);
     }
@@ -17,13 +17,17 @@ public class AnimateLoading : MonoBehaviour
     {
 
     }
+
+    //https://docs.unity3d.com/ScriptReference/Animator.Play.html
     public void LeavingLevel()
     {
-        aimator.SetTrigger("FadeOut");
+        aimator.Play("FadeOut", 0, 0);
+        //aimator.SetTrigger("FadeOut");
         //  Debug.Log("Palyersssssssssssssssss");
     }
     public void LoadingLevel()
     {
-        aimator.SetTrigger("FadeIn");
+        aimator.Play("FadeIn", 0, 0);
+        // aimator.SetTrigger("FadeIn");
     }
 }
