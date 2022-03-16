@@ -29,7 +29,7 @@ MonoBehaviour:
     EnableLobbyStatistics: 1
     NetworkLogging: 3
   DevRegion: 
-  PunLogging: 1
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
@@ -57,6 +57,10 @@ MonoBehaviour:
   - IsDead
   - Refresh
   - GlobalRefresh
+  - LocalRefresh
+  - LRefresh
+  - SentHealthData
+  - SendHealthData
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

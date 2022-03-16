@@ -145,7 +145,7 @@ MonoBehaviour:
   Grounded: 0
   OnCollisionGrounded: 0
   jumpforce: 300
-  rushForce: 250
+  rushForce: 450
   jumpPanel: {fileID: 0}
   rushPanel: {fileID: 0}
   RushcoolingTime: 4
@@ -162,6 +162,9 @@ MonoBehaviour:
   Velocity: 0
   AngularVelocity: 0
   playHitSound: 0
+  roomManager: {fileID: 0}
+  keepSetting: {fileID: 0}
+  guidanceText: {fileID: 0}
   hitForce: 0
 --- !u!114 &342566022846912082
 MonoBehaviour:
@@ -253,8 +256,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 100
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 50
 --- !u!82 &-804578901456457265
 AudioSource:
   m_ObjectHideFlags: 0

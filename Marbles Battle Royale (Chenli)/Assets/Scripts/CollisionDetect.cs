@@ -49,7 +49,7 @@ public class CollisionDetect : MonoBehaviour
 
     JumpController jumpController;
     public Vector3 initialScale;
-    float maxScale = 4, minScale = 0.4f;
+    float maxScale = 4, minScale = 0.2f;
     void Awake()
     {
         UI = transform.Find("UI/Canvas").gameObject;
@@ -93,14 +93,7 @@ public class CollisionDetect : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (transform.localScale.magnitude > initialScale.magnitude)
-        {
-            transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
-        }
-       if (transform.localScale.magnitude < initialScale.magnitude)
-        {
-            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
-        }
+
     }
     void FixedUpdate()
     {
@@ -114,6 +107,17 @@ public class CollisionDetect : MonoBehaviour
         currentHealth = playerManager.currentHealth;
         // billboardvalue = playerManager.currentHealth / playerHealth;// this will display user's current health for all players, check Billboard.cs
         DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
+
+        if (transform.localScale.x > initialScale.x)
+        {
+            transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
+        }
+        if (transform.localScale.x < initialScale.x)
+        {
+            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+        }
+
+
 
         // healthBarImage.fillAmount = billboardvalue;
     }
@@ -151,16 +155,24 @@ public class CollisionDetect : MonoBehaviour
 
         // Debug.Log(target.photonView.Owner.NickName);
 
-        if (collision.rigidbody && collision.collider.tag == "Player")
+        if (collision.rigidbody && (collision.collider.tag == "Player" || collision.collider.tag == "Robot"))
         {
             hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
 
             jumpController.playHitSound = true;
             jumpController.hitForce = hitForce;
 
-            //&& collision.GetType() == typeof(SphereCollider)
-            other_Player_Name = collision.collider.GetComponent<PhotonView>().Owner.NickName;
-            other_Player_Velocity = collision.gameObject.GetComponent<CollisionDetect>().Player_Velocity;
+            if (collision.collider.tag == "Player")
+            {
+                other_Player_Name = collision.collider.GetComponent<PhotonView>().Owner.NickName;
+                other_Player_Velocity = collision.gameObject.GetComponent<CollisionDetect>().Player_Velocity;
+            }
+            else if (collision.collider.tag == "Robot")
+            {
+                other_Player_Name = collision.collider.name;
+                other_Player_Velocity = collision.gameObject.GetComponent<RobotController>().robotVelocity;
+            }
+
             hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
 
             var finalDamage = hitForce;
@@ -173,15 +185,15 @@ public class CollisionDetect : MonoBehaviour
                 Debug.Log(hitessage);
                 //currentHealth -= finalDamage;
                 //photonView.RPC("Damage", RpcTarget.All, finalDamage, hitessage);//send damage to all players， this function will change  'currentHealth' value
-                playerManager.TakeDamage(finalDamage, hitessage);
+                playerManager.TakeDamage(finalDamage, hitessage, other_Player_Name);
                 //  billboardvalue = currentHealth / playerHealth;// this will display user's current health
                 currentHealth = playerManager.currentHealth;
-                if (currentHealth <= 0)
+                if (currentHealth <= 0)//after take damage, judge dead
                 {
-                    playerManager.deadPosition = transform.position;//send death position to it's player Manager
-                    PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
+                  //  playerManager.deadPosition = transform.position;//send death position to it's player Manager
+                 //   PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
                     //Debug.Log("Player dead" + otherPlayerManager);
-                    otherPlayerManager.Kill(other_Player_Name);
+                   // playerManager.Kill(other_Player_Name);
                     // GameInfoManager.Refresh(other_Player_Name + " Killed " + player_Name);
                     //otherPlayerManager.killCount++;
                     //Invoke("Die", 0.2f);

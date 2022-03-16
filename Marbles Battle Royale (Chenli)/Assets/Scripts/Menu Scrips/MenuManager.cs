@@ -9,8 +9,9 @@ public class MenuManager : MonoBehaviour
     public TMP_Text PlayerSelection;
     [SerializeField] TMP_InputField userNameInput, roomNameInput;
 
-    [SerializeField]
+    [SerializeField] Animator aimator;
     public GameObject[] menuList;
+    public bool checkInfoOK = false;
 
     public string playerType;
 
@@ -38,6 +39,11 @@ public class MenuManager : MonoBehaviour
 
     public void OpenMenu(GameObject menuName)
     {
+        if (!checkInfoOK && menuName != TitledMenu)
+        {
+          //  Debug.LogError("checkInfoNOTOK");
+            aimator.Play("Warning", 0, 0);
+        }
         //Debug.Log("Go to " + menuName);
         foreach (GameObject menu in menuList)
         {
@@ -68,27 +74,34 @@ public class MenuManager : MonoBehaviour
         // }
     }
 
-    void CheckInfo()
+    public void CheckInfo()
     {
-        if (playerType == null)
+        if (string.IsNullOrEmpty(playerType))
         {
             PlayerSelection.color = Color.red;
             PlayerSelection.text = "Please select a player first!";
             OpenMenu(TitledMenu);
+            checkInfoOK = false;
         }
         else if (string.IsNullOrEmpty(userNameInput.text))
         {
             PlayerSelection.color = Color.red;
             PlayerSelection.text = "Name cannot NULL !";
             OpenMenu(TitledMenu);
+            checkInfoOK = false;
         }
-        else if (errorColorRed) { PlayerSelection.color = Color.red; }
+        else if (errorColorRed)
+        {
+            PlayerSelection.color = Color.red;
+            checkInfoOK = false;
+        }
         else
         {
             networkManager.keepSetting.playerName = userNameInput.text;
             networkManager.keepSetting.playerType = playerType;
             PlayerSelection.color = Color.white;
             PlayerSelection.text = "Selected Player: " + playerType;
+            checkInfoOK = true;
         }
     }
     void SelectPlayer()
@@ -109,7 +122,7 @@ public class MenuManager : MonoBehaviour
                         buttonSound.Play();
                         errorColorRed = false;
                         playerType = hit.transform.gameObject.name;
-                        GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType = playerType;
+                        //   GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType = playerType;
                         //   Debug.Log(hit.transform.gameObject.name);
                     }
                 }

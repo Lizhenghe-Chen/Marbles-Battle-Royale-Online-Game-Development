@@ -135,6 +135,37 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &4220207667557108474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7109923631522093665}
+  m_Layer: 0
+  m_Name: Eye
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7109923631522093665
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4220207667557108474}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8265380607961242576}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5234703398074981612
 GameObject:
   m_ObjectHideFlags: 0
@@ -5058,7 +5089,7 @@ GameObject:
   - component: {fileID: 3226363524475017750}
   m_Layer: 0
   m_Name: Robot
-  m_TagString: Untagged
+  m_TagString: Robot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5072,12 +5103,13 @@ Transform:
   m_GameObject: {fileID: 8265380607961242588}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8265380607961242580}
   - {fileID: 3709410660422666815}
   - {fileID: 5123010577604454838}
+  - {fileID: 7109923631522093665}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5174,7 +5206,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   rb: {fileID: 0}
+  Eye: {fileID: 7109923631522093665}
   healthBarImage: {fileID: 0}
+  loopMovement: 1
+  loopJump: 1
+  loopRush: 1
+  JumpCoolingTimeRange:
+    min: 3
+    max: 6
+  RushCoolingTimeRange:
+    min: 0
+    max: 8
+  RushCoolingTime: 3
+  RushTimer: 0
+  JumpCoolingTime: 3
+  JumpTimer: 0
+  jumpforce: 200
+  rushForce: 400
+  moveSpeed: 10
+  robotVelocity: {x: 0, y: 0, z: 0}
   robotCurrentHealth: 100
   billboardvalue: 0
   startPointPosition: {x: 0, y: 0, z: 0}

@@ -16,7 +16,7 @@ public class JumpController : MonoBehaviour
     [SerializeField] const float distanceBetweenGround = 0.5f;
 
     //[SerializeField] Transform Camera;
-    public float sliteForce = 2f;
+    public float sliteForce = 10f;
     public float extra_gravity = 10f;
 
     private MovementController movementController;
@@ -31,7 +31,7 @@ public class JumpController : MonoBehaviour
     [SerializeField] Image jumpPanel;
 
     [SerializeField] Image rushPanel;
-    [SerializeField] float RushcoolingTime = 4, Rushtime, JumpcoolingTime = 2, JumpTime, rushValue = 0.0f;//player jump cooling time
+    [SerializeField] float RushcoolingTime = 4, Rushtime, JumpcoolingTime = 2, JumpTime, fillValue = 0.0f;//player jump cooling time
     public Transform Camera;
 
     //===============================
@@ -40,6 +40,11 @@ public class JumpController : MonoBehaviour
     // [SerializeField] bool isPlaying;
     public float Velocity, AngularVelocity;
     public bool playHitSound = false;
+
+    //============For tranning Ground Fetch===================
+    [SerializeField] RoomManager roomManager;
+    [SerializeField] KeepSetting keepSetting;
+    public GuidanceText guidanceText;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -64,6 +69,12 @@ public class JumpController : MonoBehaviour
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
         rushPanel = transform.Find("UI/Canvas/RushLoading/rushPanel").GetComponent<Image>();
         jumpPanel = transform.Find("UI/Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
+
+
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
+        if (roomManager.isTrainingGround && keepSetting.showTutorial) { guidanceText = GameObject.Find("GameInfoCanvas/Tutorial/GuidanceText").GetComponent<GuidanceText>(); }
+
         // Debug.Log(GetComponent<SphereCollider>().radius);
     }
 
@@ -113,22 +124,15 @@ public class JumpController : MonoBehaviour
         if (onTheGround() == false)
         {
             //  Debug.Log("sliteForce");
-            var force =
-                (Input.GetKey(KeyCode.LeftShift) ? sliteForce * 2 : sliteForce);
-            rg
-                .AddForce(movementController.Camera.transform.forward *
-                force *
-                movementController.verticalInput);
-            rg
-                .AddForce(movementController.Camera.transform.right *
-                force *
-                movementController.horizontalInput);
+            var force = (Input.GetKey(KeyCode.LeftShift) ? sliteForce * 2 : sliteForce);
+            rg.AddForce(movementController.Camera.transform.forward * force * movementController.verticalInput);
+            rg.AddForce(movementController.Camera.transform.right * force * movementController.horizontalInput);
         }
     }
 
 
 
-    bool onTheGround()
+    public bool onTheGround()//a combination of tuch and raycast
     {
         Ray checkGround = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
@@ -153,8 +157,8 @@ public class JumpController : MonoBehaviour
     void JumpMethod()
     {
         JumpTime += Time.deltaTime;
-        rushValue = JumpTime / JumpcoolingTime;
-        jumpPanel.fillAmount = rushValue;
+        fillValue = JumpTime / JumpcoolingTime;
+        jumpPanel.fillAmount = fillValue;
         if (JumpTime >= JumpcoolingTime)
         {
             JumpTime = JumpcoolingTime;
@@ -171,13 +175,18 @@ public class JumpController : MonoBehaviour
             audioSource.Play();
             rg.AddForce(Vector3.up * jumpforce);
             JumpTime = 0;
+
+            if (roomManager.isTrainingGround && keepSetting.showTutorial)
+            {
+                if (guidanceText.Goal == 3) { guidanceText.jumpRushMission += 1; }
+            }
         }
     }
     void RushMethod()
     {
         Rushtime += Time.deltaTime;
-        rushValue = Rushtime / RushcoolingTime;
-        rushPanel.fillAmount = rushValue;
+        fillValue = Rushtime / RushcoolingTime;
+        rushPanel.fillAmount = fillValue;
         if (Rushtime >= RushcoolingTime)
         {
             Rushtime = RushcoolingTime;
@@ -190,7 +199,11 @@ public class JumpController : MonoBehaviour
         {
             rg.AddForce(Camera.transform.forward * rushForce);
             Rushtime = 0;
-            //Debug.Log("Rush!");
+
+            if (roomManager.isTrainingGround && keepSetting.showTutorial)
+            {
+                if (guidanceText.Goal == 3) { guidanceText.jumpRushMission += 1; }
+            }
         }
     }
     public float hitForce;

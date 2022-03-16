@@ -7,6 +7,7 @@ TagManager:
   - elevator
   - PlayerManager
   - Terrain
+  - Robot
   layers:
   - Default
   - TransparentFX

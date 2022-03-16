@@ -673,7 +673,7 @@ Transform:
   m_GameObject: {fileID: 4180747359502374293}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3741975796837330635}
@@ -730,14 +730,14 @@ MonoBehaviour:
   Grounded: 0
   OnCollisionGrounded: 0
   jumpforce: 250
-  rushForce: 200
+  rushForce: 500
   jumpPanel: {fileID: 0}
   rushPanel: {fileID: 0}
   RushcoolingTime: 4
   Rushtime: 0
   JumpcoolingTime: 2
   JumpTime: 0
-  rushValue: 0
+  fillValue: 0
   Camera: {fileID: 0}
   audioSource: {fileID: 0}
   footStep: {fileID: 8300000, guid: cb81b390d2c672147bc97ac180da37cb, type: 3}
@@ -747,6 +747,9 @@ MonoBehaviour:
   Velocity: 0
   AngularVelocity: 0
   playHitSound: 0
+  roomManager: {fileID: 0}
+  keepSetting: {fileID: 0}
+  guidanceText: {fileID: 0}
   hitForce: 0
 --- !u!114 &5270639299678529345
 MonoBehaviour:
@@ -841,8 +844,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 100
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 50
 --- !u!114 &-2215456712388616245
 MonoBehaviour:
   m_ObjectHideFlags: 0

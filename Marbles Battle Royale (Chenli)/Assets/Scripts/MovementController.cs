@@ -37,6 +37,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] Vector3 damageareaPosition, playerPosition;
     [SerializeField] float damagearea_playerDistance;
     public GameObject takeDamageMask, getHealthMask;
+
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -68,10 +71,10 @@ public class MovementController : MonoBehaviour
         {
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up
         }
+
+
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
-
         LeftLifeText = transform.Find("UI/Canvas/LeftLifeText").GetComponent<TMP_Text>();
-
         damagearea = GameObject.Find("DamageArea");
         takeDamageMask = transform.Find("UI/Canvas/TakeDamageMask").gameObject;
         getHealthMask = transform.Find("UI/Canvas/GetHealthMask").gameObject;
@@ -166,9 +169,22 @@ public class MovementController : MonoBehaviour
         if (damagearea_playerDistance < 0)
         {
             takeDamageMask.SetActive(true);
-            playerManager.Damage(0.06f, true);
+            playerManager.Damage(PoisoningEffectMultiplier(), true, string.Empty);
+            // Debug.Log(PoisoningEffectMultiplier());
         }
         else { takeDamageMask.SetActive(false); }
+    }
+    public float PoisoningEffectMultiplier()
+    {
+        for (int i = playerManager.startPoints.Count - 1; i >= 0; i--)
+        {
+            if (damageareaPosition.x >= playerManager.startPoints[i].position.x)
+            {
+                return 0.06f * (i + 1);
+            }
+        }
+        return 0.06f;
+
     }
     void HealthEffect()
     {

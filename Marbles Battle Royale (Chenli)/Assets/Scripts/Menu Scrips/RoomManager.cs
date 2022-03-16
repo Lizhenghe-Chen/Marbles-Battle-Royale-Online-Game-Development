@@ -10,17 +10,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public static RoomManager Instance;
     //  public AudioSource backGroundMusic;
 
-    public string playerType;
-    public bool isTrainingGround = false;
+    //public string playerType;
+    public bool isTrainingGround = false, showTutorial = true;
+    public Toggle showTutorialToggle;
+
     public bool playBackGroundMusic = true;
     public Toggle playBackGroundMusictoggle;
     public Slider backGroundMusicVolumeSlider;
     public SoundController soundController;
+    public KeepSetting keepSetting;
 
     private void Awake()
     {
-        //https://learn.unity.com/tutorial/implement-data-persistence-between-scenes#60b7425dedbc2a54f13d5f52
-       
+        // https://learn.unity.com/tutorial/implement-data-persistence-between-scenes#60b74233edbc2a54f13d5f4a
         //check if there is another RoomManager exists
         if (Instance != null)
         {
@@ -29,6 +31,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         Instance = this;
         DontDestroyOnLoad(gameObject); //if there is only one,
+
+        keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
+        showTutorialToggle.isOn = keepSetting.showTutorial;
     }
 
 
@@ -64,5 +69,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
         // SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
         PhotonNetwork.LoadLevel(0);
         Debug.Log("Leaved Room");
+    }
+    public void SetTutorial()
+    {
+        showTutorial = showTutorialToggle.isOn;
+        keepSetting.showTutorial = showTutorial;
     }
 }

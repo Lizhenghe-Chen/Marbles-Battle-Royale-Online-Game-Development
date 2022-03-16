@@ -10,7 +10,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     PhotonView pV;
     [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")]
-    public int maxRoomPlayers = 2;
+    public int maxRoomPlayers = 10;
     [SerializeField] bool IsInDebugMode = false;
     public static NetworkManager Instance;
 
@@ -99,6 +99,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             userNameInput.text = keepSetting.playerName;
             MenuManager.playerType = keepSetting.playerType;
+            roomManager.showTutorialToggle.isOn = keepSetting.showTutorial;
         }
     }
 
@@ -210,11 +211,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 startGameButton.SetActive(true); //only host clients can start game
-                startGameNotice.text = "You are the Master, you can Start the Game!";
+                startGameNotice.text = "You are the Host, you can Start the Game!\n Notice that once the game start, no players can join or rejoin this room";
             }
             else
             {
-                startGameButton.SetActive(false); startGameNotice.text = "waiting the Master Start the Game...";
+                startGameButton.SetActive(false); startGameNotice.text = "waiting the Host Start the Game...\n Notice that once the game start, no players can join or rejoin this room";
             }
         }
 
@@ -285,7 +286,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (roomManager.isTrainingGround)
         {
             PhotonNetwork.CurrentRoom.IsVisible = false;
-            PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Master to current");
+            PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Host to current");
         }
         else { PhotonNetwork.CurrentRoom.IsVisible = false; }
 

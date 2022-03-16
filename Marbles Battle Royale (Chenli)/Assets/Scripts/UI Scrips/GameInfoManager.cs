@@ -32,11 +32,23 @@ public class GameInfoManager : MonoBehaviour
     }
 
     void Remove() { Destroy(container.GetChild(0).gameObject); }
-    public void Refresh(string message) { photonView.RPC("GlobalRefresh", RpcTarget.All, message); }
+    public void Refresh(string message)//this will send messages to all players in a room
+    {
+        Debug.Log("RPC send " + message);
+        photonView.RPC("GlobalRefresh", RpcTarget.All, message);
+    }
+    // public void LocalRefresh(string message)//this will send messages to all players in a room
+    // {
+    //     //   GlobalRefresh(message);
+    //     photonView.RPC("LRefresh", RpcTarget.All, message);
+    // }
     [PunRPC]
     public void GlobalRefresh(string message) { AddGameInfoItem(message); }
+
+    public void LRefresh(string message) { if (photonView.IsMine) { AddGameInfoItem(message); } }
     void AddGameInfoItem(string message)
     {
+        //  if (photonView.Owner.IsMasterClient) { return; }
         GameInfoItem item = Instantiate(gameInfoPrefabs, container).GetComponent<GameInfoItem>();
         item.Initialize(message);
         // scoreBoardItems[playerName] = item;

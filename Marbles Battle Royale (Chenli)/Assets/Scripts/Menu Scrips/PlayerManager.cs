@@ -22,11 +22,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     PhotonView pV;
     [Header("Below are each players's start points, must in order")]
     [SerializeField] int startPointsSize = 3;
-    [SerializeField] List<Transform> startPoints;//must in order!
+    public List<Transform> startPoints;//must in order!
 
     public Vector3 deadPosition;
 
     [SerializeField] RoomManager RoomManager;
+    [SerializeField] KeepSetting keepSetting;
     [SerializeField] GameInfoManager GameInfoManager;
     [SerializeField] string player_Name;
     [SerializeField] Image FadeIn_OutImage;
@@ -57,41 +58,52 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [SerializeField] string currentWinnerName;
     public float gameOverBackMenuTimer = 5;
 
+    [SerializeField] GuidanceText guidanceText;
+
     void Awake()
     {
         pV = GetComponent<PhotonView>();
         RoomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
+        keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
         player_Name = pV.Owner.NickName;
     }
 
     void Start()
     {
-        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount);
         GameOverCanvas = GameObject.Find("GameOverCanvas").GetComponent<Canvas>();
         GameOverText = GameOverCanvas.transform.Find("GameOverText").GetComponent<TMP_Text>();
+
         GameOverCanvas.enabled = false;
         currentHealth = playerHealth;
         GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
 
-        if (pV.IsMine) //is the photon View is hadle on the local player?
+
+        if (!pV.IsMine) //is the photon View is hadle on the local player?
+        { return; }
+        //make sure all players have this playerManager data
+        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount);
+
+        PlayerSelection = keepSetting.playerType;
+        // Debug.Log(startPoints.Length);
+        for (int i = 0; i <= startPointsSize; i++)
         {
-            //make sure all players have this playerManager data
-
-            PlayerSelection = RoomManager.playerType;
-            // Debug.Log(startPoints.Length);
-            for (int i = 0; i <= startPointsSize; i++)
-            {
-                string path = "StartPoints/startPoint" + i;
-                startPoints.Add(GameObject.Find(path).transform);
-            }
-            deadPosition = startPoints[0].position;
-
-            CreateController(true);
-            FadeIn_OutImage = controller.transform.Find("UI/Canvas/Image").GetComponent<Image>();
+            string path = "StartPoints/startPoint" + i;
+            startPoints.Add(GameObject.Find(path).transform);
         }
+        deadPosition = startPoints[0].position;
 
+        CreateController();
+        FadeIn_OutImage = controller.transform.Find("UI/Canvas/Image").GetComponent<Image>();
+
+        //Let toturial guidance know which is local player
+        if (RoomManager.isTrainingGround && keepSetting.showTutorial)
+        {
+            guidanceText = GameObject.Find("GameInfoCanvas/Tutorial/GuidanceText").GetComponent<GuidanceText>();
+            guidanceText.LocalPlayer = controller;
+            // guidanceText.startPoint = startPoints[0].transform.position;
+        }
         billboardvalue = currentHealth / playerHealth;
-        // pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);
+        pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);
     }
 
     void Update()
@@ -133,16 +145,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
         return startPoints[0].position;
     }
-    void CreateController(bool isStart)
+    void CreateController()
     {
         var position = Vector3.zero;
         // Instantiate player controller
-        if (isStart)
-        {
-            if (RoomManager.isTrainingGround) position = startPoints[0].position;//let player brith in same place when start in traning ground
-            else
-                position = new Vector3(startPoints[0].position.x + Random.Range(-10.0f, 10.0f), 20f, startPoints[0].position.z + Random.Range(-100.0f, 100.0f));
-        }
+
+        if (RoomManager.isTrainingGround) position = startPoints[0].position;//let player brith in same place when start in traning ground
+        else
+            position = new Vector3(startPoints[0].position.x + Random.Range(-10.0f, 10.0f), 20f, startPoints[0].position.z + Random.Range(-100.0f, 100.0f));
+
         // else
         // {
         //     var temp = RebirthPosition(deadPosition);
@@ -168,16 +179,18 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //  Debug.Log(pV.ViewID);
     }
 
-    public void TakeDamage(float finalDamage, string message)
+    public void TakeDamage(float finalDamage, string message, string other_Player_Name)
     {
-        Damage(finalDamage, false);
+        Damage(finalDamage, false, other_Player_Name);
         //pV.RPC("Damage", RpcTarget.All, finalDamage);
         Debug.Log("**************** " + message + " ****************");
     }
-    public void Damage(float finalDamage, bool isDamagedByDamageZone)
+    public void Damage(float finalDamage, bool isDamagedByDamageZone, string other_Player_Name)
     {
-        // currentHealth -= finalDamage;
-        pV.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
+        currentHealth -= finalDamage;
+        //pV.RPC("DecreaseHealth", RpcTarget.All, finalDamage);
+        pV.RPC("SendHealthData", RpcTarget.All, currentHealth);
+
         if (currentHealth <= 0)
         {// to avoid player dead in zone and killd by other message show in same time:
             if (isDamagedByDamageZone && avoidloop == 0)
@@ -187,9 +200,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 // Invoke("Die", 0.5f);
                 return;
             }
-            else Die();
+            else
+            {
+                deadPosition = controller.transform.position;
+                Kill(other_Player_Name);
+                Die();
+            }
         }
-
     }
     public void Die()
     {
@@ -241,28 +258,28 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public void Health(float addHealth)
     {
-        //  currentHealth += addHealth;
-        pV.RPC("AddHealth", RpcTarget.All, addHealth);
+        currentHealth += addHealth;
+        //pV.RPC("AddHealth", RpcTarget.All, addHealth);
+        pV.RPC("SendHealthData", RpcTarget.All, currentHealth);
     }
     void Death()
     {
         // deathCount++;
         pV.RPC("OnDeath", RpcTarget.All);
     }
+    /*DecreaseHealth; AddHealth may not use since SendHealthData done*/
     [PunRPC]
     void DecreaseHealth(float finalDamage)
     {
         currentHealth -= finalDamage;
-
-
     }
     [PunRPC]
     void AddHealth(float addHealth)
     {
-        if (currentHealth >= playerHealth) { return; }//avoid health exceeed max health
+        if (currentHealth > playerHealth) { return; }//avoid health exceeed max health
         currentHealth += addHealth;
-
     }
+
     [PunRPC]
     void OnDeath()
     {
@@ -287,6 +304,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         deathCount = _deathCount;
         killCount = _killCount;
 
+    }
+    [PunRPC]
+    void SendHealthData(float _currentHealth)
+    {
+        currentHealth = _currentHealth;
     }
 
     public void isMyPhotonView(PhotonView pV)
@@ -341,7 +363,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         Destroy(GameObject.Find("RoomManager").gameObject);
-
+        Destroy(controller);
         // PhotonNetwork.LeaveRoom();
         // GameInfoManager.Refresh(player_Name + " Left the game...");
         PhotonNetwork.LeaveRoom();
@@ -353,8 +375,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnPlayerLeftRoom(Player newPlayer) // when current player leaves current room successfully
     {
-        if (pV.IsMine) { return; }
-        GameInfoManager.Refresh(player_Name + " Left the game...");
+        if (!photonView.IsMine) { return; }
+        GameInfoManager.GlobalRefresh(newPlayer.NickName + " Left the game...");
     }
     // public override void OnJoinedRoom()
     // {
@@ -362,8 +384,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // }
     public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
     {
+
         pV.RPC("SentData", RpcTarget.All, currentHealth, billboardvalue, killCount, deathCount, isDead);//let new player get exist players' information
-        GameInfoManager.Refresh(newPlayer.NickName + " Joined the game...");
+        if (!photonView.IsMine) { return; }
+
+        GameInfoManager.GlobalRefresh(newPlayer.NickName + " Joined the game...");
         // Debug.Log(newPlayer.NickName);
     }
     // public void SetParticle(bool particleSystemJudge)
