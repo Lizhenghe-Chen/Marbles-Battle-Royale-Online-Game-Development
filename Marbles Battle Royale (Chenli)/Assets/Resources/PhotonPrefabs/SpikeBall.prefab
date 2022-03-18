@@ -152,16 +152,19 @@ MonoBehaviour:
   Rushtime: 0
   JumpcoolingTime: 2
   JumpTime: 0
-  rushValue: 0
+  fillValue: 0
   Camera: {fileID: 0}
   audioSource: {fileID: 0}
   footStep: {fileID: 8300000, guid: cb81b390d2c672147bc97ac180da37cb, type: 3}
   hitSound: {fileID: 8300000, guid: 09b7c347ff35ca14cac3e46d13f513f8, type: 3}
   brakeSound: {fileID: 8300000, guid: ae1479955de37a042828a71ac79de251, type: 3}
   jumpSound: {fileID: 8300000, guid: 4daf28837e2ce7c43b0030c633418f33, type: 3}
+  rushSound: {fileID: 8300000, guid: cfdb8473f73cacd48a77fd86013ae29a, type: 3}
   Velocity: 0
   AngularVelocity: 0
   playHitSound: 0
+  playRushSound: 0
+  playJumpSound: 0
   roomManager: {fileID: 0}
   keepSetting: {fileID: 0}
   guidanceText: {fileID: 0}
@@ -178,9 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7fc4bafdeb8a440a829ce565150984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UI: {fileID: 0}
   GameInfoManager: {fileID: 0}
-  healthBarImage: {fileID: 0}
   deathAltitude: 0
   rb: {fileID: 0}
   player_Name: 
@@ -189,6 +190,8 @@ MonoBehaviour:
   Player_Velocity: {x: 0, y: 0, z: 0}
   hitForce: 0
   initialScale: {x: 0, y: 0, z: 0}
+  maxScale: 4
+  minScale: 0.2
 --- !u!54 &342566022846912052
 Rigidbody:
   m_ObjectHideFlags: 0

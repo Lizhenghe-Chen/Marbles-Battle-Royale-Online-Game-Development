@@ -78,6 +78,7 @@ MonoBehaviour:
   FadeIn_OutImage: {fileID: 0}
   killCount: 0
   deathCount: 0
+  playerHealth: 100
   damageTimer: 1
   currentHealth: 0
   isDead: 0

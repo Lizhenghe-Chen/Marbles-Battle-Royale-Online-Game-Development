@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-public class RobotController : MonoBehaviour
+using Photon.Pun;
+using Photon.Realtime;//will use Player Type
+public class RobotController : MonoBehaviourPunCallbacks
 {
     [SerializeField] Transform Player;
+    PhotonView pV;
     [SerializeField] Rigidbody rb; // player
     [SerializeField] Transform Eye;
     [SerializeField] Image healthBarImage;
@@ -13,7 +16,7 @@ public class RobotController : MonoBehaviour
     private coolingTimeRange JumpCoolingTimeRange, RushCoolingTimeRange;
     [SerializeField]
     float RushCoolingTime = 3, RushTimer, JumpCoolingTime = 3, JumpTimer,
-    jumpforce = 200, rushForce = 400, attackRange=50;//player jump cooling time
+    jumpforce = 200, rushForce = 400, attackRange = 50;//player jump cooling time
 
     //Create a custom struct and apply [Serializable] attribute to it
     [Serializable]
@@ -30,54 +33,110 @@ public class RobotController : MonoBehaviour
     public Vector3 startPointPosition;
     public GameObject Enemy;
     public bool hasTarget;
+
+    public Vector3 initialScale;
+    public float maxScale = 4, minScale = 0.2f;
+    void Awake() { pV = GetComponent<PhotonView>(); }
     void Start()
     {
+
+        initialScale = transform.localScale;
         rb = GetComponent<Rigidbody>();
         healthBarImage = this.transform.Find("BillBoard/showHealthbarBackground/Healthbar").GetComponent<Image>();
         startPointPosition = this.transform.position;
         Player = this.transform;
-        robotCurrentHealth = robotHealth;
-        billboardvalue = robotCurrentHealth / robotHealth;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            robotCurrentHealth = robotHealth;
+            //billboardvalue = robotCurrentHealth / robotHealth;
+        }
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        billboardvalue = robotCurrentHealth / robotHealth;
-        healthBarImage.fillAmount = billboardvalue;
 
-        belowDeathAltitudeOrDead();
-        if (loopRush || loopMovement)
+
+        if (PhotonNetwork.IsMasterClient)
         {
-            CheckEnemy();
-            if (hasTarget) { Eye.transform.LookAt(Enemy.transform); } else { return; }
+            // pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
+
+
+            belowDeathAltitudeOrDead();
+            if (loopRush || loopMovement)
+            {
+                CheckEnemy();
+                if (hasTarget) { Eye.transform.LookAt(Enemy.transform); } else { return; }
+            }
+
+            LoopJump();
+            LoopRush();
+            LoopMovement();
         }
 
-        LoopJump();
-        LoopRush();
-        LoopMovement();
+        // Billboard.DisplayHealthBar(healthBarImage, billboardvalue);
+        billboardvalue = robotCurrentHealth / robotHealth;
+        healthBarImage.fillAmount = billboardvalue;
+        healthBarImage.color = Billboard.JudgeColor(billboardvalue);
     }
-    void FixedUpdate() { robotVelocity = rb.velocity; }
+    void FixedUpdate()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        robotVelocity = rb.velocity;
+
+        if (transform.localScale.x > initialScale.x)
+        {
+            transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
+        }
+        if (transform.localScale.x < initialScale.x)
+        {
+            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+        }
+
+    }
     private void OnCollisionEnter(Collision other)
     {
-        if (other.rigidbody && other.transform.tag == "Player" || other.transform.tag == "Robot")
+        if (other.rigidbody && other.transform.tag == "Player")
         {
             CollisionDetect collisionDetect = other.gameObject.GetComponent<CollisionDetect>();
-            var Player_Velocity = rb.velocity;
-            var other_Player_Velocity = collisionDetect.Player_Velocity;
-            var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-            var finalDamage = collisionDetect.hitForce;
+            Damage(other, collisionDetect.Player_Velocity);
+
+        }
+        if (other.transform.tag == "Robot")
+        {
+            RobotController robotController = other.gameObject.GetComponent<RobotController>();
+
+            Damage(other, robotController.robotVelocity);
+        }
+    }
+    void Damage(Collision other, Vector3 other_Player_Velocity)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        { return; }
+        var Player_Velocity = rb.velocity;
+
+        // var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
+        if (CollisionDetect.judgeDamage(Player_Velocity, other_Player_Velocity))
+        {
+            var finalDamage = other.relativeVelocity.magnitude * 1.5f * other.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
             robotCurrentHealth -= finalDamage;
+            pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
     void belowDeathAltitudeOrDead()
     {
-        if (transform.localPosition.y < -20 || robotCurrentHealth <= 0)
+        if (transform.position.y < -20 || robotCurrentHealth <= 0)
         {
             transform.position = startPointPosition;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             robotCurrentHealth = robotHealth;
+            pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
 
@@ -104,7 +163,7 @@ public class RobotController : MonoBehaviour
             if (RushTimer >= RushCoolingTime)
             {
                 RushTimer = RushCoolingTime;
-                rb.AddForce(Eye.transform.forward * jumpforce);
+                rb.AddForce(Eye.transform.forward * rushForce);
                 RushCoolingTime = UnityEngine.Random.Range(RushCoolingTimeRange.min, RushCoolingTimeRange.max);
                 RushTimer = 0;
             }
@@ -130,7 +189,7 @@ public class RobotController : MonoBehaviour
         GameObject[] gos;
         gos = GameObject.FindGameObjectsWithTag("Player");
         GameObject closest = null;
-        float distance = attackRange;
+        var distance = attackRange;
         Vector3 position = transform.position;
         foreach (GameObject go in gos)
         {
@@ -144,5 +203,20 @@ public class RobotController : MonoBehaviour
         }
         // if (Vector3.Distance(transform.position, closest.transform.position) < distance) { }
         return closest;
+    }
+    [PunRPC]
+    void SendHealthData(float _currentHealth, float _billboardvalue)
+    {
+
+        robotCurrentHealth = _currentHealth;
+        billboardvalue = _billboardvalue;
+
+
+    }
+    public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
+    {
+        if (PhotonNetwork.IsMasterClient)
+        { pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
+
     }
 }

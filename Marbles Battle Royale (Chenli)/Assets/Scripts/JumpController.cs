@@ -36,10 +36,10 @@ public class JumpController : MonoBehaviour
 
     //===============================
     public AudioSource audioSource;
-    public AudioClip footStep, hitSound, brakeSound, jumpSound;
+    public AudioClip footStep, hitSound, brakeSound, jumpSound, rushSound;
     // [SerializeField] bool isPlaying;
     public float Velocity, AngularVelocity;
-    public bool playHitSound = false;
+    public bool playHitSound = false, playRushSound = false, playJumpSound = false;
 
     //============For tranning Ground Fetch===================
     [SerializeField] RoomManager roomManager;
@@ -94,7 +94,7 @@ public class JumpController : MonoBehaviour
 
     void Update()
     {
-        PlayFootstepSounds();//all players in the game should do this, so above the photonView.IsMine
+        PlaySounds();//all players in the game should do this, so above the photonView.IsMine
 
         //   isPlaying = audioSource.isPlaying;
 
@@ -169,10 +169,8 @@ public class JumpController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
         {
-            audioSource.clip = jumpSound;
-            audioSource.pitch = 2f;
-            audioSource.volume = 1f;
-            audioSource.Play();
+            photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
+
             rg.AddForce(Vector3.up * jumpforce);
             JumpTime = 0;
 
@@ -197,6 +195,8 @@ public class JumpController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
         {
+            photonView.RPC("globalSoundTrigger", RpcTarget.All, "rush");
+
             rg.AddForce(Camera.transform.forward * rushForce);
             Rushtime = 0;
 
@@ -207,7 +207,7 @@ public class JumpController : MonoBehaviour
         }
     }
     public float hitForce;
-    public void PlayFootstepSounds()
+    public void PlaySounds()
     {
 
         Velocity = rg.velocity.magnitude;
@@ -217,19 +217,19 @@ public class JumpController : MonoBehaviour
 
         if (playHitSound)
         {
-            Debug.Log("HitSound");
+            //Debug.Log("HitSound");
             audioSource.clip = hitSound;
-
             audioSource.pitch = 1f;
-            if (hitForce < 10) { audioSource.volume = 0.2f; } else { audioSource.volume = 1f; }
-
+            if (hitForce < 10) { audioSource.volume = 0.5f; } else { audioSource.volume = 1f; }
             audioSource.Play();
 
             playHitSound = false;
         }
+        if (playJumpSound) { PlayClip(jumpSound, 2f, 1f); playJumpSound = false; }
+        if (playRushSound) { PlayClip(rushSound, 2f, 1f); playRushSound = false; }
         if (!audioSource.isPlaying)
         {
-            if (onTheGround() && AngularVelocity > 1)
+            if (onTheGround() && AngularVelocity > 1)//below play footstep
             {
                 // Debug.Log("Walking");
                 audioSource.clip = footStep;
@@ -259,10 +259,7 @@ public class JumpController : MonoBehaviour
             }
             if (onTheGround() && Velocity > 5 && (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1)))
             {
-                audioSource.clip = brakeSound;
-                audioSource.volume = 0.3f;
-                audioSource.pitch = 3f;
-                audioSource.Play();
+                PlayClip(brakeSound, 3f, 0.5f);
             }
 
             // else if (onTheGround() && Velocity > 3 && AngularVelocity < 0.1)
@@ -284,6 +281,23 @@ public class JumpController : MonoBehaviour
         //         audioSource.Pause();
         //     }
         // }
+    }
+
+    public void PlayClip(AudioClip audioClip, float pitch, float volume)
+    {
+        audioSource.clip = audioClip;
+        audioSource.pitch = pitch;
+        audioSource.volume = volume;
+        audioSource.Play();
+    }
+    [PunRPC]
+    public void globalSoundTrigger(string type)
+    {
+        if (type == "jump") { playJumpSound = true; }
+        if (type == "rush") { playRushSound = true; }
+        // Debug.Log("globalSoundTrigger : " + trigger);
+        // playJumpSound = true;
+        // Debug.Log("globalSoundTrigger set " + trigger);
     }
     // public void ParticleSystemJudge()
     // {

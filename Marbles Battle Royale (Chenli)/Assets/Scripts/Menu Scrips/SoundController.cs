@@ -19,6 +19,7 @@ public class SoundController : MonoBehaviour
     // [SerializeField] RoomManager roomManager;
     [SerializeField] KeepSetting keepSetting;
     public bool playBackGroundMusic;
+    public bool isSpectator = false; //if player is in spectator mode
     // Start is called before the first frame update
     private void Awake()
     {
@@ -44,14 +45,18 @@ public class SoundController : MonoBehaviour
         }
         if (SceneManager.GetActiveScene().buildIndex == 1)//when in game, Sound Controller is in each player's UI object
         {
-             photonView = transform.parent.parent.GetComponent<PhotonView>();
+            photonView = transform.parent.parent.GetComponent<PhotonView>();
             if (!photonView.IsMine) { Destroy(gameObject); return; }// other player should not hear local players' background music
             Canvas = GameObject.Find("Canvas");
-            playBackGroundMusictoggle = Canvas.transform.Find("InGameMenu/playBackGroundMusic").GetComponent<Toggle>();
-            backGroundMusicVolumeSlider = Canvas.transform.Find("InGameMenu/BackGroundMusicVolume").GetComponent<Slider>();
+            if (!isSpectator)
+            {
+                playBackGroundMusictoggle = Canvas.transform.Find("InGameMenu/playBackGroundMusic").GetComponent<Toggle>();
+                backGroundMusicVolumeSlider = Canvas.transform.Find("InGameMenu/BackGroundMusicVolume").GetComponent<Slider>();
 
-            playBackGroundMusictoggle.isOn = keepSetting.playBackGroundMusic;
-            backGroundMusicVolumeSlider.value = keepSetting.backGroundMusicVolume;
+                playBackGroundMusictoggle.isOn = keepSetting.playBackGroundMusic;
+                backGroundMusicVolumeSlider.value = keepSetting.backGroundMusicVolume;
+            }
+
 
 
         }

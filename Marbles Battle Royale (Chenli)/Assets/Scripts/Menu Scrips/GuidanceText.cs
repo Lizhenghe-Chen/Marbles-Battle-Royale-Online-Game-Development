@@ -7,8 +7,10 @@ public class GuidanceText : MonoBehaviour
 
     [SerializeField] RoomManager RoomManager;
     [SerializeField] KeepSetting keepSetting;
+    //Below are set by other scripts
     public GameObject LocalPlayer;
-    public Transform startPointTransform;
+    public Rigidbody LocalPlayerRg;
+    public PlayerManager localPlayerManager;
     public Transform[] guidancePoints;
     [Tooltip("guidanceStepIndex means current step, Goal just like a finnished level")]
     public int guidanceStepIndex = 0, Goal = 0;
@@ -44,6 +46,7 @@ public class GuidanceText : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            if (Goal >= 9) { return; } //player cannnot return
             Guidance(-1);
         }
 
@@ -57,6 +60,11 @@ public class GuidanceText : MonoBehaviour
         {
             if (jumpRushMission >= 4) { Goal = 4; guidanceStepIndex = 4; Guidance(0); }
         }
+        // if (Goal < 7)
+        // {
+        //     localPlayerManager.deathCount = 0;//constraint player death until..
+        //     localPlayerManager.leftLifeTextContent = "Rest Life: " + (localPlayerManager.maxLife - localPlayerManager.deathCount);
+        // }
 
 
     }
@@ -89,7 +97,7 @@ public class GuidanceText : MonoBehaviour
                 break;
             case (2)://Movement Mission Set
                 LocalPlayer.transform.position = guidancePoints[0].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 moventMission = 0;
                 ShowText(2, false, true);
@@ -99,52 +107,53 @@ public class GuidanceText : MonoBehaviour
                 jumpRushMission = 0;
                 if (Goal != 3) { guidanceStepIndex = Goal; break; }
                 LocalPlayer.transform.position = guidancePoints[1].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
                 ShowText(3, false, true);
                 break;
             case (4):// Jump Rush Mission Completed and introduce jumppad and platform
 
                 if (Goal != 4) { guidanceStepIndex = Goal; break; }
                 LocalPlayer.transform.position = guidancePoints[1].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 ShowText(4, false, false);
                 break;
             case (5)://introduce MagicCube
                 LocalPlayer.transform.position = guidancePoints[2].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 ShowText(5, false, false);
                 break;
             case (6)://introduce transfer cube
                 LocalPlayer.transform.position = guidancePoints[3].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 ShowText(6, false, false);
                 break;
             case (7)://introduce health
                 LocalPlayer.transform.position = guidancePoints[4].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 ShowText(7, false, false);
                 break;
             case (8):
                 LocalPlayer.transform.position = guidancePoints[5].position;
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                LocalPlayerRg.velocity = Vector3.zero;
 
                 ShowText(8, false, false);
                 break;
-            case (9):
-                LocalPlayer.GetComponent<MovementController>().playerManager.deathCount = 99;
-                LocalPlayer.GetComponent<MovementController>().playerManager.Die();
-                LocalPlayer.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            case (9)://let player dead
+                var playerManager = LocalPlayer.GetComponent<MovementController>().playerManager;
+                playerManager.deathCount = playerManager.maxLife - 1;
+                playerManager.Die();
+                LocalPlayerRg.velocity = Vector3.zero;
 
-                ShowText(9, false, false);
-                ContinueMessage.text = "Exit Guidance Board";
+                ShowText(9, true, false);
+                ContinueMessage.text = "**Exit Guidance Board**";
                 break;
             case (10):
                 ShowText(10, true, true);
-                Invoke("HideToturial", 10f);
+                Invoke("HideToturial", 15f);
                 break;
 
 
@@ -163,7 +172,7 @@ public class GuidanceText : MonoBehaviour
 
         Goal = messageIndex;
 
-        ContinueMessage.text = (hideQ) ? string.Empty : Q_Return;
+        ReturnMessage.text = (hideQ) ? string.Empty : Q_Return;
         ContinueMessage.text = (hideE) ? string.Empty : E_Continue;
     }
     void HideToturial()

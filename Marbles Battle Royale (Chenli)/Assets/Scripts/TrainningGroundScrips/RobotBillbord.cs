@@ -20,8 +20,8 @@ public class RobotBillbord : MonoBehaviour
     }
     public void BillBoardFollow()
     {
-        //float lerpValue = Mathf.Lerp(transform.position, Player.position, 0.0005f);
-        Vector3 target = new Vector3(Player.position.x, Player.position.y + 3, Player.position.z);
+        var aboveOffset = 2 * Player.transform.localScale.y;
+        Vector3 target = new Vector3(Player.position.x, Player.position.y + aboveOffset, Player.position.z);
         transform.position = Vector3.MoveTowards(transform.position, target, 100);
     }
 }

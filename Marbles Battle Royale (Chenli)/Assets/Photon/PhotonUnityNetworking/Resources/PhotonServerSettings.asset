@@ -61,6 +61,10 @@ MonoBehaviour:
   - LRefresh
   - SentHealthData
   - SendHealthData
+  - playJumpRushSound
+  - PlayJumpRushSound
+  - globalSoundTrigger
+  - DestroyForAll
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

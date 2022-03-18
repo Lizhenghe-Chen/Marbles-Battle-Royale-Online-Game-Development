@@ -1518,10 +1518,10 @@ RectTransform:
   m_Father: {fileID: 241179668}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 137}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &229330507
 MonoBehaviour:
@@ -1574,7 +1574,7 @@ MonoBehaviour:
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
+  m_fontSizeMin: 40
   m_fontSizeMax: 72
   m_fontStyle: 4
   m_HorizontalAlignment: 2
@@ -8525,6 +8525,7 @@ MonoBehaviour:
   backGroundMusicVolume: 0.5
   keepSetting: {fileID: 0}
   playBackGroundMusic: 1
+  isSpectator: 0
 --- !u!4 &1397172915
 Transform:
   m_ObjectHideFlags: 0
@@ -11510,7 +11511,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a35c99d3bc647ef479684db55db2e905, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
