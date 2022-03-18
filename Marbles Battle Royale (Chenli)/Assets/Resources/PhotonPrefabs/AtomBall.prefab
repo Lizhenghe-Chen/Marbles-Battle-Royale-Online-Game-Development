@@ -650,9 +650,9 @@ GameObject:
   - component: {fileID: 891614089164121990}
   - component: {fileID: 5270639299678529374}
   - component: {fileID: 5270639299678529375}
+  - component: {fileID: 5270639299678529372}
   - component: {fileID: 5270639299678529373}
   - component: {fileID: 5270639299678529345}
-  - component: {fileID: 5270639299678529372}
   - component: {fileID: 5270639299678529346}
   - component: {fileID: 5270639299678529347}
   - component: {fileID: -2215456712388616245}
@@ -713,6 +713,35 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.9
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5270639299678529372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4180747359502374293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c1f4f2fadb2cb1468a97456514f2202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInDebugMode: 0
+  rb: {fileID: 0}
+  playerManager: {fileID: 0}
+  Camera: {fileID: 0}
+  horizontalInput: 0
+  verticalInput: 0
+  angularVelocity: 0
+  LeftLifeText: {fileID: 0}
+  initial_torque: 10
+  torque_timer: 2
+  inHealthArea: 0
+  damagearea: {fileID: 0}
+  damageareaPosition: {x: 0, y: 0, z: 0}
+  playerPosition: {x: 0, y: 0, z: 0}
+  damagearea_playerDistance: 0
+  takeDamageMask: {fileID: 0}
+  getHealthMask: {fileID: 0}
 --- !u!114 &5270639299678529373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,8 +758,8 @@ MonoBehaviour:
   extra_gravity: 4
   Grounded: 0
   OnCollisionGrounded: 0
-  jumpforce: 250
-  rushForce: 500
+  jumpForce: 300
+  rushForce: 450
   jumpPanel: {fileID: 0}
   rushPanel: {fileID: 0}
   RushcoolingTime: 4
@@ -777,38 +806,6 @@ MonoBehaviour:
   initialScale: {x: 0, y: 0, z: 0}
   maxScale: 4
   minScale: 0.2
---- !u!114 &5270639299678529372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4180747359502374293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c1f4f2fadb2cb1468a97456514f2202, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isInDebugMode: 0
-  rb: {fileID: 0}
-  playerManager: {fileID: 0}
-  Camera: {fileID: 0}
-  horizontalInput: 0
-  verticalInput: 0
-  angularVelocity: 0
-  LeftLifeText: {fileID: 0}
-  initial_torque: 10
-  torque_timer: 2
-  coolingTime: 3
-  time: 0
-  rushValue: 0
-  inHealthArea: 0
-  damagearea: {fileID: 0}
-  damageareaPosition: {x: 0, y: 0, z: 0}
-  playerPosition: {x: 0, y: 0, z: 0}
-  damagearea_playerDistance: 0
-  takeDamageMask: {fileID: 0}
-  getHealthMask: {fileID: 0}
 --- !u!114 &5270639299678529346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,7 +876,7 @@ MonoBehaviour:
     InterpolateLerpSpeed: 5
   m_ScaleModel:
     SynchronizeEnabled: 1
-    InterpolateOption: 2
+    InterpolateOption: 1
     InterpolateMoveTowardsSpeed: 0.2
     InterpolateLerpSpeed: 0.2
 --- !u!82 &8982466917492000825

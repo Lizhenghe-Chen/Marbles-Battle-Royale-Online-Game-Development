@@ -26,7 +26,7 @@ public class JumpController : MonoBehaviour
     PlayerManager playerManager;
 
     //===============================
-    public float jumpforce, rushForce;
+    public float jumpForce, rushForce;
     [Header("**Below for players Jump function,jumpPane need attach menually **\n")]
     [SerializeField] Image jumpPanel;
 
@@ -171,7 +171,7 @@ public class JumpController : MonoBehaviour
         {
             photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
 
-            rg.AddForce(Vector3.up * jumpforce);
+            rg.AddForce(Vector3.up * jumpForce);
             JumpTime = 0;
 
             if (roomManager.isTrainingGround && keepSetting.showTutorial)

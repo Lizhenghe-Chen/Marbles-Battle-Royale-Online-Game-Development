@@ -30,7 +30,7 @@ public class MovementController : MonoBehaviour
     // public float rushForce = 2500;
     private float torque;
 
-    [SerializeField] float coolingTime = 2, time, rushValue;//player rush cooling time
+    //[SerializeField] float coolingTime = 2, time;//player rush cooling time
                                                             //===============================
     [SerializeField] bool inHealthArea = false;
     [SerializeField] GameObject damagearea;
@@ -66,7 +66,7 @@ public class MovementController : MonoBehaviour
     {
         //https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_view.html#a67184424cffe2daae9001e06a6192d21
         //is the photon View is hadle on the local player?
-        time = coolingTime;
+      //  time = coolingTime;
         if (!photonView.IsMine)
         {
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up

@@ -114,7 +114,7 @@ public class CollisionDetect : MonoBehaviour
         }
         if (transform.localScale.x < initialScale.x)
         {
-            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+            transform.localScale += new Vector3(0.0005f, 0.0005f, 0.0005f);
         }
 
 
@@ -172,7 +172,7 @@ public class CollisionDetect : MonoBehaviour
             hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
 
             jumpController.playHitSound = true;//let sound effect happen once locally
-            ISufferDamage = judgeDamage(Player_Velocity, other_Player_Velocity);//for debug use
+            ISufferDamage = judgeDamage(Player_Velocity, other_Player_Velocity);//for debug use, other_Player_Velocity need to get form attacker compoment first
             // judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection);
             if (ISufferDamage)//if player get damage
             {

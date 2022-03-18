@@ -83,11 +83,12 @@ public class RobotController : MonoBehaviourPunCallbacks
     }
     void FixedUpdate()
     {
+        robotVelocity = rb.velocity;//let all player can get this locally
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
-        robotVelocity = rb.velocity;
+
 
         if (transform.localScale.x > initialScale.x)
         {

@@ -98,6 +98,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else
         {
             userNameInput.text = keepSetting.playerName;
+            MenuManager.characterDetails.text = MenuManager.GenerateIntro(keepSetting.playerType);
             MenuManager.playerType = keepSetting.playerType;
             roomManager.showTutorialToggle.isOn = keepSetting.showTutorial;
         }
@@ -211,11 +212,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 startGameButton.SetActive(true); //only host clients can start game
-                startGameNotice.text = "You are the Host, you can Start the Game!\n Notice that once the game start, no players can join or rejoin this room";
+                startGameNotice.text = "You are the Host, you can Start the Game!\n \nNotice that once the game start, no players can join or rejoin this room";
             }
             else
             {
-                startGameButton.SetActive(false); startGameNotice.text = "waiting the Host Start the Game...\n Notice that once the game start, no players can join or rejoin this room";
+                startGameButton.SetActive(false); startGameNotice.text = "waiting the Host Start the Game...\n \nNotice that once the game start, no players can join or rejoin this room";
             }
         }
 

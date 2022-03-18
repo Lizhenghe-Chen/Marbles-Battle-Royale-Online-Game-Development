@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEditor;
+using System.IO;
 public class MenuManager : MonoBehaviour
 {
     public TMP_Text PlayerSelection;
@@ -19,15 +20,24 @@ public class MenuManager : MonoBehaviour
     NetworkManager networkManager;
     public bool errorColorRed = false;
     public AudioSource buttonSound;
-    void Start()
+
+    public TMP_Text characterDetails;
+    //[TextArea(5, 7)] public string[] message;
+    private void Awake()
     {
         networkManager = GetComponent<NetworkManager>();
         TitledMenu = networkManager.Start_Debug_Meun;
         userNameInput = networkManager.userNameInput;
         roomNameInput = networkManager.roomNameInput;
         buttonSound = GameObject.Find("ButtonSound").GetComponent<AudioSource>();
+
+    }
+    void Start()
+    {
+        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
     }
 
     void Update()
@@ -39,10 +49,13 @@ public class MenuManager : MonoBehaviour
 
     public void OpenMenu(GameObject menuName)
     {
-        if (!checkInfoOK && menuName != TitledMenu)
+        if (!checkInfoOK && menuName != TitledMenu && menuName.name != "LoadingMenu")
         {
-          //  Debug.LogError("checkInfoNOTOK");
+
             aimator.Play("Warning", 0, 0);
+
+            return;
+            // Debug.LogError("Play");
         }
         //Debug.Log("Go to " + menuName);
         foreach (GameObject menu in menuList)
@@ -80,14 +93,14 @@ public class MenuManager : MonoBehaviour
         {
             PlayerSelection.color = Color.red;
             PlayerSelection.text = "Please select a player first!";
-            OpenMenu(TitledMenu);
+            // OpenMenu(TitledMenu);
             checkInfoOK = false;
         }
         else if (string.IsNullOrEmpty(userNameInput.text))
         {
             PlayerSelection.color = Color.red;
             PlayerSelection.text = "Name cannot NULL !";
-            OpenMenu(TitledMenu);
+            // OpenMenu(TitledMenu);
             checkInfoOK = false;
         }
         else if (errorColorRed)
@@ -122,12 +135,31 @@ public class MenuManager : MonoBehaviour
                         buttonSound.Play();
                         errorColorRed = false;
                         playerType = hit.transform.gameObject.name;
+                        // var prefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Resources/PhotonPrefabs/" + playerType + ".prefab", typeof(GameObject));
+
+                        // GameObject loadedObject = (GameObject)Resources.Load("Assets/Resources/PhotonPrefabs/" + playerType + ".prefab");
+                        //Debug.Log(prefab);
+                        characterDetails.text = GenerateIntro(playerType);
+
+                        //GameObject newItemInList = Instantiate(Path.Combine("PhotonPrefabs", playerType)) as GameObject;
                         //   GameObject.Find("RoomManager").GetComponent<RoomManager>().playerType = playerType;
                         //   Debug.Log(hit.transform.gameObject.name);
                     }
                 }
             }
         }
+    }
+    public string GenerateIntro(string playerType)
+    {
+        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", playerType), typeof(GameObject));
+        string message = prefab.name + "\n";
+
+        message += "Move Speed:\t" + prefab.GetComponent<MovementController>().initial_torque + "\n";
+        message += "Rush Force:\t" + prefab.GetComponent<JumpController>().rushForce + "\n";
+        message += "Jump Force:\t" + prefab.GetComponent<JumpController>().jumpForce + "\n";
+        message += "Mass: \t\t" + prefab.GetComponent<Rigidbody>().mass * 10 + "\n";
+        message += "**Mass and Speed will Link to final Damage**";
+        return message;
     }
     public void QuitGame()
     {

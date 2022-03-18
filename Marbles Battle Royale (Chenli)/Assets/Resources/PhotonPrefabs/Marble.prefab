@@ -5845,9 +5845,6 @@ MonoBehaviour:
   LeftLifeText: {fileID: 0}
   initial_torque: 10
   torque_timer: 2
-  coolingTime: 3
-  time: 0
-  rushValue: 0
   inHealthArea: 0
   damagearea: {fileID: 0}
   damageareaPosition: {x: 0, y: 0, z: 0}
@@ -5871,7 +5868,7 @@ MonoBehaviour:
   extra_gravity: 4
   Grounded: 0
   OnCollisionGrounded: 0
-  jumpforce: 300
+  jumpForce: 300
   rushForce: 500
   jumpPanel: {fileID: 0}
   rushPanel: {fileID: 0}
