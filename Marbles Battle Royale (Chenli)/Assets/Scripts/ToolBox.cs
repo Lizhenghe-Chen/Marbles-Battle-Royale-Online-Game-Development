@@ -82,7 +82,8 @@ public class ToolBox : MonoBehaviour
         }
         else
         {
-            GameInfoManager.Refresh(Player.name + " Transfered to " + transitionTarget.name);
+            if (PhotonNetwork.IsMasterClient) { GameInfoManager.Refresh(Player.name + " Transfered to " + transitionTarget.name); }
+
         }
 
         Player.position = transitionTarget.position;

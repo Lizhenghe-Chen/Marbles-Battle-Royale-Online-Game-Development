@@ -4285,6 +4285,7 @@ MonoBehaviour:
   backGroundMusicVolume: 0.5
   keepSetting: {fileID: 0}
   playBackGroundMusic: 0
+  isSpectator: 0
 --- !u!1 &4843445705902494508
 GameObject:
   m_ObjectHideFlags: 0
@@ -4816,7 +4817,9 @@ MonoBehaviour:
   Player: {fileID: 0}
   playerPhotonView: {fileID: 0}
   playerNickname: {fileID: 0}
+  UI: {fileID: 0}
   healthBarImage: {fileID: 0}
+  PlayerUIhealthBarImage: {fileID: 0}
   collisionDetect_healthBarImage: {fileID: 0}
   aboveOffset: 3
 --- !u!54 &2775845095675166127
@@ -6193,7 +6196,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Healthing!
+  m_text: 'Healing
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

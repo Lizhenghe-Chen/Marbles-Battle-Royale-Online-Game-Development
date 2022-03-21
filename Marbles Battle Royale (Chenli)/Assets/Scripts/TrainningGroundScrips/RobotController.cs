@@ -119,10 +119,9 @@ public class RobotController : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient)
         { return; }
-        var Player_Velocity = rb.velocity;
-
+  
         // var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-        if (CollisionDetect.judgeDamage(Player_Velocity, other_Player_Velocity))
+        if (CollisionDetect.judgeDamage(robotVelocity, other_Player_Velocity))
         {
             var finalDamage = other.relativeVelocity.magnitude * 1.5f * other.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
             robotCurrentHealth -= finalDamage;

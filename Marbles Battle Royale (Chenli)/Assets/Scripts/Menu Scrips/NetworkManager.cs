@@ -4,7 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using System.IO;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 
@@ -74,16 +74,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         RoomMenu = GameObject.Find(nameof(RoomMenu));
         ErrorMenu = GameObject.Find(nameof(ErrorMenu));
         FindRoomMenu = GameObject.Find(nameof(FindRoomMenu));
-        if (IsInDebugMode) { roomNameInput.text = "Test Room"; }
+        //if (IsInDebugMode) { roomNameInput.text = "Test Room"; }
         MenuManager.OpenMenu(LoadingMenu);
+        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));//speed up for MenuManager
     }
-    void Update()
-    {
-        if (isLeaveRoom) { MenuManager.OpenMenu(LoadingMenu); }
-        //  Debug.Log(PhotonNetwork.LevelLoadingProgress);
-        //Debug.Log(PhotonNetwork.NetworkingClient);
 
-    }
     int start = 0;
 
     void Start()
@@ -94,16 +89,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (keepSetting.start == 0)
         {
             userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+
         }
         else
         {
             userNameInput.text = keepSetting.playerName;
+            roomNameInput.text = keepSetting.roomName;
             MenuManager.characterDetails.text = MenuManager.GenerateIntro(keepSetting.playerType);
             MenuManager.playerType = keepSetting.playerType;
             roomManager.showTutorialToggle.isOn = keepSetting.showTutorial;
         }
-    }
 
+    }
+    void Update()
+    {
+        if (isLeaveRoom) { MenuManager.OpenMenu(LoadingMenu); }
+        //  Debug.Log(PhotonNetwork.LevelLoadingProgress);
+        //Debug.Log(PhotonNetwork.NetworkingClient);
+
+    }
     public void OnUserNameChanged()
     {
         PhotonNetwork.NickName = userNameInput.text;
@@ -133,6 +137,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.NickName = userNameInput.text;
 
+        cachedRoomList.Clear();
 
         Debug.Log("Joined!");
     }
@@ -150,9 +155,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("IsNullOrEmpty!");
             return;
         }
-        else if (roomManager.isTrainingGround) { roomNameInput.text = "TrainingGround"; }
         MenuManager.OpenMenu(LoadingMenu);
-        PhotonNetwork.CreateRoom(roomNameInput.text);
+        if (roomManager.isTrainingGround)
+        {
+            roomNameInput.text = "TrainingGround";
+            PhotonNetwork.CreateRoom(roomNameInput.text);
+        }//cast room name
+        else
+        {
+            keepSetting.roomName = roomNameInput.text;
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = (byte)maxRoomPlayers; // for example
+            PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions);
+        }
+
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -181,7 +197,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Player[] players = PhotonNetwork.PlayerList;
         CheckName(players);
         MenuManager.OpenMenu(RoomMenu);
-        roomNameText.text = "Room " + PhotonNetwork.CurrentRoom.Name;
+        roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
         //refresh the playerListContent
         foreach (Transform child in playerListContent)
@@ -204,6 +220,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (roomManager.isTrainingGround)
         {
+            PhotonNetwork.CurrentRoom.IsVisible = false;//player cannnot join from "find Room"
             startGameNotice.text = "All players can join to 'TrainingGround', No winner in this mode";
 
         }
@@ -227,6 +244,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             Debug.Log("Tried to join Arena, but failed because full room!");
             GetComponent<MenuManager>().errorColorRed = true;
+
             GetComponent<MenuManager>().PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
              + "because the room reached maxium " + maxRoomPlayers + " players!";
             LeaveRoom();
@@ -262,23 +280,63 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             .GetComponent<PlayerListItem>()
             .SetUp(newPlayer);
     }
-
+    // public List<RoomInfo> DebugroomList = new List<RoomInfo>();
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        //refresh the roomListContent
+        // foreach (RoomInfo test in roomList)
+        // {
+        //     if (roomList.Count == 0) { Debug.Log("No List room found:"); return; }
+        //     Debug.Log("roomList:" + test.ToString());
+        // }
+        // Debug.Log("========");
+
+        // //refresh the roomListContent
         foreach (Transform trans in roomListContent)
         {
+            Debug.Log("Deleted:" + trans.GetComponent<RoomListItem>().info.ToString());
             Destroy(trans.gameObject);
         }
 
-        //
-        foreach (RoomInfo roomInfo in roomList)
-        {
+        // for (int i = 0; i < roomList.Count; i++)
+        // {
+        //     if (roomList[i].RemovedFromList)
+        //         continue;
+        //     Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
+        // }
 
-            //if the room has been removed, then skip this for loop
-            if (roomInfo.RemovedFromList) continue;
-            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomInfo);
+        UpdateCachedRoomList(roomList);
+        foreach (KeyValuePair<string, RoomInfo> item in cachedRoomList)
+        {
+            Debug.Log("value: " + item.Value.ToString());
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(item.Value);
         }
+        Debug.Log("======");
+
+    }
+    //   https://doc.photonengine.com/en-us/pun/current/lobby-and-matchmaking/matchmaking-and-lobby
+    public Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
+    private void UpdateCachedRoomList(List<RoomInfo> roomList)
+    {
+        for (int i = 0; i < roomList.Count; i++)
+        {
+            RoomInfo info = roomList[i];
+            if (info.RemovedFromList)
+            {
+                cachedRoomList.Remove(info.Name);
+            }
+            else
+            {
+                cachedRoomList[info.Name] = info;
+            }
+        }
+    }
+    public override void OnLeftLobby()
+    {
+        cachedRoomList.Clear();
+    }
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        cachedRoomList.Clear();
     }
     // public Toggle m_Toggle;
 
@@ -286,7 +344,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (roomManager.isTrainingGround)
         {
-            PhotonNetwork.CurrentRoom.IsVisible = false;
+            
             PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Host to current");
         }
         else { PhotonNetwork.CurrentRoom.IsVisible = false; }
@@ -296,7 +354,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Invoke("LodingGameScene", 1f);
     }
     [PunRPC]
-    void SendInRoomInfo() { isLeaveRoom = true; }
+    void SendInRoomInfo()
+    { isLeaveRoom = true; }
     void LodingGameScene()
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
@@ -309,8 +368,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //================================================================
     public void LeaveRoom()
     {
-        MenuManager.OpenMenu(LoadingMenu);
+
         PhotonNetwork.LeaveRoom();
+        MenuManager.OpenMenu(LoadingMenu);
         Debug.Log("Leaved Room");
     }
 
@@ -336,6 +396,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void JoinTrainingGround()
     {
+       
         CreateRoomNotice.text = "Tip: All players will be added and join to 'TrainingGround' room Automatically. No winner in this mode";
         roomNameInput.text = "TrainingGround";
         // PhotonNetwork.CreateRoom("TrainingGround");
@@ -343,6 +404,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomManager.isTrainingGround = true;
         // PhotonNetwork.LoadLevel(1);
     }
-    public void JoinNormalRoom() { CreateRoomNotice.text = "Tip: Room Name must not NULL and dupicate"; }
+    public void JoinNormalRoom()
+    {
+        roomManager.isTrainingGround = false;
+        roomNameInput.text = keepSetting.roomName;
+        CreateRoomNotice.text = "Tip: Room Name must not NULL and dupicate";
+    }
     public void OpenURL() { Application.OpenURL("https://doggychen.com/personal-unity-online-game-development"); }
 }

@@ -1,24 +1,24 @@
 # Summary
 
-Date : 2022-03-11 13:37:09
+Date : 2022-03-21 00:34:50
 
 Directory f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts
 
-Total : 39 files,  2518 codes, 556 comments, 473 blanks, all 3547 lines
+Total : 40 files,  3114 codes, 735 comments, 621 blanks, all 4470 lines
 
 summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| C# | 39 | 2,518 | 556 | 473 | 3,547 |
+| C# | 40 | 3,114 | 735 | 621 | 4,470 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 39 | 2,518 | 556 | 473 | 3,547 |
-| Menu Scrips | 8 | 793 | 115 | 142 | 1,050 |
-| TrainningGroundScrips | 4 | 102 | 8 | 19 | 129 |
-| UI Scrips | 6 | 305 | 74 | 38 | 417 |
+| . | 40 | 3,114 | 735 | 621 | 4,470 |
+| Menu Scrips | 11 | 1,176 | 223 | 225 | 1,624 |
+| TrainningGroundScrips | 4 | 248 | 14 | 36 | 298 |
+| UI Scrips | 6 | 376 | 84 | 46 | 506 |
 
 summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)

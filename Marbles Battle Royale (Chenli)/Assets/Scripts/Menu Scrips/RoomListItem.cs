@@ -5,8 +5,8 @@ using TMPro;
 using Photon.Realtime;
 public class RoomListItem : MonoBehaviour
 {
-    [SerializeField] TMP_Text roomName;
-    
+    public TMP_Text roomName;
+
 
     public RoomInfo info;
 
@@ -20,5 +20,5 @@ public class RoomListItem : MonoBehaviour
     {
         NetworkManager.Instance.JoinRoom(info);
     }
-    
+
 }

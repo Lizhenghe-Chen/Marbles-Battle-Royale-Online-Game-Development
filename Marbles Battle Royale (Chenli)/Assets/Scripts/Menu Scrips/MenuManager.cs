@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using System.IO;
 public class MenuManager : MonoBehaviour
 {
@@ -34,7 +33,7 @@ public class MenuManager : MonoBehaviour
     }
     void Start()
     {
-        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));
+       //GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
@@ -62,7 +61,7 @@ public class MenuManager : MonoBehaviour
         {
             if (menu == menuName)
             {
-                if (menu.name == "TitleMenu") { roomNameInput.text = "TestRoom"; }
+            //    if (menu.name == "TitleMenu") { roomNameInput.text = "TestRoom"; }
                 menu.SetActive(true);
             }
             else
