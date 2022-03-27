@@ -22,6 +22,7 @@ public class JumpController : MonoBehaviour
     private MovementController movementController;
 
     private CollisionTrigger CollisionTrigger;
+   
     public bool Grounded, OnCollisionGrounded;
     PlayerManager playerManager;
 
@@ -167,7 +168,7 @@ public class JumpController : MonoBehaviour
     }
     void JumpCommand()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
+        if (Input.GetKeyUp(KeyCode.Space) && onTheGround())
         {
             photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
 

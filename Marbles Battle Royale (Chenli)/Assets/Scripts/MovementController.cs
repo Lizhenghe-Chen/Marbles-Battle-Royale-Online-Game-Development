@@ -31,13 +31,13 @@ public class MovementController : MonoBehaviour
     private float torque;
 
     //[SerializeField] float coolingTime = 2, time;//player rush cooling time
-                                                            //===============================
+    //===============================
     [SerializeField] bool inHealthArea = false;
     [SerializeField] GameObject damagearea;
     [SerializeField] Vector3 damageareaPosition, playerPosition;
     [SerializeField] float damagearea_playerDistance;
     public GameObject takeDamageMask, getHealthMask;
-
+    private CollisionDetect collisionDetect;
 
 
     void Awake()
@@ -66,13 +66,13 @@ public class MovementController : MonoBehaviour
     {
         //https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_view.html#a67184424cffe2daae9001e06a6192d21
         //is the photon View is hadle on the local player?
-      //  time = coolingTime;
+        //  time = coolingTime;
         if (!photonView.IsMine)
         {
             Destroy(GetComponentInChildren<cameraDist>().gameObject); //this make sure that the camera compoments will not mess up
         }
 
-
+        collisionDetect = GetComponent<CollisionDetect>();
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
         LeftLifeText = transform.Find("UI/Canvas/LeftLifeText").GetComponent<TMP_Text>();
         damagearea = GameObject.Find("DamageArea");
@@ -160,6 +160,11 @@ public class MovementController : MonoBehaviour
         {
             rb.angularVelocity = Vector3.zero;
         }
+        // if (Input.GetKey(KeyCode.Space))
+        // {
+        //     transform.localScale = new Vector3(collisionDetect.initialScale.x, collisionDetect.initialScale.y / 2, collisionDetect.initialScale.z);
+        // }
+        // else { transform.localScale = collisionDetect.initialScale; }
     }
     void PoisoningEffect()
     {

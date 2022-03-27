@@ -367,7 +367,7 @@ public class CollisionDetect : MonoBehaviour
         {
             playerManager.deadPosition = transform.position;//send death position to it's player Manager
                                                             //   FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
-            GameInfoManager.Refresh(player_Name + " Drop dead");
+            GameInfoManager.Refresh(player_Name + " Fall dead");
             playerManager.Die();
             // gameObject.transform.position =
             //     new Vector3(target.x + Random.Range(3, 10),

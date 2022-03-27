@@ -135,7 +135,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (RoomManager.isTrainingGround) { return; }
-        Invoke("CheckPlayerList", 2f);
+        Invoke("CheckPlayerList", 10f);
     }
 
     Vector3 RebirthPosition(Vector3 deadPosition)
@@ -199,7 +199,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {// to avoid player dead in zone and killd by other message show in same time:
             if (isDamagedByDamageZone && avoidloop == 0)
             {
-                GameInfoManager.Refresh(player_Name + " Dead in Damage zone...");
+                GameInfoManager.Refresh(player_Name + " X-> Damage zone...");
                 Die();
                 // Invoke("Die", 0.5f);
                 return;

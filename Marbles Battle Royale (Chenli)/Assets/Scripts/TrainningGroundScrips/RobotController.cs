@@ -36,6 +36,7 @@ public class RobotController : MonoBehaviourPunCallbacks
 
     public Vector3 initialScale;
     public float maxScale = 4, minScale = 0.2f;
+    [SerializeField] GameInfoManager GameInfoManager;
     void Awake() { pV = GetComponent<PhotonView>(); }
     void Start()
     {
@@ -43,10 +44,12 @@ public class RobotController : MonoBehaviourPunCallbacks
         initialScale = transform.localScale;
         rb = GetComponent<Rigidbody>();
         healthBarImage = this.transform.Find("BillBoard/showHealthbarBackground/Healthbar").GetComponent<Image>();
-        startPointPosition = this.transform.position;
-        Player = this.transform;
+
         if (PhotonNetwork.IsMasterClient)
         {
+            startPointPosition = this.transform.position;
+            Player = this.transform;
+            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
             robotCurrentHealth = robotHealth;
             //billboardvalue = robotCurrentHealth / robotHealth;
         }
@@ -119,12 +122,23 @@ public class RobotController : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient)
         { return; }
-  
+
         // var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
         if (CollisionDetect.judgeDamage(robotVelocity, other_Player_Velocity))
         {
+            string other_Player_Name;
             var finalDamage = other.relativeVelocity.magnitude * 1.5f * other.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
             robotCurrentHealth -= finalDamage;
+            if (robotCurrentHealth <= 0)
+            {
+                if (other.collider.GetComponent<MovementController>() != null)//if killer is a player
+                {
+                    other_Player_Name = other.collider.GetComponent<PhotonView>().Owner.NickName;
+
+                }
+                else { other_Player_Name = other.transform.name; }
+                GameInfoManager.Refresh(other_Player_Name + " X -> " + this.name);
+            }
             pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
@@ -132,11 +146,16 @@ public class RobotController : MonoBehaviourPunCallbacks
     {
         if (transform.position.y < -20 || robotCurrentHealth <= 0)
         {
+            if (transform.position.y < -20)
+            {
+                GameInfoManager.Refresh(this.name + " Fall dead");
+            }
             transform.position = startPointPosition;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             robotCurrentHealth = robotHealth;
-            pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
+            photonView.RPC("DestroyForAll", RpcTarget.All);
+            // pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
 
@@ -204,6 +223,17 @@ public class RobotController : MonoBehaviourPunCallbacks
         // if (Vector3.Distance(transform.position, closest.transform.position) < distance) { }
         return closest;
     }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
+    {
+        if (PhotonNetwork.IsMasterClient)
+        { pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
+
+    }
+    public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved, let new master client handle the start game right
+    {
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
+    }
     [PunRPC]
     void SendHealthData(float _currentHealth, float _billboardvalue)
     {
@@ -213,10 +243,11 @@ public class RobotController : MonoBehaviourPunCallbacks
 
 
     }
-    public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
+    [PunRPC]
+    public void DestroyForAll()
     {
-        if (PhotonNetwork.IsMasterClient)
-        { pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
-
+        Destroy(this.gameObject);
+        // Destroy(PhotonView.Find(viewID).gameObject);
     }
+
 }

@@ -18,13 +18,13 @@ MonoBehaviour:
     value: 1
   focusDistance:
     overrideState: 1
-    value: 1.5960704
+    value: 4.339457
   aperture:
     overrideState: 1
     value: 20
   focalLength:
     overrideState: 1
-    value: 80
+    value: 100
   kernelSize:
     overrideState: 1
     value: 1
@@ -94,6 +94,29 @@ MonoBehaviour:
   - {fileID: 2877006867107826720}
   - {fileID: -5836243847855256531}
   - {fileID: 8213297491219872769}
+  - {fileID: 2729387752377211997}
+--- !u!114 &2729387752377211997
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
+  m_Name: MotionBlur
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  shutterAngle:
+    overrideState: 1
+    value: 100
+  sampleCount:
+    overrideState: 1
+    value: 10
 --- !u!114 &2877006867107826720
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -147,28 +170,28 @@ MonoBehaviour:
     value: 1
   temperature:
     overrideState: 1
-    value: 10
+    value: 20
   tint:
     overrideState: 0
     value: 0
   colorFilter:
-    overrideState: 1
-    value: {r: 1, g: 0.9862515, b: 0.93773586, a: 1}
+    overrideState: 0
+    value: {r: 1, g: 1, b: 1, a: 1}
   hueShift:
     overrideState: 1
     value: 0
   saturation:
     overrideState: 1
-    value: 5
+    value: 15
   brightness:
     overrideState: 0
     value: 0
   postExposure:
     overrideState: 1
-    value: 0.7
+    value: 0.5
   contrast:
     overrideState: 1
-    value: 11
+    value: 10
   mixerRedOutRedIn:
     overrideState: 1
     value: 100
@@ -195,7 +218,7 @@ MonoBehaviour:
     value: 0
   mixerBlueOutBlueIn:
     overrideState: 1
-    value: 100
+    value: 120
   lift:
     overrideState: 1
     value: {x: 0.9768012, y: 0.9963411, z: 1, w: 0}
@@ -1423,10 +1446,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 50
+    value: 5
   threshold:
     overrideState: 1
-    value: 50
+    value: 10
   softKnee:
     overrideState: 1
     value: 1
