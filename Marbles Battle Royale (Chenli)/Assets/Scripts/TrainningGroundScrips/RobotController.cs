@@ -49,36 +49,28 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             startPointPosition = this.transform.position;
             Player = this.transform;
-            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
+            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
             robotCurrentHealth = robotHealth;
             //billboardvalue = robotCurrentHealth / robotHealth;
         }
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
         if (PhotonNetwork.IsMasterClient)
         {
             // pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
-
-
             belowDeathAltitudeOrDead();
             if (loopRush || loopMovement)
             {
                 CheckEnemy();
                 if (hasTarget) { Eye.transform.LookAt(Enemy.transform); } else { return; }
             }
-
             LoopJump();
             LoopRush();
             LoopMovement();
         }
-
         // Billboard.DisplayHealthBar(healthBarImage, billboardvalue);
         billboardvalue = robotCurrentHealth / robotHealth;
         healthBarImage.fillAmount = billboardvalue;
@@ -91,8 +83,6 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             return;
         }
-
-
         if (transform.localScale.x > initialScale.x)
         {
             transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
@@ -109,12 +99,10 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             CollisionDetect collisionDetect = other.gameObject.GetComponent<CollisionDetect>();
             Damage(other, collisionDetect.Player_Velocity);
-
         }
         if (other.transform.tag == "Robot")
         {
             RobotController robotController = other.gameObject.GetComponent<RobotController>();
-
             Damage(other, robotController.robotVelocity);
         }
     }
@@ -237,11 +225,8 @@ public class RobotController : MonoBehaviourPunCallbacks
     [PunRPC]
     void SendHealthData(float _currentHealth, float _billboardvalue)
     {
-
         robotCurrentHealth = _currentHealth;
         billboardvalue = _billboardvalue;
-
-
     }
     [PunRPC]
     public void DestroyForAll()

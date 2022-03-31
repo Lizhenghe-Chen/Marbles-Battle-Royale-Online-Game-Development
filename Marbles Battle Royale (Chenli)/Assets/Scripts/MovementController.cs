@@ -24,11 +24,8 @@ public class MovementController : MonoBehaviour
 
     [SerializeField] TMP_Text LeftLifeText;
     [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
-    public float initial_torque, torque_timer;
-
-    // public float torque_tim = 10f; //the timer for the torque
-    // public float rushForce = 2500;
-    private float torque;
+    public float initial_torque, speedUp_torque;
+    private const float torque_timer = 3;
 
     //[SerializeField] float coolingTime = 2, time;//player rush cooling time
     //===============================
@@ -80,6 +77,7 @@ public class MovementController : MonoBehaviour
         getHealthMask = transform.Find("UI/Canvas/GetHealthMask").gameObject;
         takeDamageMask.SetActive(false);
         getHealthMask.SetActive(false);
+        speedUp_torque = initial_torque * torque_timer;
     }
 
     void Update()
@@ -94,7 +92,7 @@ public class MovementController : MonoBehaviour
         }
         Break();
 
-        TurningTorque();
+
 
 
         // playerManager.Damage(0.01f);
@@ -106,7 +104,7 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-
+        TurningTorque();
         HealthEffect();
         PoisoningEffect();// low FPS will affect damgae and health speed, so move it to FixedUpdate
     }
@@ -127,29 +125,24 @@ public class MovementController : MonoBehaviour
     void TurningTorque()
     {
         angularVelocity = rb.angularVelocity.magnitude;
-        var speedUpTorque = initial_torque * torque_timer;
-
-        //Debug.Log (angularVelocity);
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+
+        // rb.maxAngularVelocity = (Input.GetKey(KeyCode.LeftShift)) ? speedUp_torque : initial_torque;
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            torque = speedUpTorque;
-            //  Debug.Log("speed Up");
+            rb.maxAngularVelocity = speedUp_torque;
+            rb.AddTorque(Camera.transform.right * speedUp_torque * verticalInput);
+            rb.AddTorque(-Camera.transform.forward * speedUp_torque * horizontalInput);
         }
-        else if (angularVelocity <= initial_torque)
+        else
         {
-            torque = initial_torque;
+            rb.maxAngularVelocity = initial_torque;
+            rb.AddTorque(Camera.transform.right * initial_torque * verticalInput);
+            rb.AddTorque(-Camera.transform.forward * initial_torque * horizontalInput);
         }
-        else { torque = 0; }
-        // else
-        // {
-        //     torque = initial_torque;
-        // }
-
         // torque=(Input.GetKey(KeyCode.LeftShift) ? speedUpTorque:initial_torque);
-        rb.AddTorque(Camera.transform.right * torque * verticalInput);
-        rb.AddTorque(-Camera.transform.forward * torque * horizontalInput);
     }
 
 

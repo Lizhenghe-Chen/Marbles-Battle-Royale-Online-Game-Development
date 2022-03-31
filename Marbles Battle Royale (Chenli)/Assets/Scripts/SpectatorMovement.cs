@@ -14,18 +14,24 @@ public class SpectatorMovement : MonoBehaviour
     [HideInInspector] public float horizontalInput, verticalInput;
 
     [SerializeField] PhotonView photonView;
+    [SerializeField] GameInfoManager GameInfoManager;
     [SerializeField] Image FadeIn_OutImage;
 
     [SerializeField] bool menueOpen = false;
+     [SerializeField] string[] ignoreObject = {"Untagged","Player","Robot"};
     void Start()
     {
+
         FadeIn_OutImage.GetComponent<AnimateLoading>().LoadingLevel();
         rb = GetComponent<Rigidbody>();
         photonView = GetComponent<PhotonView>();
         if (!photonView.IsMine)
         {
             Destroy(gameObject); //this make sure that the camera compoments will not mess up
+            return;
         }
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+        GameInfoManager.scoreBoardManager = transform.Find("Canvas/ScoreBoard").GetComponent<ScoreBoardManager>();
     }
 
     // Update is called once per frame
@@ -107,7 +113,7 @@ public class SpectatorMovement : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Untagged" || collision.gameObject.tag == "Player")
+        if (LayerMask.LayerToName(collision.gameObject.layer)=="CameraIgnore" )
         {
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }

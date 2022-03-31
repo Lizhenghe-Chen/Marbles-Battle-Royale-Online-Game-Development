@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1973366778316914820}
   - component: {fileID: 1973366778316914819}
   - component: {fileID: 1973366778316914817}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ExtraLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}

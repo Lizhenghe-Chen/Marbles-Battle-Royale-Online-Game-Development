@@ -1,0 +1,37 @@
+Date : 2022-03-31 01:23:16
+Directory : f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts
+Total : 10 files,  37 codes, 13 comments, -2 blanks, all 48 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |         10 |         37 |         13 |         -2 |         48 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                                                         | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                                                            |         10 |         37 |         13 |         -2 |         48 |
+| Menu Scrips                                                                                                                                                                  |          2 |         -4 |          1 |          7 |          4 |
+| TrainningGroundScrips                                                                                                                                                        |          1 |         25 |          2 |        -11 |         16 |
+| UI Scrips                                                                                                                                                                    |          3 |         13 |         11 |          1 |         25 |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                                                                     | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\CollisionDetect.cs                       | C#       |          1 |          0 |          1 |          2 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\PlayerManager.cs             | C#       |          0 |         -3 |          7 |          4 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\Menu Scrips\RoomManager.cs               | C#       |         -4 |          4 |          0 |          0 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\MovementController.cs                    | C#       |         -3 |         -2 |         -1 |         -6 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\SpectatorMovement.cs                     | C#       |          5 |          0 |          1 |          6 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\ToolBox.cs                               | C#       |          0 |          1 |          0 |          1 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\TrainningGroundScrips\RobotController.cs | C#       |         25 |          2 |        -11 |         16 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\UI Scrips\GameInfoManager.cs             | C#       |          7 |          1 |          2 |         10 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\UI Scrips\InGameUIManager.cs             | C#       |          0 |          4 |          0 |          4 |
+| f:\Unity\Marbles Battle Royale (Chenli)\Marbles-Battle-Royale-Online-Game-Development\Marbles Battle Royale (Chenli)\Assets\Scripts\UI Scrips\ScoreBoardManager.cs           | C#       |          6 |          6 |         -1 |         11 |
+| Total                                                                                                                                                                        |          |         37 |         13 |         -2 |         48 |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

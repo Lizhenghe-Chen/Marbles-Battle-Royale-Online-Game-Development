@@ -30,6 +30,10 @@ public class InGameUIManager : MonoBehaviour
         ControlTipsNotice.SetActive(false);
         if (!roomManager.isTrainingGround) { ContrilTips(); }//otherwise no showup when game start
         InGameMenu();//set menu off when start
+        // if (!photonView.IsMine)
+        // {
+        //     Destroy(transform.parent);
+        // } 
     }
 
     // Update is called once per frame

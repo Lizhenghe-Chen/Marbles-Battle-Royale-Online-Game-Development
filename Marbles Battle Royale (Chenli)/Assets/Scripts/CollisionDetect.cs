@@ -19,7 +19,7 @@ public class CollisionDetect : MonoBehaviour
 
 
     [Header("UI need Manually attach, this is for player's UI display,\n this will make sure player only get their own UI panel")]
- 
+
     [SerializeField] GameInfoManager GameInfoManager;
     [Tooltip("This is for player's Health display, should be an image")]
     //[SerializeField] Image healthBarImage;
@@ -52,10 +52,10 @@ public class CollisionDetect : MonoBehaviour
     public float maxScale = 4, minScale = 0.2f;
     void Awake()
     {
-       
-        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
+
+
         rb = GetComponent<Rigidbody>();
-      
+
         // Debug.Log(UI.transform.Find("HealthbarBackground/Healthbar"));
         photonView = GetComponent<PhotonView>();
         player_Name = photonView.Owner.NickName;
@@ -67,6 +67,8 @@ public class CollisionDetect : MonoBehaviour
     {
         if (photonView.IsMine)
         {
+            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+            GameInfoManager.scoreBoardManager = transform.Find("UI/ScoreBoard").GetComponent<ScoreBoardManager>();
             initialScale = transform.localScale;
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
@@ -83,7 +85,7 @@ public class CollisionDetect : MonoBehaviour
         }
         else
         {
-            
+
             //Destroy(healthBarImage);
         }
 
@@ -106,7 +108,7 @@ public class CollisionDetect : MonoBehaviour
         }
         currentHealth = playerManager.currentHealth;
         // billboardvalue = playerManager.currentHealth / playerHealth;// this will display user's current health for all players, check Billboard.cs
-      //  Billboard.DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
+        //  Billboard.DisplayHealthBar(healthBarImage, playerManager.billboardvalue);
 
         if (transform.localScale.x > initialScale.x)
         {

@@ -13,7 +13,7 @@ public class ToolBox : MonoBehaviour
     [SerializeField] GameInfoManager GameInfoManager;
     void Start()
     {
-        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
         photonView = GetComponent<PhotonView>();
     }
     private void Update()
@@ -45,7 +45,7 @@ public class ToolBox : MonoBehaviour
             Player = other.transform;
             var otherPlayerManager = Player.GetComponent<MovementController>().playerManager;
             otherPlayerManager.maxLife++;
-            otherPlayerManager.leftLifeTextContent = "Rest Life: " + (otherPlayerManager.maxLife - otherPlayerManager.deathCount);
+            otherPlayerManager.leftLifeTextContent = "Rest Life: " + (otherPlayerManager.maxLife - otherPlayerManager.deathCount-1);
             photonView.RPC("DestroyForAll", RpcTarget.All);
             //DestroyForAll();//destroy this game object for all players
             //PhotonNetwork.Destroy(this.gameObject);

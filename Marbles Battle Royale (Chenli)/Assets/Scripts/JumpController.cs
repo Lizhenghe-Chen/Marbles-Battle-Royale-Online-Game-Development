@@ -168,7 +168,7 @@ public class JumpController : MonoBehaviour
     }
     void JumpCommand()
     {
-        if (Input.GetKeyUp(KeyCode.Space) && onTheGround())
+        if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
         {
             photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
 

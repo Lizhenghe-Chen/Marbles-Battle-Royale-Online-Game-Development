@@ -7,12 +7,12 @@ using UnityEngine;
 using System.IO;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-
+    public static NetworkManager Instance;
     PhotonView pV;
     [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")]
     public int maxRoomPlayers = 10;
     [SerializeField] bool IsInDebugMode = false;
-    public static NetworkManager Instance;
+
 
     public GameObject Start_Debug_Meun;
 
@@ -55,10 +55,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //     menus = { TitleMenu, LoadingMenu, RoomMenu, ErrorMenu, FindRoomMenu };
     void Awake()
     {
+        Instance = this;
         pV = GetComponent<PhotonView>();
         roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         isLeaveRoom = false;
-        Instance = this;
         MenuManager = this.GetComponent<MenuManager>();
         GameObject[] _menus = MenuManager.menuList;
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
@@ -344,7 +344,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (roomManager.isTrainingGround)
         {
-            
+
             PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Host to current");
         }
         else { PhotonNetwork.CurrentRoom.IsVisible = false; }
@@ -396,7 +396,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void JoinTrainingGround()
     {
-       
+
         CreateRoomNotice.text = "Tip: All players will be added and join to 'TrainingGround' room Automatically. No winner in this mode";
         roomNameInput.text = "TrainingGround";
         // PhotonNetwork.CreateRoom("TrainingGround");

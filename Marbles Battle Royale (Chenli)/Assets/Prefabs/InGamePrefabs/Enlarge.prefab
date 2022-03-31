@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6533064043504146208}
   - component: {fileID: 9098404272692419541}
   - component: {fileID: 9098404272692419540}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enlarge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
+  photonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!114 &9098404272692419541
 MonoBehaviour:

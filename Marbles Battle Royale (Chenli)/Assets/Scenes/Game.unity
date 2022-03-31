@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.7568628, g: 0.854902, b: 0.87843144, a: 1}
-  m_FogMode: 1
-  m_FogDensity: 0.01
+  m_FogColor: {r: 0.82452834, g: 0.9660377, b: 1, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.002
   m_LinearFogStart: 100
   m_LinearFogEnd: 200
   m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
@@ -27,8 +27,8 @@ RenderSettings:
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: 0.331
-  m_FlareStrength: 1
+  m_HaloStrength: 1
+  m_FlareStrength: 0.536
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
@@ -12907,7 +12907,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4997686425907408173, guid: 1f747b3f60de9d744befef0316521aaf, type: 3}
       propertyPath: near clip plane
-      value: 0.001
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 5304739154886832897, guid: 1f747b3f60de9d744befef0316521aaf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14191,7 +14191,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 5bb7a3e1a825fca4e8dcb4cb7545a7fe, type: 2}
-  m_TreeDistance: 150
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -15692,7 +15692,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 55563a6e241282542b4c4f80cac1207e, type: 2}
-  m_TreeDistance: 150
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -16006,15 +16006,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4234865743813925016, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.90269834
+      value: 0.9026984
       objectReference: {fileID: 0}
     - target: {fileID: 4234865743813925016, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.22318341
+      value: -0.2231834
       objectReference: {fileID: 0}
     - target: {fileID: 4234865743813925016, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.011598289
+      value: 0.011598229
       objectReference: {fileID: 0}
     - target: {fileID: 4234865743813925016, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.z
@@ -16046,7 +16046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4553359767140872285, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.33525583
+      value: 0.3352558
       objectReference: {fileID: 0}
     - target: {fileID: 4839598856816884972, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_AnchorMax.x
@@ -16098,19 +16098,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5561172791932692623, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9193932
+      value: 0.9193931
       objectReference: {fileID: 0}
     - target: {fileID: 5561172791932692623, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.13925317
+      value: 0.13925312
       objectReference: {fileID: 0}
     - target: {fileID: 5561172791932692623, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.15142134
+      value: 0.15142128
       objectReference: {fileID: 0}
     - target: {fileID: 5561172791932692623, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.3352558
+      value: 0.33525586
       objectReference: {fileID: 0}
     - target: {fileID: 5625961937726518334, guid: aec5bed1f054dfb449bb8512f36474bd, type: 3}
       propertyPath: sceneViewId
@@ -20844,7 +20844,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8265380607961242576, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -4.1
       objectReference: {fileID: 0}
     - target: {fileID: 8265380607961242576, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37486,7 +37486,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: c1b405f1a10fac047a4a70cc84183d37, type: 2}
-  m_TreeDistance: 50
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -40618,7 +40618,7 @@ GameObject:
   - component: {fileID: 937940615}
   - component: {fileID: 937940618}
   m_Layer: 0
-  m_Name: GameInfoTitle
+  m_Name: GameInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40662,6 +40662,7 @@ MonoBehaviour:
   gameInfoPrefabs: {fileID: 1045842380948238127, guid: ae375827dc06dd64ab1d9f23707a019a, type: 3}
   container: {fileID: 40373925}
   photonView: {fileID: 0}
+  scoreBoardManager: {fileID: 0}
 --- !u!114 &937940616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41684,7 +41685,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 954557278}
   m_Enabled: 1
-  m_CastShadows: 2
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -41710,7 +41711,7 @@ MeshRenderer:
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
   m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
+  m_MinimumChartSize: 2
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -41735,7 +41736,7 @@ Transform:
   m_GameObject: {fileID: 954557278}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -130.8, y: 232.1, z: 0}
-  m_LocalScale: {x: 1, y: 500, z: 1000}
+  m_LocalScale: {x: 1, y: 500, z: 550}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -47282,7 +47283,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 38cb390e53ce9da4e8b3ea525c4ba60a, type: 2}
-  m_TreeDistance: 150
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -47641,7 +47642,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9829858, b: 0.91886795, a: 1}
   m_Intensity: 1.2
   m_Range: 10
   m_SpotAngle: 30
@@ -47653,7 +47654,7 @@ Light:
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0
-    m_NormalBias: 0.4
+    m_NormalBias: 0.8
     m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
@@ -59432,7 +59433,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 2f5f6f86f01b1dd48854411a5f642f65, type: 2}
-  m_TreeDistance: 50
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -61780,7 +61781,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 8c57cd085aaf7794c9f624a3a9e4229b, type: 2}
-  m_TreeDistance: 50
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -68639,35 +68640,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6029034920135533235, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: near clip plane
-      value: 0.01
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.9786067
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.1252894
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.1445887
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.88708603
+      value: 0.9193931
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.27884334
+      value: 0.13925318
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.011271
+      value: 0.15142144
       objectReference: {fileID: 0}
     - target: {fileID: 6263599863687795280, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.36769256
+      value: 0.33525577
       objectReference: {fileID: 0}
     - target: {fileID: 7744622859948393566, guid: e044209c0261e0b479f9e61ab341b48c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -74550,7 +74551,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: a06c0f87f43b5b8439fb41cc0f4a2b0b, type: 2}
-  m_TreeDistance: 50
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -78197,7 +78198,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1773824840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83571,7 +83572,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 2e641640ba43a5044bb542d231a9961c, type: 2}
-  m_TreeDistance: 50
+  m_TreeDistance: 100
   m_TreeBillboardDistance: 150
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -84296,7 +84297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688513485452954103, guid: 618dd51f8c4f89f4db418b55845f7b4c, type: 3}
       propertyPath: near clip plane
-      value: 0.001
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 4163649544062432774, guid: 618dd51f8c4f89f4db418b55845f7b4c, type: 3}
       propertyPath: m_IsActive

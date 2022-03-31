@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4971267473707640333}
   - component: {fileID: 6868725653637958132}
   - component: {fileID: 3102146826845662520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7109923631522093665}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 3147351375606482308}
   - component: {fileID: 8440419846870350357}
   - component: {fileID: 7002265208692392479}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: showHealthbarBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 1420854857947317002}
   - component: {fileID: 2196183340797034620}
   - component: {fileID: 9030396657995738009}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5090,7 +5090,7 @@ GameObject:
   - component: {fileID: 1203677899032850568}
   - component: {fileID: 3168131873402986103}
   - component: {fileID: 4107263324001561963}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Robot
   m_TagString: Robot
   m_Icon: {fileID: 0}
@@ -5236,6 +5236,7 @@ MonoBehaviour:
   initialScale: {x: 0, y: 0, z: 0}
   maxScale: 4
   minScale: 0.2
+  GameInfoManager: {fileID: 0}
 --- !u!114 &1203677899032850568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5320,7 +5321,7 @@ GameObject:
   - component: {fileID: 8265380607961242580}
   - component: {fileID: 8265380607961242597}
   - component: {fileID: 8265380607961242614}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5383,7 +5384,7 @@ GameObject:
   - component: {fileID: 9135803950792429100}
   - component: {fileID: 1057460039181711294}
   - component: {fileID: 3910234648834453496}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlayerName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5441,7 +5442,7 @@ MonoBehaviour:
   m_text: Robot
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 5633839f441ca2d48b7278057a0dc733, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5518,7 +5519,7 @@ GameObject:
   - component: {fileID: 3674240969515959755}
   - component: {fileID: 4556634701954492959}
   - component: {fileID: 5990347185626229620}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Healthbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5597,7 +5598,7 @@ GameObject:
   - component: {fileID: 2602930263135039440}
   - component: {fileID: 5721878304234257810}
   - component: {fileID: 5271628618681652941}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BillBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

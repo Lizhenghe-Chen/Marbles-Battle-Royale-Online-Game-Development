@@ -6,28 +6,34 @@ using Photon.Pun;
 
 public class ScoreBoardManager : MonoBehaviourPunCallbacks
 {
+    public static ScoreBoardManager Instance ;
     [SerializeField] GameObject ScoreBoardCanvas, scoreBoardPrefabs;
     [SerializeField] Transform container;
-    public PhotonView pV;
+    public PhotonView playerPhotonView;
     Dictionary<string, ScoreBoard> scoreBoardItems = new Dictionary<string, ScoreBoard>();// playerName as key, ScoreBoard(item) as value
     List<ScoreBoardItem> list = new List<ScoreBoardItem>();
     [SerializeField] TMP_Text ScoreboardText;
-
+    public string type;
     void Awake()
     {
-        if (this.name == "InGameMenu") { pV = transform.parent.parent.parent.GetComponent<PhotonView>(); }
-        else if (this.name == "ScoreBoardCanvas (3)")
+        Instance=this;
+        if (type == "InGameMenu")//player InGameMenu score board
+        {
+            playerPhotonView = transform.parent.parent.parent.GetComponent<PhotonView>();
+        }
+        else if (type == "spectator")//player spectector upright
         {
             //Debug.Log("!!@#$!@$!$!@$#@!$!$!$!@$!$!@$!" + transform.parent.name);
-            pV = this.transform.parent.GetComponent<PhotonView>();
+            playerPhotonView = this.transform.parent.parent.GetComponent<PhotonView>();
         }
         else
-            pV = transform.parent.parent.GetComponent<PhotonView>();
+            playerPhotonView = transform.parent.parent.GetComponent<PhotonView>();//player OnGame upright
 
     }
     void Start()
     {
-        if (!pV.IsMine) { Destroy(ScoreBoardCanvas); return; }
+        if (!playerPhotonView.IsMine) { Destroy(this.gameObject); return; }
+        
         // foreach (GameObject obj in GameObject.FindGameObjectsWithTag("PlayerManager"))
         // {
         //     PlayerManager playermanManager = obj.GetComponent<PlayerManager>();
@@ -40,23 +46,29 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
     }
     void Update()
     {
-
+        //if (!playerPhotonView.IsMine) { return; }
         Refresh();
-
         // if (GameObject.FindGameObjectsWithTag("PlayerManager").Length != scoreBoardItems.Count)//some player enter or leave the game
         // {
 
-        //     Refresh();
+        //     Refresh();//insted loop, AllRefreshScoreBoard() in other scripts can reduce cpu pressure
         // }
     }
     void LateUpdate()
     {
 
-
     }
+    // [PunRPC]
+    // public void AllRefresh()//this will send messages to all players in a room
+    // {
+    //     Debug.Log("Refresh ScoreBoard");
+    //     Refresh();
 
-    void Refresh()
+    // }
+
+    public void Refresh()
     {
+
         // Debug.Log( GameObject.FindGameObjectsWithTag("PlayerManager").Length);
         list.Clear();
         // scoreBoardItems.Clear();
@@ -68,7 +80,7 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
         {
             PlayerManager playermanManager = obj.GetComponent<PlayerManager>();
             var nickName = obj.GetComponent<PhotonView>().Owner.NickName;
-            // Debug.Log(nickName + "death" + playermanManager.deathCount);
+          //  Debug.Log(nickName + "death" + playermanManager.deathCount);
 
             list.Add(new ScoreBoardItem(nickName, playermanManager.killCount, playermanManager.deathCount, playermanManager.isDead));
             // AddScoreboardItem(nickName, playermanManager.deathCount, playermanManager.killCount);
@@ -82,13 +94,12 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
 
             AddScoreboardItem(item.playerName, item.killCount, item.deathCount, item.isDead);
         }
-        // ScoreboardText.text = message;
-        // message = string.Empty;
+       // Debug.Log("!!!!!Refreshed ScoreBoard");
     }
     void AddScoreboardItem(string playerName, int killCount, int deathCount, bool isDead)
     {
         bool isLocalPlayer = false;
-        if (playerName == pV.Owner.NickName) { isLocalPlayer = true; }
+        if (playerName == playerPhotonView.Owner.NickName) { isLocalPlayer = true; }
         ScoreBoard item = Instantiate(scoreBoardPrefabs, container).GetComponent<ScoreBoard>();
         item.Initialize(playerName, killCount, deathCount, isLocalPlayer, isDead);
         // scoreBoardItems[playerName] = item;

@@ -14,10 +14,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public bool isTrainingGround = false, showTutorial = true;
     public Toggle showTutorialToggle;
 
-    public bool playBackGroundMusic = true;
-    public Toggle playBackGroundMusictoggle;
-    public Slider backGroundMusicVolumeSlider;
-    public SoundController soundController;
+    // public bool playBackGroundMusic = true;
+    // public Toggle playBackGroundMusictoggle;
+    // public Slider backGroundMusicVolumeSlider;
+    // public SoundController soundController;
     public KeepSetting keepSetting;
 
     private void Awake()

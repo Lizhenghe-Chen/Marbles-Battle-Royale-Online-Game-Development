@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2431311891307102346}
   - component: {fileID: 2431311891307102341}
   - component: {fileID: 2431311891307102350}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: TransferCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,6 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
+  photonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!1 &4722889293440102947
 GameObject:

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 108507113621798413}
   - component: {fileID: 108507113622797517}
   - component: {fileID: 840579875832209995}
+  - component: {fileID: 4702863956844053748}
   m_Layer: 0
   m_Name: Stump_01
   m_TagString: Untagged
@@ -93,8 +94,22 @@ MeshCollider:
   m_GameObject: {fileID: 108507113624723981}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 768be665aba8b4e4aae7a973ae9616cf, type: 3}
+--- !u!136 &4702863956844053748
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108507113624723981}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 0.98
+  m_Direction: 1
+  m_Center: {x: -0.04072857, y: 0.26, z: 0}

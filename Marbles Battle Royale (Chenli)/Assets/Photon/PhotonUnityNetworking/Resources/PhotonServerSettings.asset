@@ -65,6 +65,8 @@ MonoBehaviour:
   - PlayJumpRushSound
   - globalSoundTrigger
   - DestroyForAll
+  - AllRefresh
+  - AllRefreshScoreBoard
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

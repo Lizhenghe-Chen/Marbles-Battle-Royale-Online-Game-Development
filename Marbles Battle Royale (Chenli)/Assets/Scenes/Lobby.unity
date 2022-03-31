@@ -8319,7 +8319,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1383467377}
   - component: {fileID: 1383467376}
-  - component: {fileID: 1383467378}
   m_Layer: 0
   m_Name: RoomManager
   m_TagString: Untagged
@@ -8342,10 +8341,6 @@ MonoBehaviour:
   isTrainingGround: 0
   showTutorial: 0
   showTutorialToggle: {fileID: 1949064550}
-  playBackGroundMusic: 1
-  playBackGroundMusictoggle: {fileID: 2061182071}
-  backGroundMusicVolumeSlider: {fileID: 2024858349}
-  soundController: {fileID: 0}
   keepSetting: {fileID: 0}
 --- !u!4 &1383467377
 Transform:
@@ -8362,28 +8357,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1383467378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1383467375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 1
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 99
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1001 &1385195326
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10132,7 +10105,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 1000
+  far clip plane: 150
   field of view: 50
   orthographic: 0
   orthographic size: 260.61
