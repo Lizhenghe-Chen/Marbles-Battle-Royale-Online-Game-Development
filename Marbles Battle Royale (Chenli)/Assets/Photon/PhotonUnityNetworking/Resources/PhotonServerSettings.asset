@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: eu
+    FixedRegion: 
     Server: 
     Port: 0
     ProxyServer: 
@@ -34,39 +34,20 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
-  - ClickRpc
-  - DestroyRpc
-  - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - RPC_takeDamage
-  - RPC_TakeDamage
-  - Damage
-  - OnAddDamage
-  - Death
-  - OnKill
-  - Boradcast
-  - test
-  - SentData
-  - Flash
-  - SendKill
-  - SendInRoomInfo
   - AddHealth
-  - DecreaseHealth
-  - OnDeath
-  - IsDead
-  - Refresh
-  - GlobalRefresh
-  - LocalRefresh
-  - LRefresh
-  - SentHealthData
-  - SendHealthData
-  - playJumpRushSound
-  - PlayJumpRushSound
-  - globalSoundTrigger
-  - DestroyForAll
-  - AllRefresh
   - AllRefreshScoreBoard
+  - ClickRpc
+  - DecreaseHealth
+  - DestroyForAll
+  - DestroyRpc
+  - GlobalRefresh
+  - globalSoundTrigger
+  - IsDead
+  - OnDeath
+  - OnKill
+  - SendHealthData
+  - SendInRoomInfo
+  - SentData
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

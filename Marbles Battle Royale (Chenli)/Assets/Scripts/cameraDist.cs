@@ -12,13 +12,15 @@ public class cameraDist : MonoBehaviour
     [SerializeField] float disdance; //for postProcessVolume Depth od Field use
     [SerializeField] float playerRadius;
     float maxRadius = 10; //should >0
-    float minRadius =-2; //should <0
+    float minRadius = -2; //should <0
     int offset_Value = 1; //offset when Mouse ScrollWheel
 
 
     private CinemachineFreeLook virtualCamera;
     [SerializeField] float total_Offset, smoothSpeed = 2f;//distance between player and camera
     [SerializeField] float[] currentRadius = { 0, 0, 0 }, currentHeight = { 0, 0, 0 };//the size should same as virtualCamera.m_Orbits.Length
+    [SerializeField] private DepthOfField pr;
+
     void Start()
     {
         virtualCamera = this.GetComponent<CinemachineFreeLook>();
@@ -30,6 +32,7 @@ public class cameraDist : MonoBehaviour
             currentRadius[i] = virtualCamera.m_Orbits[i].m_Radius;
             currentHeight[i] = virtualCamera.m_Orbits[i].m_Height;
         }
+        postProcessVolume.sharedProfile.TryGetSettings<DepthOfField>(out pr);
     }
     void Update()
     {
@@ -41,10 +44,9 @@ public class cameraDist : MonoBehaviour
     void UpdatePS()//post-processing
     {
         disdance = Vector3.Distance(playerPosition.position, transform.position);
-        DepthOfField pr;
-        postProcessVolume.sharedProfile.TryGetSettings<DepthOfField>(out pr);
-       // pr.focusDistance.value = disdance - playerRadius;
-         pr.focusDistance.value = disdance;
+
+        // pr.focusDistance.value = disdance - playerRadius;
+        pr.focusDistance.value = disdance;
     }
     void ScrollWheeldetect()
     {

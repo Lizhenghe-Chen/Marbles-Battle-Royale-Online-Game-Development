@@ -218,9 +218,9 @@ public class RobotController : MonoBehaviourPunCallbacks
         { pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
 
     }
-    public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved, let new master client handle the start game right
+    public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved
     {
-        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfoTitle").GetComponent<GameInfoManager>();
+        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
     }
     [PunRPC]
     void SendHealthData(float _currentHealth, float _billboardvalue)

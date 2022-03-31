@@ -59,7 +59,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public float gameOverBackMenuTimer = 5;
     //================================================================
     [SerializeField] GuidanceText guidanceText;
-  
+
 
 
     void Awake()
@@ -83,7 +83,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         //this is very important to put these behand the isMine Judgement to make sure the sync not mess up
         currentHealth = playerHealth;
         //make sure all players have this playerManager data
-        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount-1);
+        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount - 1);
 
         PlayerSelection = keepSetting.playerType;
         // Debug.Log(startPoints.Length);
@@ -231,7 +231,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         FadeIn_OutImage.GetComponent<AnimateLoading>().LoadingLevel();
 
-        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount-1);
+        leftLifeTextContent = "Rest Life: " + (maxLife - deathCount - 1);
         if (deathCount >= maxLife)
         {
             if (RoomManager.isTrainingGround && keepSetting.showTutorial && guidanceText.Goal < 9)
@@ -253,7 +253,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             controller.transform.localScale = initialScale;
             controller.transform.position = temp;
         }
-       
+
 
     }
 
@@ -268,7 +268,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
 
     public void Health(float addHealth)
-    { if (currentHealth > playerHealth) {Debug.LogWarning("?!?!?!?!?!") ;return; }//avoid health exceeed max health
+    {
+        if (currentHealth > playerHealth)//avoid health exceeed max health
+        {
+            //Debug.LogWarning("?!?!?!?!?!");
+            return;
+        }
         currentHealth += addHealth;
         //playerPhotonView.RPC("AddHealth", RpcTarget.All, addHealth);
         playerPhotonView.RPC("SendHealthData", RpcTarget.All, currentHealth);
@@ -346,7 +351,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) { return; }
         GameInfoManager.GlobalRefresh(newPlayer.NickName + " Left the game...");
-       
+
     }
     // public override void OnJoinedRoom()
     // {
@@ -372,7 +377,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void AddHealth(float addHealth)
     {
-        if (currentHealth >= playerHealth) {Debug.LogWarning("?!?!?!?!?!") ;return; }//avoid health exceeed max health
+        if (currentHealth >= playerHealth) { Debug.LogWarning("?!?!?!?!?!"); return; }//avoid health exceeed max health
         currentHealth += addHealth;
     }
 
