@@ -11,7 +11,7 @@ public class SoundController : MonoBehaviour
     public AudioSource backGroundMusic;
     public Toggle playBackGroundMusictoggle;
     public Slider backGroundMusicVolumeSlider;
-    [SerializeField] bool isLeaveRoom = false;
+    public bool isLeaveRoom = false;
     // [SerializeField] bool playBackGroundMusic = false;
     [SerializeField] NetworkManager networkManager;
     [Range(0f, 1f)]
@@ -84,10 +84,6 @@ public class SoundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
-        {
-            isLeaveRoom = networkManager.isLeaveRoom;
-        }
         // if (SceneManager.GetActiveScene().buildIndex == 1) { isLeaveRoom = networkManager.isLeaveRoom; }
         if (playBackGroundMusic == false) { return; }
         TurnOffMusic();
@@ -96,7 +92,7 @@ public class SoundController : MonoBehaviour
 
     void TurnOffMusic()
     {
-        if (!isLeaveRoom) { backGroundMusic.volume = backGroundMusicVolume; return; }
+        if (!isLeaveRoom || backGroundMusic.volume <= 0) {  return; }
         backGroundMusic.volume = Mathf.Lerp(backGroundMusic.volume, 0, Time.deltaTime * 10f);
     }
     public void PauseMusic() { backGroundMusic.Pause(); }

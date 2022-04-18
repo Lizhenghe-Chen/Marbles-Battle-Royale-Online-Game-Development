@@ -8,9 +8,6 @@ public class CollisionDetect : MonoBehaviour
 {
     [Header("This compoment will manage player's collision and damages\n")]
 
-
-    public static bool ISufferDamage = false;
-
     PhotonView photonView;
     //public TMP_Text testText;
     //================================================================
@@ -20,76 +17,55 @@ public class CollisionDetect : MonoBehaviour
 
     [Header("UI need Manually attach, this is for player's UI display,\n this will make sure player only get their own UI panel")]
 
-    [SerializeField] GameInfoManager GameInfoManager;
+    //[SerializeField] GameInfoManager GameInfoManager;
     [Tooltip("This is for player's Health display, should be an image")]
     //[SerializeField] Image healthBarImage;
-    [SerializeField] double deathAltitude;
 
     [SerializeField] Rigidbody rb; // player
     public string player_Name, other_Player_Name;
 
-    double hitDirection;
+    // double hitDirection;
     [SerializeField] float currentHealth;
     float damageTimer;
     Vector3 other_Player_Velocity;
     public Vector3 Player_Velocity;
+    public bool inHealthArea = false;
     public float hitForce;
     //================================================================
     //private CollisionTrigger CollisionTrigger;
-    private static float
-
-            X_velocity,
-            Y_velocity,
-            Z_velocity,
-            TotalSpeed;
+    private static float X_velocity, Y_velocity, Z_velocity, TotalSpeed;
     PlayerManager playerManager;
     MovementController movementController;
     // Start is called before the first frame update
-
-
     JumpController jumpController;
     public Vector3 initialScale;
     public float maxScale = 4, minScale = 0.2f;
     void Awake()
     {
-
-
         rb = GetComponent<Rigidbody>();
-
         // Debug.Log(UI.transform.Find("HealthbarBackground/Healthbar"));
         photonView = GetComponent<PhotonView>();
         player_Name = photonView.Owner.NickName;
-
         jumpController = GetComponent<JumpController>();
+        //   GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+        //  GameInfoManager.scoreBoardManager = transform.Find("UI/ScoreBoard").GetComponent<ScoreBoardManager>();
     }
 
     void Start()
     {
         if (photonView.IsMine)
         {
-            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
-            GameInfoManager.scoreBoardManager = transform.Find("UI/ScoreBoard").GetComponent<ScoreBoardManager>();
             initialScale = transform.localScale;
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
             playerManager.initialScale = initialScale;
             damageTimer = playerManager.damageTimer;
-            deathAltitude = playerManager.deathAltitude;
-            // healthBarImage = transform.Find("Canvas/HealthbarBackground/Healthbar").GetComponent<Image>();
-            // Debug.Log(healthBarImage);
-            // UI = GameObject.Find("Canvas");
-
-            //Debug.Log("collition playerManager: " + playerManager);
-
             //CollisionTrigger = GetComponentInChildren<CollisionTrigger>();
         }
         else
         {
-
             //Destroy(healthBarImage);
         }
-
-
     }
 
     // Update is called once per frame
@@ -99,9 +75,7 @@ public class CollisionDetect : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Player_Velocity = rb.velocity;
-
-
+        Player_Velocity = rb.velocity;//since the collision will get the late velocity that give wrong damage, so we need to get the velocity in fixed update (earlier)
         if (!photonView.IsMine)
         {
             return;
@@ -118,35 +92,27 @@ public class CollisionDetect : MonoBehaviour
         {
             transform.localScale += new Vector3(0.0005f, 0.0005f, 0.0005f);
         }
-
-
-
         // healthBarImage.fillAmount = billboardvalue;
     }
-    void Update()
-    {
+    // void Update()
+    // {
 
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-        // if (playerManager.currentHealth <= 0) { FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel(); }
-        BelowDeathAltitude();
-    }
+    //     if (!photonView.IsMine)
+    //     {
+    //         return;
+    //     }
+    // }
 
-    void OnCollisionStay(Collision collision)
-    {
-        //  if (collision.collider.name == "Enlarge" && transform.localScale.x <= initialScale.x * maxScale) { transform.localScale += new Vector3(0.1f, 0.1f, 0.1f); }
-        //  if (collision.collider.name == "Shrink" && transform.localScale.x >= initialScale.x * minScale) { transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f); }
+    // void OnCollisionStay(Collision collision)
+    // {
+    //     if (collision.collider.name == "funnel")
+    //     {
+    //         rb.drag = 0;
+    //         //Debug.Log(collision.collider.name);
+    //     }
+    //     else { rb.drag = 0.1f; }
 
-        if (collision.collider.name == "funnel")
-        {
-            rb.drag = 0;
-            //Debug.Log(collision.collider.name);
-        }
-        else { rb.drag = 0.1f; }
-
-    }
+    // }
     //https://docs.unity3d.com/Manual/ExecutionOrder.html
     void OnCollisionEnter(Collision collision)
     {
@@ -154,12 +120,12 @@ public class CollisionDetect : MonoBehaviour
         {
             return;
         }
-
+ jumpController.PlayGroundedSound();//let sound effect happen once locally
         // Debug.Log(target.photonView.Owner.NickName);
 
         if (collision.rigidbody && (collision.collider.tag == "Player" || collision.collider.tag == "Robot"))
         {
-
+            jumpController.PlayHitSound();//let sound effect happen once locally
             if (collision.collider.tag == "Player")
             {
                 other_Player_Name = collision.collider.GetComponent<PhotonView>().Owner.NickName;
@@ -171,15 +137,12 @@ public class CollisionDetect : MonoBehaviour
                 other_Player_Velocity = collision.gameObject.GetComponent<RobotController>().robotVelocity;
             }
 
-            hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-
-            jumpController.playHitSound = true;//let sound effect happen once locally
-            ISufferDamage = judgeDamage(Player_Velocity, other_Player_Velocity);//for debug use, other_Player_Velocity need to get form attacker compoment first
+            // hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
+            //ISufferDamage = judgeDamage(Player_Velocity, other_Player_Velocity);//for debug use, other_Player_Velocity need to get form attacker compoment first
             // judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection);
-            if (ISufferDamage)//if player get damage
+            if (judgeDamage(Player_Velocity, other_Player_Velocity))//if player get damage
             {
                 hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
-
 
                 jumpController.hitForce = hitForce;//for sound effect use
                 var finalDamage = hitForce * damageTimer;//
@@ -195,33 +158,18 @@ public class CollisionDetect : MonoBehaviour
                         otherPlayerManager.Kill(player_Name);
                         // GameInfoManager.Refresh(other_Player_Name + " Killed " + player_Name);
                     }
-                    else { GameInfoManager.Refresh(other_Player_Name + " X -> " + player_Name); }
-
+                    // else { GameInfoManager.Refresh(other_Player_Name + " X -> " + player_Name); }
                 }
 
                 //photonView.RPC("Damage", RpcTarget.All, finalDamage, hitessage);//send damage to all players， this function will change  'currentHealth' value
                 playerManager.TakeDamage(finalDamage, hitessage, other_Player_Name);
                 //  billboardvalue = currentHealth / playerHealth;// this will display user's current health
-
-
             }
-            // else
-            // {//This is a not proper method because the death is judged locally, Howeversome time the otherplayer actually don't get hitted due to the network issue
-            //     if (finalDamage >= collision.collider.GetComponent<MovementController>().playerManager.currentHealth)
-            //     {
-            //         playerManager.killCount++;
-            //     }
-            // }
 
-            // judgeDamage (Player_Velocity, other_Player_Velocity, hitDirection);
-            // Vector3 otherV =
-            //     GameObject.Find("Sphere").GetComponent<cam>().Player_Velocity;
             // Vector3 PlayerPosition = this.transform.position;
             // Vector3 TesterPosition = collision.transform.position;
             // Vector3 direction = (TesterPosition - PlayerPosition);
         }
-
-        // movementController.takeDamageMask.enabled = false;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -229,19 +177,19 @@ public class CollisionDetect : MonoBehaviour
         {
             //This will make the player a child of the Obstacle
             transform.parent = other.gameObject.transform.parent; //Change "myPlayer" to your player
-
-            //collision.gameObject.GetComponent<getspeed>().enabled = true;
             Debug.Log("changed Parent to " + other.gameObject.name);
         }
+        if (other.gameObject.name == "elevator")
+        {
+            other.gameObject.GetComponent<TouchUp>().enabled = true;
+        }
+        if (other.name == "HealthArea")
+        {
+            inHealthArea = true;
+            // Debug.LogWarning("Inside Area");
+        }
     }
-    // [PunRPC]
-    // void Damage(float finalDamage, string message)
-    // {
-    //     currentHealth -= finalDamage;
 
-    //     Debug.Log("**************** " + message + " ****************");
-
-    // }
     void OnTriggerExit(Collider collision)
     {
         if (collision.gameObject.name == "Transfer platform")
@@ -250,6 +198,7 @@ public class CollisionDetect : MonoBehaviour
             rb.velocity += collision.gameObject.GetComponent<getspeed>().ObjVelocity;
             //collision.gameObject.GetComponent<getspeed>().enabled = false;
         }
+        if (collision.name == "HealthArea") { inHealthArea = false; Debug.LogWarning("Outside HealthArea"); }
     }
 
     public float[] getSpeedData(Rigidbody rb)
@@ -258,31 +207,14 @@ public class CollisionDetect : MonoBehaviour
         Y_velocity = rb.velocity.y;
         Z_velocity = rb.velocity.z;
         Player_Velocity = rb.velocity;
-        TotalSpeed =
-            Mathf
-                .Sqrt(Mathf.Pow(X_velocity, 2) +
-                Mathf.Pow(Y_velocity, 2) +
-                Mathf.Pow(Z_velocity, 2));
+        TotalSpeed = Mathf.Sqrt(Mathf.Pow(X_velocity, 2) +
+                Mathf.Pow(Y_velocity, 2) + Mathf.Pow(Z_velocity, 2));
         float[] data = { X_velocity, Y_velocity, Z_velocity, TotalSpeed };
         return data;
     }
 
-
     //================================================================
 
-    // public void TakeDamage(float damage)//Send
-    // {
-    //     photonView.RPC("RPC_TakeDamage", RpcTarget.All, damage);
-    // }
-    // [PunRPC]
-    // void RPC_TakeDamage(float damage) //Recieve this method will run on everyone's computer, but !photonView.IsMine will make it only run on the victum's computer
-    // {
-    //     if (!photonView.IsMine)
-    //     {
-    //         return;
-    //     }
-    //     Debug.Log("ohhh took damage: " + damage);
-    // }
     public static bool judgeDamage(Vector3 Player_Velocity, Vector3 other_Player_Velocity)
     {
         if (Player_Velocity.magnitude > other_Player_Velocity.magnitude) { return false; } else { return true; }
@@ -363,30 +295,8 @@ public class CollisionDetect : MonoBehaviour
     //     }
 
     // }
-    public void BelowDeathAltitude()
-    {
-        if (transform.localPosition.y < deathAltitude)
-        {
-            playerManager.deadPosition = transform.position;//send death position to it's player Manager
-                                                            //   FadeIn_OutImage.GetComponent<AnimateLoading>().LeavingLevel();
-            GameInfoManager.Refresh(player_Name + " Fall dead");
-            playerManager.Die();
-            // gameObject.transform.position =
-            //     new Vector3(target.x + Random.Range(3, 10),
-            //         100,
-            //         target.z + Random.Range(3, 10));
-        }
-    }
-    // void Die()
+    // void OnTriggerStay(Collider collision)
     // {
-    //     if (!playerManager)
-    //     {
-    //         Debug.LogWarning("No playerManager");
-    //         return;
-    //     }
-    //     else
-    //         playerManager.Die();
+
     // }
-
-
 }

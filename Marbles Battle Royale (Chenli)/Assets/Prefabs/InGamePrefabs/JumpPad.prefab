@@ -109,10 +109,9 @@ GameObject:
   - component: {fileID: 5731719107171202337}
   - component: {fileID: 5731719107171202336}
   - component: {fileID: 5731719107171202343}
-  - component: {fileID: 5731719107171202342}
   - component: {fileID: 5731719107171202341}
-  - component: {fileID: 4147319402149290096}
   - component: {fileID: 9126901434374749951}
+  - component: {fileID: 868560024452912017}
   m_Layer: 7
   m_Name: JumpPad
   m_TagString: Untagged
@@ -186,20 +185,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5731719107171202342
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5731719107171202340}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 0.27
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5731719107171202341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,20 +199,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Force: 100
   audioSource: {fileID: 0}
---- !u!64 &4147319402149290096
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5731719107171202340}
-  m_Material: {fileID: 13400000, guid: b6b0ad20a0b638f43a5cac4a69e5cf29, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: -1
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!82 &9126901434374749951
 AudioSource:
   m_ObjectHideFlags: 0
@@ -324,3 +295,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!135 &868560024452912017
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731719107171202340}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.49
+  m_Center: {x: 0, y: 0, z: 0}

@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
-
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 public class ScoreBoardManager : MonoBehaviourPunCallbacks
 {
-    public static ScoreBoardManager Instance ;
+    //public static ScoreBoardManager Instance ;
     [SerializeField] GameObject ScoreBoardCanvas, scoreBoardPrefabs;
     [SerializeField] Transform container;
     public PhotonView playerPhotonView;
     Dictionary<string, ScoreBoard> scoreBoardItems = new Dictionary<string, ScoreBoard>();// playerName as key, ScoreBoard(item) as value
     List<ScoreBoardItem> list = new List<ScoreBoardItem>();
     [SerializeField] TMP_Text ScoreboardText;
+    [SerializeField] GameInfoManager gameInfoManager;
     public string type;
     void Awake()
     {
-        Instance=this;
+        //Instance=this;
         if (type == "InGameMenu")//player InGameMenu score board
         {
             playerPhotonView = transform.parent.parent.parent.GetComponent<PhotonView>();
@@ -32,8 +37,8 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
     }
     void Start()
     {
-        if (!playerPhotonView.IsMine) { Destroy(this.gameObject); return; }
-        
+        gameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+        gameInfoManager.scoreBoardManager = this;
         // foreach (GameObject obj in GameObject.FindGameObjectsWithTag("PlayerManager"))
         // {
         //     PlayerManager playermanManager = obj.GetComponent<PlayerManager>();
@@ -43,11 +48,12 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
         //     list.Add(new ScoreBoardItem(nickName, playermanManager.deathCount, playermanManager.killCount));
         // }
         // foreach (ScoreBoardItem item in list) { Debug.Log(item.ToString()); }
+
     }
     void Update()
     {
         //if (!playerPhotonView.IsMine) { return; }
-        Refresh();
+        // Refresh();
         // if (GameObject.FindGameObjectsWithTag("PlayerManager").Length != scoreBoardItems.Count)//some player enter or leave the game
         // {
 
@@ -68,19 +74,16 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
 
     public void Refresh()
     {
-
-        // Debug.Log( GameObject.FindGameObjectsWithTag("PlayerManager").Length);
-        list.Clear();
-        // scoreBoardItems.Clear();
         foreach (Transform child in container)
         {
             GameObject.Destroy(child.gameObject);
         }
+        list.Clear();
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("PlayerManager"))
         {
             PlayerManager playermanManager = obj.GetComponent<PlayerManager>();
             var nickName = obj.GetComponent<PhotonView>().Owner.NickName;
-          //  Debug.Log(nickName + "death" + playermanManager.deathCount);
+            Debug.Log(nickName + "death" + playermanManager.deathCount);
 
             list.Add(new ScoreBoardItem(nickName, playermanManager.killCount, playermanManager.deathCount, playermanManager.isDead));
             // AddScoreboardItem(nickName, playermanManager.deathCount, playermanManager.killCount);
@@ -94,7 +97,7 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
 
             AddScoreboardItem(item.playerName, item.killCount, item.deathCount, item.isDead);
         }
-       // Debug.Log("!!!!!Refreshed ScoreBoard");
+        Debug.Log("!!!!!Refreshed ScoreBoard");
     }
     void AddScoreboardItem(string playerName, int killCount, int deathCount, bool isDead)
     {

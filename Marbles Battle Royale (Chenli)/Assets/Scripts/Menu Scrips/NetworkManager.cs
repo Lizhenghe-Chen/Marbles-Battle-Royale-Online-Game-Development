@@ -11,40 +11,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     PhotonView pV;
     [Tooltip("when In debug state, mark this so that no need to type room name to create room over and over again ")]
     public int maxRoomPlayers = 10;
-    [SerializeField] bool IsInDebugMode = false;
-
-
+    // [SerializeField] bool IsInDebugMode = false;
     public GameObject Start_Debug_Meun;
-
     public TextMeshProUGUI infoText;
-    public string moreInfoURL;
+    public string moreInfoURL = "https://doggychen.com/personal-unity-online-game-development";
     MenuManager MenuManager;
     RoomManager roomManager;
     public KeepSetting keepSetting;
-    public bool isLeaveRoom = false;
-
     //================================================================
     public TMP_InputField roomNameInput;
     public TMP_InputField userNameInput;
-
     [SerializeField] TMP_Text ErrorText;
-
     //================================================================
     [SerializeField] TMP_Text roomNameText;
-
     [SerializeField] Transform roomListContent;
-
     [SerializeField] GameObject roomListItemPrefab;
-
     //================================================================
     [SerializeField] Transform playerListContent;
-
     [SerializeField] GameObject PlayerListItemPrefab;
-
     //================================================================
     [SerializeField] GameObject startGameButton;
+    [SerializeField] SoundController soundController;
     [SerializeField] TMP_Text startGameNotice, CreateRoomNotice;
-
     //========== when add a new menu page, enter new name manually and find their object================
     //[Header("when add a new menu page, enter new name manually and find their object\n")]
     [Tooltip("Find Automatically, when add a new menu page, add new name manually and find their object ")]
@@ -55,14 +43,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //     menus = { TitleMenu, LoadingMenu, RoomMenu, ErrorMenu, FindRoomMenu };
     void Awake()
     {
-        Instance = this;
         pV = GetComponent<PhotonView>();
-        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
-        isLeaveRoom = false;
+        Instance = this;
+    }
+
+    public int start = 0;
+
+    void Start()
+    {
+        SetMenu();
+        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));//speed up for MenuManager
+        PhotonNetwork.ConnectUsingSettings();
+        soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
+
+    }
+    private void SetMenu()
+    {
         MenuManager = this.GetComponent<MenuManager>();
-        GameObject[] _menus = MenuManager.menuList;
+        roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
-        // SetActive to make sure Find GameObject could work
+        GameObject[] _menus = MenuManager.menuList;
         foreach (GameObject menu in _menus)
         {
             menu.SetActive(true);
@@ -74,59 +74,54 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         RoomMenu = GameObject.Find(nameof(RoomMenu));
         ErrorMenu = GameObject.Find(nameof(ErrorMenu));
         FindRoomMenu = GameObject.Find(nameof(FindRoomMenu));
-        //if (IsInDebugMode) { roomNameInput.text = "Test Room"; }
         MenuManager.OpenMenu(LoadingMenu);
-        GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));//speed up for MenuManager
-    }
 
-    int start = 0;
-
-    void Start()
-    {
-
-        // Debug.Log("Connecting to Master");
-        PhotonNetwork.ConnectUsingSettings();
-        if (keepSetting.start == 0)
-        {
-            userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
-
-        }
-        else
+        if (keepSetting.start >= 1)
         {
             userNameInput.text = keepSetting.playerName;
             roomNameInput.text = keepSetting.roomName;
             MenuManager.characterDetails.text = MenuManager.GenerateIntro(keepSetting.playerType);
             MenuManager.playerType = keepSetting.playerType;
+            // MenuManager.PlayerSelection.text = "Selected Player: " + keepSetting.playerType;
             roomManager.showTutorialToggle.isOn = keepSetting.showTutorial;
         }
-
     }
-    void Update()
+    private void Update()
     {
-        if (isLeaveRoom) { MenuManager.OpenMenu(LoadingMenu); }
+        if (!PhotonNetwork.IsConnected)
+        {
+            ErrorText.text = "Opss! Check your internet connection and try again.";
+            MenuManager.OpenConnectionFailedMenu(ErrorMenu);
+            PhotonNetwork.ConnectUsingSettings();//try to reconnect
+        }
         //  Debug.Log(PhotonNetwork.LevelLoadingProgress);
         //Debug.Log(PhotonNetwork.NetworkingClient);
-
     }
-    public void OnUserNameChanged()
-    {
-        PhotonNetwork.NickName = userNameInput.text;
-        if (userNameInput.text == null)
-        {
-            Debug.Log("null Player!!");
-            userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
-        }
-    }
+    // public void OnUserNameChanged()
+    // {
+    //     PhotonNetwork.NickName = userNameInput.text;
+    //     if (userNameInput.text == null)
+    //     {
+    //         Debug.Log("null Player!!");
+    //         userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+    //     }
+    // }
 
     //================================================================
     public override void OnConnectedToMaster()
     {
+         MenuManager.OpenMenu(Start_Debug_Meun);
         if (start == 0)
         {
-            MenuManager.OpenMenu(Start_Debug_Meun);
+           
+
             start++;
         }
-
+        if (keepSetting.start == 1)
+        {
+            userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+        }
+        keepSetting.start++;
         PhotonNetwork.JoinLobby();
         PhotonNetwork.AutomaticallySyncScene = true; //make sure the scene is updated
     }
@@ -194,8 +189,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Player[] players = PhotonNetwork.PlayerList;
-        CheckName(players);
+        CheckName(PhotonNetwork.PlayerList);
         MenuManager.OpenMenu(RoomMenu);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -204,7 +198,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             Destroy(child.gameObject);
         }
-        foreach (Player player in players)
+        foreach (Player player in PhotonNetwork.PlayerList)
         {
 
             //(Object original, Transform parent); clone a Object to target parent
@@ -243,10 +237,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (players.Length > maxRoomPlayers)// maximum number of players
         {
             Debug.Log("Tried to join Arena, but failed because full room!");
-            GetComponent<MenuManager>().errorColorRed = true;
+            MenuManager.checkInfoOK = false;
 
-            GetComponent<MenuManager>().PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
-             + "because the room reached maxium " + maxRoomPlayers + " players!";
+            MenuManager.PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+              + "because the room reached maxium " + maxRoomPlayers + " players!";
             LeaveRoom();
         }
         List<Player> checkList = new List<Player>();
@@ -264,8 +258,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 // ErrorText.text = "Tried to join Arena, but failed!\n" + "because your Name: " + PhotonNetwork.NickName + "is same as another player.";
                 // MenuManager.OpenMenu(ErrorMenu);
                 Debug.Log("Tried to join Arena, but failed because dupicate name!");
-                GetComponent<MenuManager>().errorColorRed = true;
-                GetComponent<MenuManager>().PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+                MenuManager.checkInfoOK = false;
+                MenuManager.PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
                  + "because your Name: '" + PhotonNetwork.NickName + "' is same as another player."; ;
                 LeaveRoom();
                 index = 0;
@@ -283,26 +277,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // public List<RoomInfo> DebugroomList = new List<RoomInfo>();
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        // foreach (RoomInfo test in roomList)
-        // {
-        //     if (roomList.Count == 0) { Debug.Log("No List room found:"); return; }
-        //     Debug.Log("roomList:" + test.ToString());
-        // }
-        // Debug.Log("========");
-
         // //refresh the roomListContent
         foreach (Transform trans in roomListContent)
         {
             Debug.Log("Deleted:" + trans.GetComponent<RoomListItem>().info.ToString());
             Destroy(trans.gameObject);
         }
-
-        // for (int i = 0; i < roomList.Count; i++)
-        // {
-        //     if (roomList[i].RemovedFromList)
-        //         continue;
-        //     Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
-        // }
 
         UpdateCachedRoomList(roomList);
         foreach (KeyValuePair<string, RoomInfo> item in cachedRoomList)
@@ -344,18 +324,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (roomManager.isTrainingGround)
         {
-
             PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer); Debug.LogWarning("switched Host to current");
         }
         else { PhotonNetwork.CurrentRoom.IsVisible = false; }
 
-        pV.RPC("SendInRoomInfo", RpcTarget.All);
+        pV.RPC("LeavingRoom", RpcTarget.All);
         MenuManager.OpenMenu(LoadingMenu);
         Invoke("LodingGameScene", 1f);
     }
     [PunRPC]
-    void SendInRoomInfo()
-    { isLeaveRoom = true; }
+    void LeavingRoom()
+    {
+        MenuManager.OpenMenu(LoadingMenu);
+        soundController.isLeaveRoom = true;
+        //isLeaveRoom = true;
+    }
     void LodingGameScene()
     {
         PhotonNetwork.LoadLevel(1); //Level 0 is the start menu, Level 1 is the Gaming Scene
@@ -410,5 +393,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomNameInput.text = keepSetting.roomName;
         CreateRoomNotice.text = "Tip: Room Name must not NULL and dupicate";
     }
-    public void OpenURL() { Application.OpenURL("https://doggychen.com/personal-unity-online-game-development"); }
+    public void OpenURL() { Application.OpenURL(moreInfoURL); }
+
 }

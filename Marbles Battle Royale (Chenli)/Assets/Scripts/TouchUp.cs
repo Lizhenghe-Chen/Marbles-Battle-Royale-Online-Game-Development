@@ -33,18 +33,7 @@ public class TouchUp : MonoBehaviour
     void Start()
     {
         initial_location = this.transform.position;
-        // if (photonView)
-        // {
-        //     if (!photonView.IsMine)
-        //     {
-        //         return;
-        //     }
-        // }
 
-        // if (this.enabled == true)
-        // {
-        //     initial_locationY = this.transform.position.y;
-        // }
     }
 
     // Update is called once per frame
@@ -54,6 +43,7 @@ public class TouchUp : MonoBehaviour
         {
             // Debug.LogWarning("Return"); 
             transform.position = Vector3.MoveTowards(transform.position, initial_location, returnSpeed * Time.deltaTime);
+            if (transform.position == initial_location) { this.enabled = false; }
         }
         // if (transform.position.y > initial_locationY && isColliding == false)
         // {

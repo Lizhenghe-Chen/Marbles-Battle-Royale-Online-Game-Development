@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 //this script is aim to solve the problem that the player cannot have same inertance with moving object,
 // this script will be used, actived and deactivated by player's CollisionDetect.cs.
 public class getspeed : MonoBehaviour

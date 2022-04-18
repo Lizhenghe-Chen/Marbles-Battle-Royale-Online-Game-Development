@@ -3,10 +3,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;//will use Player Type
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 public class RobotController : MonoBehaviourPunCallbacks
 {
     [SerializeField] Transform Player;
-    PhotonView pV;
+    PhotonView robotPhotonView;
     [SerializeField] Rigidbody rb; // player
     [SerializeField] Transform Eye;
     [SerializeField] Image healthBarImage;
@@ -37,10 +42,9 @@ public class RobotController : MonoBehaviourPunCallbacks
     public Vector3 initialScale;
     public float maxScale = 4, minScale = 0.2f;
     [SerializeField] GameInfoManager GameInfoManager;
-    void Awake() { pV = GetComponent<PhotonView>(); }
+    void Awake() { robotPhotonView = GetComponent<PhotonView>(); }
     void Start()
     {
-
         initialScale = transform.localScale;
         rb = GetComponent<Rigidbody>();
         healthBarImage = this.transform.Find("BillBoard/showHealthbarBackground/Healthbar").GetComponent<Image>();
@@ -60,7 +64,7 @@ public class RobotController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            // pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
+            // robotPhotonView.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
             belowDeathAltitudeOrDead();
             if (loopRush || loopMovement)
             {
@@ -71,10 +75,10 @@ public class RobotController : MonoBehaviourPunCallbacks
             LoopRush();
             LoopMovement();
         }
-        // Billboard.DisplayHealthBar(healthBarImage, billboardvalue);
+
         billboardvalue = robotCurrentHealth / robotHealth;
-        healthBarImage.fillAmount = billboardvalue;
-        healthBarImage.color = Billboard.JudgeColor(billboardvalue);
+   
+         InGameUIManager.SetHealthBar(healthBarImage, billboardvalue);
     }
     void FixedUpdate()
     {
@@ -125,9 +129,9 @@ public class RobotController : MonoBehaviourPunCallbacks
 
                 }
                 else { other_Player_Name = other.transform.name; }
-                GameInfoManager.Refresh(other_Player_Name + " X -> " + this.name);
+                GameInfoManager.GlobalRefresh(other_Player_Name + " X -> " + this.name);
             }
-            pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
+            robotPhotonView.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
     void belowDeathAltitudeOrDead()
@@ -136,14 +140,15 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             if (transform.position.y < -20)
             {
-                GameInfoManager.Refresh(this.name + " Fall dead");
+                GameInfoManager.GlobalRefresh(this.name + " Fall dead");
             }
-            transform.position = startPointPosition;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            robotCurrentHealth = robotHealth;
-            photonView.RPC("DestroyForAll", RpcTarget.All);
-            // pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
+            // transform.position = startPointPosition;
+            // rb.velocity = Vector3.zero;
+            // rb.angularVelocity = Vector3.zero;
+            // robotCurrentHealth = robotHealth;
+            robotPhotonView.RPC("DestroyForAll", RpcTarget.All);
+
+            // robotPhotonView.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
         }
     }
 
@@ -215,7 +220,7 @@ public class RobotController : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
     {
         if (PhotonNetwork.IsMasterClient)
-        { pV.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
+        { robotPhotonView.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue); }
 
     }
     public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved
@@ -231,6 +236,7 @@ public class RobotController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void DestroyForAll()
     {
+        Debug.Log("DestroyForAll");
         Destroy(this.gameObject);
         // Destroy(PhotonView.Find(viewID).gameObject);
     }

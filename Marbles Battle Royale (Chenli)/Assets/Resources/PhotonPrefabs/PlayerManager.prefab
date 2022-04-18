@@ -68,12 +68,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
-  startPointsSize: 3
-  startPoints: []
   deadPosition: {x: 0, y: 0, z: 0}
   RoomManager: {fileID: 0}
   keepSetting: {fileID: 0}
   GameInfoManager: {fileID: 0}
+  collisionDetect: {fileID: 0}
+  jumpController: {fileID: 0}
   player_Name: 
   FadeIn_OutImage: {fileID: 0}
   killCount: 0
@@ -87,9 +87,14 @@ MonoBehaviour:
   leftLifeTextContent: 
   deathAltitude: -20
   initialScale: {x: 0, y: 0, z: 0}
-  playerList: []
-  GameOverCanvas: {fileID: 0}
+  takeDamageMask: {fileID: 0}
+  getHealthMask: {fileID: 0}
+  damageareaPosition: {x: 0, y: 0, z: 0}
+  playerPosition: {x: 0, y: 0, z: 0}
+  damagearea: {fileID: 0}
+  damagearea_playerDistance: 0
+  startPoints: []
   GameOverText: {fileID: 0}
-  currentWinnerName: 
   gameOverBackMenuTimer: 10
   guidanceText: {fileID: 0}
+  scoreBoardManager: {fileID: 0}

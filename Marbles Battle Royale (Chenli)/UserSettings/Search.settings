@@ -13,6 +13,15 @@ scopes = {
 	"last_search.83F126EB" = "default UI"
 	"OpenInspectorPreview.83F126EB" = "0"
 	"currentGroup.83F126EB" = "asset"
+	"last_search.8040E7BB" = "opa"
+	"OpenInspectorPreview.8040E7BB" = "0"
+	"currentGroup.8040E7BB" = "all"
+	"last_search.8788AF05" = ""
+	"OpenInspectorPreview.8788AF05" = "0"
+	"currentGroup.8788AF05" = "scene"
+	"last_search.7BEC51F9" = "t:Material"
+	"OpenInspectorPreview.7BEC51F9" = "0"
+	"currentGroup.7BEC51F9" = "asset"
 }
 providers = {
 	adb = {
@@ -62,6 +71,7 @@ providers = {
 	}
 }
 recentSearches = [
+	"t:Material"
 	"default UI"
 ]
 searchItemFavorites = [

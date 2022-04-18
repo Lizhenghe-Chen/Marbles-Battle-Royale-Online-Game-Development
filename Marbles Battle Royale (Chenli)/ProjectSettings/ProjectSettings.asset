@@ -604,6 +604,7 @@ PlayerSettings:
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 
+  vcxProjDefaultLanguage: 
   XboxOneProductId: 
   XboxOneUpdateKey: 
   XboxOneSandboxId: 
@@ -634,7 +635,12 @@ PlayerSettings:
   vrEditorSettings: {}
   cloudServicesEnabled:
     Analytics: 1
-    Collab: 1
+    Build: 0
+    Collab: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     Unity Ads: 0
   luminIcon:
     m_Name: 
@@ -649,10 +655,10 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 45775cf1-c07f-4e2b-b232-88efb53fa66c
+  cloudProjectId: 46b3d25e-a177-4e15-bbc1-8a372cedf417
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: FYP
+  projectName: Marbles Battle Royale (Chenli)
   organizationId: lizhenghechen
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

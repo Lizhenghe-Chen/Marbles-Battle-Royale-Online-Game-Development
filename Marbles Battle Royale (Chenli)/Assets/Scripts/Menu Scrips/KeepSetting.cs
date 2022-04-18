@@ -1,8 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 
-/*this script just like an temporary save files that will loss after game restart  */
+/*this script just like an temporary files that will loss after game restart  */
 public class KeepSetting : MonoBehaviour
 {
     public static KeepSetting Instance;

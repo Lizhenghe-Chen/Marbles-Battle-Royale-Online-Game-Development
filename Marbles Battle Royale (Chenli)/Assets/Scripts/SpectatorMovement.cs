@@ -16,13 +16,13 @@ public class SpectatorMovement : MonoBehaviour
     // Start is called before the first frame update
     [HideInInspector] public float horizontalInput, verticalInput;
 
-    [SerializeField] PhotonView photonView;
-    [SerializeField] GameInfoManager GameInfoManager;
-    [SerializeField] Image FadeIn_OutImage;
-    [SerializeField] Canvas canvas;
-    [SerializeField] PostProcessVolume postProcessVolume;
-    [SerializeField] bool menueOpen = false;
-    [SerializeField] string[] ignoreObject = { "Untagged", "Player", "Robot" };
+    [SerializeField] private PhotonView photonView;
+    [SerializeField] private GameInfoManager GameInfoManager;
+    [SerializeField] private Image FadeIn_OutImage;
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private PostProcessVolume postProcessVolume;
+    [SerializeField] private bool menueOpen = false;
+    [SerializeField] private string[] ignoreObject = { "Untagged", "Player", "Robot" };
     public DepthOfField df;
 
     public Slider focusDistanceSlider, aptureSlider, focalLengthSlider;
@@ -50,7 +50,7 @@ public class SpectatorMovement : MonoBehaviour
         df.focusDistance.value = focusDistanceSlider.value;
         df.aperture.value = aptureSlider.value;
         df.focalLength.value = focalLengthSlider.value;
-
+        GameInfoManager.scoreBoardManager.Refresh();
         // aptureSlider = canvas.transform.Find("AptureSlider").GetComponent<Slider>();
         // focalLengthSlider = canvas.transform.Find("FocalLengthSlider").GetComponent<Slider>();
     }
@@ -110,11 +110,17 @@ public class SpectatorMovement : MonoBehaviour
     }
     void Menu_Cursor()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) { menueOpen = !menueOpen; }
-        CinemachineCameraCtrl.GetComponent<CinemachineVirtualCamera>().enabled = !menueOpen;
-        canvas.enabled = menueOpen;
-        Cursor.visible = menueOpen;
-        Cursor.lockState = (menueOpen) ? CursorLockMode.None : CursorLockMode.Locked;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            menueOpen = !menueOpen;
+            if (menueOpen) { rb.velocity = Vector3.zero; }
+            CinemachineCameraCtrl.GetComponent<CinemachineVirtualCamera>().enabled = !menueOpen;
+            canvas.enabled = menueOpen;
+            Cursor.visible = menueOpen;
+            Cursor.lockState = (menueOpen) ? CursorLockMode.None : CursorLockMode.Locked;
+        }
+
+
     }
     void UpdatePS()//post-processing
     {

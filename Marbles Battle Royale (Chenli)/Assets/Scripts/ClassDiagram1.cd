@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="NetworkManager">
+    <Position X="11" Y="4.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gQTIAEMAEGQAADEgEkwAKCIwgQEEIBAEUAAjCwFAdEA=</HashCode>
+      <FileName>Assets\Scripts\Menu Scrips\NetworkManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="MenuManager" />
+      <Field Name="roomManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JumpController">
+    <Position X="21.5" Y="4.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AASDgAQEgmCJISwiMghAABgBgABQUEAElEEAgAAGAEg=</HashCode>
+      <FileName>Assets\Scripts\JumpController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="playerManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CollisionDetect">
+    <Position X="25" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgyAAAAgAiQCAASEAAgQoCAAgCBEAIAKUAAACIABAEg=</HashCode>
+      <FileName>Assets\Scripts\CollisionDetect.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="playerManager" />
+      <Field Name="jumpController" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="RoomManager">
+    <Position X="14.25" Y="6.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAEEAAAACECAAAAAAAAAAAAAISAAAAAAACEA=</HashCode>
+      <FileName>Assets\Scripts\Menu Scrips\RoomManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="keepSetting" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="KeepSetting">
+    <Position X="11" Y="1.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAACIAAAAgAAEAAAAAAAAAAAAgQAAAAEAAAEA=</HashCode>
+      <FileName>Assets\Scripts\Menu Scrips\KeepSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerManager">
+    <Position X="17.75" Y="5.5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gD2QCACAImAQgAElEggRkNAgCHBEABAEEQEEwAKAQUA=</HashCode>
+      <FileName>Assets\Scripts\Menu Scrips\PlayerManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="RoomManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MovementController">
+    <Position X="21.5" Y="9.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AISCAAEgAigYRBAEAAAEAABIEAAAAYEBEAAAAABEgUg=</HashCode>
+      <FileName>Assets\Scripts\MovementController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="playerManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MenuManager">
+    <Position X="11.25" Y="11.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>ABxAAAAAACAiAAIAAAAEAMIAAAAAABAACIAgAEAAAEA=</HashCode>
+      <FileName>Assets\Scripts\Menu Scrips\MenuManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

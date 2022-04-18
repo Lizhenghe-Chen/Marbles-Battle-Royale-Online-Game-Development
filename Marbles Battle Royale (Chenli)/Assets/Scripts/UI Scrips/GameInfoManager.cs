@@ -2,66 +2,77 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 public class GameInfoManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] GameObject GameInfoCanvas, gameInfoPrefabs;
-    [SerializeField] Transform container;
-    [SerializeField] PhotonView photonView;
+    [SerializeField] private GameObject GameInfoCanvas, gameInfoPrefabs;
+    [SerializeField] private Transform container;
+    public PhotonView pV;
     public ScoreBoardManager scoreBoardManager;//will be set in CollisionDetect and SpectatorMovement scrips 
-    //[SerializeField] float coolingTime = 5, time;//time to remove the first item
-    void Start()
+    [SerializeField] private GameObject[] playerList;                                          //[SerializeField] float coolingTime = 5, time;//time to remove the first item
+    public string currentWinnerName;
+    public bool gameOver = false;
+
+    public Canvas GameOverCanvas;
+    public TMP_Text GameOverText;
+    private void Start()
     {
-        photonView = transform.GetComponent<PhotonView>();
+        pV = GetComponent<PhotonView>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // if (container.childCount == 0)
-        // {
-        //     // Debug.Log("nope");
-        //     return;
-        // }
-        // time += Time.deltaTime;
-        // if (time >= coolingTime)
-        // {
-        //     time = coolingTime;
-        //     Remove();
-        //     time = 0;
-        // }
-    }
-
-    void Remove() { Destroy(container.GetChild(0).gameObject); }
-    public void Refresh(string message)//this will send messages to all players in a room
+    // void Remove() { Destroy(container.GetChild(0).gameObject); }
+    public void GlobalRefresh(string message)//this will send messages to all players in a room
     {
         Debug.Log("RPC send " + message);
-        photonView.RPC("GlobalRefresh", RpcTarget.All, message);
-//photonView.RPC("AllRefreshScoreBoard", RpcTarget.All);
+        pV.RPC("Refresh", RpcTarget.All, message);
+        pV.RPC("RefreshScoreBoard", RpcTarget.All);
     }
-    // public void LocalRefresh(string message)//this will send messages to all players in a room
-    // {
-    //     //   GlobalRefresh(message);
-    //     photonView.RPC("LRefresh", RpcTarget.All, message);
-    // }
-    [PunRPC]
-    public void GlobalRefresh(string message) { AddGameInfoItem(message);  }
 
-    public void LRefresh(string message) { if (photonView.IsMine) { AddGameInfoItem(message); } }
+    [PunRPC]
+    public void Refresh(string message)//local message
+    {
+        AddGameInfoItem(message);
+        CheckPlayerList();
+    }
+
+    public void LRefresh(string message) { if (pV.IsMine) { AddGameInfoItem(message); } }
     void AddGameInfoItem(string message)
     {
-        //  if (photonView.Owner.IsMasterClient) { return; }
+        //  if (pV.Owner.IsMasterClient) { return; }
         GameInfoItem item = Instantiate(gameInfoPrefabs, container).GetComponent<GameInfoItem>();
         item.Initialize(message);
-        // scoreBoardItems[playerName] = item;
-
     }
 
-    [PunRPC]
-    public void AllRefreshScoreBoard()//tell all players to refresh their score board
+    [PunRPC]//tell all players to refresh their score board
+    public void RefreshScoreBoard()
     {
-        Debug.Log("!!!!!Refresh ScoreBoard");
-        ScoreBoardManager.Instance.Refresh();
+        scoreBoardManager.Refresh();
+        // Invoke("InvokeScoreBoard", 0.5f);
+    }
 
+    public void CheckPlayerList()
+    {
+        playerList = GameObject.FindGameObjectsWithTag("Player");
+        if (playerList.Length <= 0)
+        {
+            gameOver = true;
+            // Debug.LogWarning("No Player in the room currently.");
+        }
+        else if (playerList.Length == 1)
+        {
+            currentWinnerName = playerList[0].GetComponent<PhotonView>().Owner.NickName;
+            gameOver = true;
+        }
+        else
+        {
+            gameOver = false;
+            GameOverCanvas.enabled = false;
+        }
     }
 }

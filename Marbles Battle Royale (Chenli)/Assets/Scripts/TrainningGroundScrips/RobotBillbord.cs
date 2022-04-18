@@ -16,12 +16,12 @@ public class RobotBillbord : MonoBehaviour
     {
         if (cam == null) { cam = FindObjectOfType<Camera>(); return; }
         transform.LookAt(cam.transform);
-        BillBoardFollow();
+        Billboard.BillBoardFollow(Player, this.transform, 2);
     }
-    public void BillBoardFollow()
-    {
-        var aboveOffset = 2 * Player.transform.localScale.y;
-        Vector3 target = new Vector3(Player.position.x, Player.position.y + aboveOffset, Player.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, target, 100);
-    }
+    // public void BillBoardFollow()
+    // {
+    //     var aboveOffset = 2 * Player.transform.localScale.y;
+    //     Vector3 target = new Vector3(Player.position.x, Player.position.y + aboveOffset, Player.position.z);
+    //     transform.position = Vector3.MoveTowards(transform.position, target, 100);
+    // }
 }

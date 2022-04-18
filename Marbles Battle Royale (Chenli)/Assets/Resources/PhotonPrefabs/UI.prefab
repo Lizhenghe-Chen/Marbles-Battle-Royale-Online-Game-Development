@@ -1934,6 +1934,7 @@ MonoBehaviour:
   InGameUI: {fileID: 0}
   ControlTipsUI: {fileID: 0}
   ControlTipsNotice: {fileID: 0}
+  PlayerUIhealthBarImage: {fileID: 0}
 --- !u!114 &4456864596384904189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1948,6 +1949,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   qualitySetting: {fileID: 5755583084882108010}
   value: 0
+  postProcessVolume: {fileID: 0}
+  ambientOcclusion: {fileID: 0}
+  motionBlur: {fileID: 0}
+  bloom: {fileID: 0}
 --- !u!1 &1785671026404198746
 GameObject:
   m_ObjectHideFlags: 0
@@ -3768,6 +3773,7 @@ MonoBehaviour:
   container: {fileID: 8291138212314972993}
   playerPhotonView: {fileID: 0}
   ScoreboardText: {fileID: 4724611411882228114}
+  gameInfoManager: {fileID: 0}
   type: OnGame
 --- !u!1 &4028547325603134554
 GameObject:
@@ -4680,11 +4686,8 @@ MonoBehaviour:
   Player: {fileID: 0}
   playerPhotonView: {fileID: 0}
   playerNickname: {fileID: 0}
-  UI: {fileID: 0}
   healthBarImage: {fileID: 0}
-  PlayerUIhealthBarImage: {fileID: 0}
-  collisionDetect_healthBarImage: {fileID: 0}
-  aboveOffset: 3
+  playerManager: {fileID: 0}
 --- !u!54 &2775845095675166127
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6847,8 +6850,13 @@ MonoBehaviour:
   GameInfoCanvas: {fileID: 8025920759906095566}
   gameInfoPrefabs: {fileID: 1045842380948238127, guid: ae375827dc06dd64ab1d9f23707a019a, type: 3}
   container: {fileID: 2813026888943872421}
-  photonView: {fileID: 0}
+  pV: {fileID: 0}
   scoreBoardManager: {fileID: 0}
+  playerList: []
+  currentWinnerName: 
+  gameOver: 0
+  GameOverCanvas: {fileID: 0}
+  GameOverText: {fileID: 0}
 --- !u!1 &8625997456478009865
 GameObject:
   m_ObjectHideFlags: 0
@@ -7050,7 +7058,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'or "F": Rush'
+  m_text: 'or "F": Sprint'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7152,11 +7160,11 @@ RectTransform:
   m_Father: {fileID: 6011537767098363779}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -460}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 50.6}
   m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8370818887033785688
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -11,11 +11,5 @@ public class ButtonSoundCtrl : MonoBehaviour
         buttonSound = GameObject.Find("ButtonSound").GetComponent<AudioSource>();
         DontDestroyOnLoad(buttonSound);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void PlayButtonSound() { buttonSound.Play(); }
 }

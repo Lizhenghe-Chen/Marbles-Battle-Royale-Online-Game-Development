@@ -3,49 +3,42 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+/*
+* Copyright (C) 2022 Author: Lizhenghe.Chen.
+* For personal study or educational use.
+* Email: Lizhenghe.Chen@qq.com
+*/
 public class JumpController : MonoBehaviour
 {
     Vector3 target;
-
     PhotonView photonView;
-
     float jumpThreshold; //the Raycast distance, which will determine the onTheGround()
-
     Rigidbody rg;
-
     [SerializeField] const float distanceBetweenGround = 0.5f;
-
     //[SerializeField] Transform Camera;
     public float sliteForce = 10f;
     public float extra_gravity = 10f;
-
     private MovementController movementController;
-
     private CollisionTrigger CollisionTrigger;
-   
     public bool Grounded, OnCollisionGrounded;
     PlayerManager playerManager;
-
     //===============================
     public float jumpForce, rushForce;
     [Header("**Below for players Jump function,jumpPane need attach menually **\n")]
     [SerializeField] Image jumpPanel;
-
     [SerializeField] Image rushPanel;
-    [SerializeField] float RushcoolingTime = 4, Rushtime, JumpcoolingTime = 2, JumpTime, fillValue = 0.0f;//player jump cooling time
+    public float RushcoolingTime = 4, Rushtime, JumpcoolingTime = 2, JumpTime, fillValue = 0.0f;//player jump cooling time
     public Transform Camera;
-
     //===============================
     public AudioSource audioSource;
-    public AudioClip footStep, hitSound, brakeSound, jumpSound, rushSound;
-    // [SerializeField] bool isPlaying;
+    public AudioClip footStep,grounding, hitSound, brakeSound, jumpSound, rushSound;
     public float Velocity, AngularVelocity;
-    public bool playHitSound = false, playRushSound = false, playJumpSound = false;
-
+    // public bool playHitSound = false, playRushSound = false, playJumpSound = false;
     //============For tranning Ground Fetch===================
     [SerializeField] RoomManager roomManager;
     [SerializeField] KeepSetting keepSetting;
     public GuidanceText guidanceText;
+    public bool isMenuOpen;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -53,13 +46,11 @@ public class JumpController : MonoBehaviour
 
     void Start()
     {
-
         audioSource = GetComponent<AudioSource>();
         rg = GetComponent<Rigidbody>(); //find the Rigidbody object
+        if (!photonView.IsMine) { return; }
         Rushtime = RushcoolingTime;
         JumpTime = JumpcoolingTime;
-        // if (!photonView.IsMine)
-        // { return; }
 
         playerManager = GetComponent<MovementController>().playerManager;
         movementController = GetComponent<MovementController>();
@@ -70,7 +61,6 @@ public class JumpController : MonoBehaviour
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
         rushPanel = transform.Find("UI/Canvas/RushLoading/rushPanel").GetComponent<Image>();
         jumpPanel = transform.Find("UI/Canvas/JumpLoading/jumpPanel").GetComponent<Image>();
-
 
         roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
@@ -96,10 +86,7 @@ public class JumpController : MonoBehaviour
     void Update()
     {
         PlaySounds();//all players in the game should do this, so above the photonView.IsMine
-
         //   isPlaying = audioSource.isPlaying;
-
-
         if (!photonView.IsMine)
         {
             return;
@@ -122,7 +109,7 @@ public class JumpController : MonoBehaviour
     }
     void GiveLittileForce()
     {
-        if (onTheGround() == false)
+        if (!OnCollisionGrounded)
         {
             //  Debug.Log("sliteForce");
             var force = (Input.GetKey(KeyCode.LeftShift) ? sliteForce * 2 : sliteForce);
@@ -133,42 +120,43 @@ public class JumpController : MonoBehaviour
 
 
 
-    public bool onTheGround()//a combination of tuch and raycast
-    {
-        Ray checkGround = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
-        Color rayColor;
-        if (Physics.Raycast(checkGround, out hit, jumpThreshold) || (!Physics.Raycast(checkGround, out hit, jumpThreshold) && OnCollisionGrounded))
-        {
-            Grounded = true;
-            rayColor = Color.green;
-            //Debug.Log("i'm grounded");
-        }
-        else
-        {
-            Grounded = false;
-            rayColor = Color.red;
-            //Debug.Log("not grounded");
-        }
-        Debug
-            .DrawRay(transform.position, Vector3.down, rayColor, jumpThreshold);
+    // public bool onTheGround()//a combination of tuch and raycast
+    // {
+    //     Ray checkGround = new Ray(transform.position, Vector3.down);
+    //     RaycastHit hit;
+    //     Color rayColor;
+    //     if (Physics.Raycast(checkGround, out hit, jumpThreshold) || (!Physics.Raycast(checkGround, out hit, jumpThreshold) && OnCollisionGrounded))
+    //     {
+    //         Grounded = true;
+    //         rayColor = Color.green;
+    //         //Debug.Log("i'm grounded");
+    //     }
+    //     else
+    //     {
+    //         Grounded = false;
+    //         rayColor = Color.red;
+    //         //Debug.Log("not grounded");
+    //     }
+    //     Debug
+    //         .DrawRay(transform.position, Vector3.down, rayColor, jumpThreshold);
 
-        return Grounded;
-    }
+    //     return Grounded;
+    // }
     void JumpMethod()
     {
+
+        if (JumpTime >= JumpcoolingTime)
+        {
+            JumpCommand();
+            return;
+        }
         JumpTime += Time.deltaTime;
         fillValue = JumpTime / JumpcoolingTime;
         jumpPanel.fillAmount = fillValue;
-        if (JumpTime >= JumpcoolingTime)
-        {
-            JumpTime = JumpcoolingTime;
-            JumpCommand();
-        }
     }
     void JumpCommand()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && onTheGround())
+        if (Input.GetKeyDown(KeyCode.Space) && OnCollisionGrounded)
         {
             photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
 
@@ -183,14 +171,16 @@ public class JumpController : MonoBehaviour
     }
     void RushMethod()
     {
+
+        if (Rushtime >= RushcoolingTime)
+        {
+            if (isMenuOpen) { return; }
+            RushCommand();
+            return;
+        }
         Rushtime += Time.deltaTime;
         fillValue = Rushtime / RushcoolingTime;
         rushPanel.fillAmount = fillValue;
-        if (Rushtime >= RushcoolingTime)
-        {
-            Rushtime = RushcoolingTime;
-            RushCommand();
-        }
     }
     void RushCommand()
     {
@@ -208,29 +198,36 @@ public class JumpController : MonoBehaviour
         }
     }
     public float hitForce;
+    public void PlayHitSound()
+    {
+        //Debug.Log("HitSound");
+        if (hitForce < 10) { PlayClip(hitSound, 1f, 0.5f); } else { PlayClip(hitSound, 1f, 1f); }
+    }
+    public void PlayGroundedSound() { if (!audioSource.isPlaying) { PlayClip(grounding, 1f, 0.5f); } }
+    public void PlayJumpSound() { PlayClip(jumpSound, 2f, 1f); }
+    public void PlayRushSound() { PlayClip(rushSound, 2f, 1f); }
     public void PlaySounds()
     {
-
         Velocity = rg.velocity.magnitude;
         AngularVelocity = rg.angularVelocity.magnitude;
         // var tempV = (float)System.Math.Tanh(Velocity);//between 0 to 1:https://en.wikipedia.org/wiki/Activation_function
         //double.Parse(System.Math.Round(Velocity, 3).ToString());
 
-        if (playHitSound)
-        {
-            //Debug.Log("HitSound");
-            audioSource.clip = hitSound;
-            audioSource.pitch = 1f;
-            if (hitForce < 10) { audioSource.volume = 0.5f; } else { audioSource.volume = 1f; }
-            audioSource.Play();
+        // if (playHitSound)
+        // {
+        //     //Debug.Log("HitSound");
+        //     audioSource.clip = hitSound;
+        //     audioSource.pitch = 1f;
+        //     if (hitForce < 10) { audioSource.volume = 0.5f; } else { audioSource.volume = 1f; }
+        //     audioSource.Play();
 
-            playHitSound = false;
-        }
-        if (playJumpSound) { PlayClip(jumpSound, 2f, 1f); playJumpSound = false; }
-        if (playRushSound) { PlayClip(rushSound, 2f, 1f); playRushSound = false; }
+        //     playHitSound = false;
+        // }
+        // if (playJumpSound) { PlayClip(jumpSound, 2f, 1f); playJumpSound = false; }
+        // if (playRushSound) { PlayClip(rushSound, 2f, 1f); playRushSound = false; }
         if (!audioSource.isPlaying)
         {
-            if (onTheGround() && AngularVelocity > 1)//below play footstep
+            if (OnCollisionGrounded && AngularVelocity > 1)//below play footstep
             {
                 // Debug.Log("Walking");
                 audioSource.clip = footStep;
@@ -258,7 +255,7 @@ public class JumpController : MonoBehaviour
 
                 audioSource.Play();
             }
-            if (onTheGround() && Velocity > 5 && (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1)))
+            if (OnCollisionGrounded && Velocity > 5 && (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1)))
             {
                 PlayClip(brakeSound, 3f, 0.5f);
             }
@@ -294,24 +291,11 @@ public class JumpController : MonoBehaviour
     [PunRPC]
     public void globalSoundTrigger(string type)
     {
-        if (type == "jump") { playJumpSound = true; }
-        if (type == "rush") { playRushSound = true; }
+        if (type == "jump") { PlayJumpSound(); }
+        if (type == "rush") { PlayRushSound(); }
         // Debug.Log("globalSoundTrigger : " + trigger);
         // playJumpSound = true;
         // Debug.Log("globalSoundTrigger set " + trigger);
     }
-    // public void ParticleSystemJudge()
-    // {
-    //     angularVelocity = rg.angularVelocity.magnitude;
-    //     if (angularVelocity >= 15f && onTheGround())
-    //     {
-    //         playerManager.SetParticle(true);
 
-    //     }
-    //     else
-    //     {
-    //         playerManager.SetParticle(false);
-
-    //     }
-    // }
 }

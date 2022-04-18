@@ -8,16 +8,20 @@ public class ToolBox : MonoBehaviour
     public Transform transitionTarget;
     //bool reachEnd = false;
     public Transform Player;
-    [SerializeField] PhotonView photonView;
+    [SerializeField] PhotonView photonView, GameInfoPhotonView;
 
     [SerializeField] GameInfoManager GameInfoManager;
     void Start()
     {
         GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
         photonView = GetComponent<PhotonView>();
+        GameInfoPhotonView = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<PhotonView>();
+        if (!GameInfoPhotonView.IsMine) { this.enabled = false; }
     }
     private void Update()
     {
+
+
         // if (Player == null) { return; }
         // if (Player.position == transitionTarget.position)
         // {
@@ -31,6 +35,7 @@ public class ToolBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)//for transfer
     {
+        // if (!PhotonNetwork.IsMasterClient) { return; }
         if (collision.GetComponent<Rigidbody>() == null) { return; }
         Player = collision.transform;
 
@@ -39,13 +44,13 @@ public class ToolBox : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-
+        //  if (!PhotonNetwork.IsMasterClient) { return; }
         if (this.name == "ExtraLife" && other.transform.tag == "Player")
         {
             Player = other.transform;
             var otherPlayerManager = Player.GetComponent<MovementController>().playerManager;
             otherPlayerManager.maxLife++;
-            otherPlayerManager.leftLifeTextContent = "Rest Life: " + (otherPlayerManager.maxLife - otherPlayerManager.deathCount-1);
+            otherPlayerManager.leftLifeTextContent = "Rest Life: " + (otherPlayerManager.maxLife - otherPlayerManager.deathCount - 1);
             photonView.RPC("DestroyForAll", RpcTarget.All);
             //DestroyForAll();//destroy this game object for all players
             //PhotonNetwork.Destroy(this.gameObject);
@@ -53,6 +58,7 @@ public class ToolBox : MonoBehaviour
     }
     private void OnCollisionStay(Collision other)
     {
+        //if (!PhotonNetwork.IsMasterClient) { return; }
         if (this.name == "ExtraLife") { return; }
 
         if (other.transform.tag == "Player")
@@ -77,14 +83,16 @@ public class ToolBox : MonoBehaviour
     {
         if (Player.tag == "Player")
         {
-            AnimateLoading playerAnimateLoading = Player.Find("UI/Canvas/Image").GetComponent<AnimateLoading>();
-            playerAnimateLoading.LoadingLevel();
-            GameInfoManager.Refresh(Player.GetComponent<CollisionDetect>().player_Name + " Transfered to " + transitionTarget.name);
+            if (Player.GetComponent<MovementController>().photonView.IsMine)
+            {
+                AnimateLoading playerAnimateLoading = Player.Find("UI/Canvas/Image").GetComponent<AnimateLoading>();
+                playerAnimateLoading.LoadingLevel();
+                GameInfoManager.GlobalRefresh(Player.GetComponent<CollisionDetect>().player_Name + " Transfered to " + transitionTarget.name);
+            }
         }
         else
         {
             if (PhotonNetwork.IsMasterClient) { GameInfoManager.Refresh(Player.name + " Transfered to " + transitionTarget.name); }
-
         }
 
         Player.position = transitionTarget.position;
@@ -92,6 +100,7 @@ public class ToolBox : MonoBehaviour
     [PunRPC]
     public void DestroyForAll()
     {
+
         Destroy(this.gameObject);
         // Destroy(PhotonView.Find(viewID).gameObject);
     }
