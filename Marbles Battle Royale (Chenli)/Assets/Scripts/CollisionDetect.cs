@@ -26,7 +26,7 @@ public class CollisionDetect : MonoBehaviour
 
     // double hitDirection;
     [SerializeField] float currentHealth;
-    float damageTimer;
+
     Vector3 other_Player_Velocity;
     public Vector3 Player_Velocity;
     public bool inHealthArea = false;
@@ -59,7 +59,6 @@ public class CollisionDetect : MonoBehaviour
             movementController = GetComponent<MovementController>();
             playerManager = movementController.playerManager;
             playerManager.initialScale = initialScale;
-            damageTimer = playerManager.damageTimer;
             //CollisionTrigger = GetComponentInChildren<CollisionTrigger>();
         }
         else
@@ -75,7 +74,7 @@ public class CollisionDetect : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Player_Velocity = rb.velocity;//since the collision will get the late velocity that give wrong damage, so we need to get the velocity in fixed update (earlier)
+
         if (!photonView.IsMine)
         {
             return;
@@ -94,14 +93,10 @@ public class CollisionDetect : MonoBehaviour
         }
         // healthBarImage.fillAmount = billboardvalue;
     }
-    // void Update()
-    // {
-
-    //     if (!photonView.IsMine)
-    //     {
-    //         return;
-    //     }
-    // }
+    void Update()
+    {
+        Player_Velocity = rb.velocity;//since the collision will get the late velocity that give wrong damage, so we need to get the velocity in fixed update (earlier)
+    }
 
     // void OnCollisionStay(Collision collision)
     // {
@@ -120,11 +115,12 @@ public class CollisionDetect : MonoBehaviour
         {
             return;
         }
- jumpController.PlayGroundedSound();//let sound effect happen once locally
+        jumpController.PlayGroundedSound();//let sound effect happen once locally
         // Debug.Log(target.photonView.Owner.NickName);
 
         if (collision.rigidbody && (collision.collider.tag == "Player" || collision.collider.tag == "Robot"))
         {
+
             jumpController.PlayHitSound();//let sound effect happen once locally
             if (collision.collider.tag == "Player")
             {
@@ -135,24 +131,25 @@ public class CollisionDetect : MonoBehaviour
             {
                 other_Player_Name = collision.collider.tag;
                 other_Player_Velocity = collision.gameObject.GetComponent<RobotController>().robotVelocity;
+               // Debug.Log("relativeVelocity: " + collision.relativeVelocity.magnitude + "other_Player_Velocity" + other_Player_Velocity.magnitude + "rb.velocity" + rb.velocity.magnitude);
+                // Debug.Log("@@@" + collision.collider.GetComponent<Rigidbody>().velocity.magnitude + "@@@" + collision.body.GetComponent<Rigidbody>().velocity.magnitude);
             }
 
             // hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-            //ISufferDamage = judgeDamage(Player_Velocity, other_Player_Velocity);//for debug use, other_Player_Velocity need to get form attacker compoment first
             // judgeDamage(collision, Player_Velocity, other_Player_Velocity, hitDirection);
-            if (judgeDamage(Player_Velocity, other_Player_Velocity))//if player get damage
+            if (Player_Velocity.magnitude < other_Player_Velocity.magnitude)//if player get damage
             {
-                hitForce = collision.relativeVelocity.magnitude * 1.5f * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
+                hitForce = collision.relativeVelocity.magnitude * collision.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
 
                 jumpController.hitForce = hitForce;//for sound effect use
-                var finalDamage = hitForce * damageTimer;//
+                var finalDamage = hitForce * playerManager.damageTimer;//
 
                 // movementController.takeDamageMask.enabled = true;
                 var hitessage = player_Name + " got damage from " + other_Player_Name + " with value:" + finalDamage;
                 Debug.Log(hitessage);
                 if (currentHealth - finalDamage <= 0)//after take damage, judge dead immediantly
                 {
-                    if (collision.collider.GetComponent<MovementController>() != null)//if killer is a player
+                    if (collision.collider.tag == "Player")//if killer is a player
                     {
                         PlayerManager otherPlayerManager = collision.collider.GetComponent<MovementController>().playerManager;
                         otherPlayerManager.Kill(player_Name);
@@ -171,7 +168,8 @@ public class CollisionDetect : MonoBehaviour
             // Vector3 direction = (TesterPosition - PlayerPosition);
         }
     }
-    private void OnTriggerEnter(Collider other)
+
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name == "Transfer platform")
         {
@@ -190,15 +188,15 @@ public class CollisionDetect : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider collision)
+    void OnTriggerExit(Collider other)
     {
-        if (collision.gameObject.name == "Transfer platform")
+        if (other.gameObject.name == "Transfer platform")
         {
             this.transform.parent = null;
-            rb.velocity += collision.gameObject.GetComponent<getspeed>().ObjVelocity;
-            //collision.gameObject.GetComponent<getspeed>().enabled = false;
+            rb.velocity += other.gameObject.GetComponent<getspeed>().ObjVelocity;
+            //other.gameObject.GetComponent<getspeed>().enabled = false;
         }
-        if (collision.name == "HealthArea") { inHealthArea = false; Debug.LogWarning("Outside HealthArea"); }
+        if (other.name == "HealthArea") { inHealthArea = false; Debug.LogWarning("Outside HealthArea"); }
     }
 
     public float[] getSpeedData(Rigidbody rb)
@@ -217,86 +215,6 @@ public class CollisionDetect : MonoBehaviour
 
     public static bool judgeDamage(Vector3 Player_Velocity, Vector3 other_Player_Velocity)
     {
-        if (Player_Velocity.magnitude > other_Player_Velocity.magnitude) { return false; } else { return true; }
+        return (Player_Velocity.magnitude > other_Player_Velocity.magnitude);
     }
-    // public void judgeDamage(Collision collision, Vector3 Player_Velocity, Vector3 other_Player_Velocity, double hitDirection)
-    // {
-
-    //     // var damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
-
-    //     //++++++++++++++++
-    //     if (
-    //         hitDirection >= 0.05 //same direction
-    //     )
-    //     {
-    //         if (
-    //             Player_Velocity.magnitude > other_Player_Velocity.magnitude //player speed is higher
-    //         )
-    //         {
-    //             // damage = Mathf.Abs(Player_Velocity.magnitude - other_Player_Velocity.magnitude);
-    //             // Debug.Log(name + " same direction hit " + other_Player_Name + " with differ Force:" + damage);
-    //             ISufferDamage = false;
-
-    //         }
-    //         else if (
-    //             Player_Velocity.magnitude < other_Player_Velocity.magnitude //player speed is lower
-    //         )
-    //         {
-    //             // Debug.Log(name + " hitted by " + other_Player_Name + " with differ Force:" + damage);
-    //             ISufferDamage = true;
-    //         }
-    //         //return damage;
-
-    //     }
-    //     else if (
-    //         hitDirection <= 0.05 && hitDirection >= -0.05 //between +- 0.05 means someone is motionless
-    //     )
-    //     {
-    //         if (
-    //             Player_Velocity.magnitude > other_Player_Velocity.magnitude //player speed is higher
-    //         )
-    //         {
-    //             //Debug.Log(name + " hit " + other_Player_Name + " with Force:" + Player_Velocity.magnitude);
-    //             ISufferDamage = false;
-    //             //return Player_Velocity.magnitude;
-
-    //         }
-    //         else if (
-    //             Player_Velocity.magnitude < other_Player_Velocity.magnitude //player speed is lower
-    //         )
-    //         {
-    //             //Debug.Log(name + " hitted by " + other_Player_Name + " with Force:" + other_Player_Velocity.magnitude);
-    //             ISufferDamage = true;
-    //             // return other_Player_Velocity.magnitude;
-    //         }
-    //         //return 666666;
-
-    //     }
-    //     else
-    //     {
-    //         //<0 means opposite direction
-    //         if (
-    //             Player_Velocity.magnitude > other_Player_Velocity.magnitude //player speed is higher
-    //         )
-    //         {
-    //             // Debug.Log(name + " hit " + other_Player_Name + " with differ Force:" + damage);
-    //             ISufferDamage = false;
-
-    //         }
-    //         else if (
-    //             Player_Velocity.magnitude < other_Player_Velocity.magnitude //player speed is lower
-    //         )
-    //         {
-    //             // Debug.Log(name + " hitted by " + other_Player_Name + " with differ Force:" + damage);
-    //             ISufferDamage = true;
-    //         }
-    //         //return damage;
-
-    //     }
-
-    // }
-    // void OnTriggerStay(Collider collision)
-    // {
-
-    // }
 }

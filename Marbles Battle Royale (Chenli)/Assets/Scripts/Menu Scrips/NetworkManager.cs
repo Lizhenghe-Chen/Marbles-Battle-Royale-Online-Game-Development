@@ -21,7 +21,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //================================================================
     public TMP_InputField roomNameInput;
     public TMP_InputField userNameInput;
-    [SerializeField] TMP_Text ErrorText;
+
     //================================================================
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] Transform roomListContent;
@@ -47,34 +47,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Instance = this;
     }
 
-    public int start = 0;
-
     void Start()
     {
         SetMenu();
         GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", "Marble"), typeof(GameObject));//speed up for MenuManager
-        PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.ConnectUsingSettings();//connect to PhotonNetwork as in wizard settings
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
-
     }
-    private void SetMenu()
+    private void SetMenu()// Instantiate menu
     {
         MenuManager = this.GetComponent<MenuManager>();
         roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
-        GameObject[] _menus = MenuManager.menuList;
-        foreach (GameObject menu in _menus)
-        {
-            menu.SetActive(true);
-        }
 
-        TitleMenu = GameObject.Find(nameof(TitleMenu));
-        LoadingMenu = GameObject.Find(nameof(LoadingMenu));
-        CreateRoomMenu = GameObject.Find(nameof(CreateRoomMenu));
-        RoomMenu = GameObject.Find(nameof(RoomMenu));
-        ErrorMenu = GameObject.Find(nameof(ErrorMenu));
-        FindRoomMenu = GameObject.Find(nameof(FindRoomMenu));
-        MenuManager.OpenMenu(LoadingMenu);
+        //Must Follow the same order as in MenuManager.menuList !!!
+        //Variable names are introduced for ease of differentiation, but they are not necessary and can just use MenuManager.menuList[i]
+        LoadingMenu = MenuManager.menuList[0];
+        TitleMenu = MenuManager.menuList[1];
+        CreateRoomMenu = MenuManager.menuList[2];
+        RoomMenu = MenuManager.menuList[3];
+        ErrorMenu = MenuManager.menuList[4];
+        FindRoomMenu = MenuManager.menuList[5];
+        MenuManager.OpenMenu(LoadingMenu);//give a loading menu before title menu
 
         if (keepSetting.start >= 1)
         {
@@ -88,58 +82,48 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
+        CheckNetworkConnect();
+    }
+    private void CheckNetworkConnect()
+    {
         if (!PhotonNetwork.IsConnected)
         {
-            ErrorText.text = "Opss! Check your internet connection and try again.";
-            MenuManager.OpenConnectionFailedMenu(ErrorMenu);
+            MenuManager.OpenErrorMenu("Opss! Check your internet connection and try again.");
             PhotonNetwork.ConnectUsingSettings();//try to reconnect
         }
         //  Debug.Log(PhotonNetwork.LevelLoadingProgress);
         //Debug.Log(PhotonNetwork.NetworkingClient);
     }
-    // public void OnUserNameChanged()
-    // {
-    //     PhotonNetwork.NickName = userNameInput.text;
-    //     if (userNameInput.text == null)
-    //     {
-    //         Debug.Log("null Player!!");
-    //         userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
-    //     }
-    // }
 
     //================================================================
     public override void OnConnectedToMaster()
     {
-         MenuManager.OpenMenu(Start_Debug_Meun);
-        if (start == 0)
-        {
-           
+        Debug.Log("Connected to Master");
 
-            start++;
-        }
-        if (keepSetting.start == 1)
+        if (keepSetting.start == 0)
         {
+            MenuManager.OpenMenu(Start_Debug_Meun);
             userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+        }
+        else if (keepSetting.returnFromGame)
+        {
+            MenuManager.OpenMenu(Start_Debug_Meun);
+            keepSetting.returnFromGame = false;
         }
         keepSetting.start++;
         PhotonNetwork.JoinLobby();
-        PhotonNetwork.AutomaticallySyncScene = true; //make sure the scene is updated
     }
 
     public override void OnJoinedLobby()
     {
         infoText.text = "connected to server: " + PhotonNetwork.CloudRegion;
-
         PhotonNetwork.NickName = userNameInput.text;
-
         cachedRoomList.Clear();
-
         Debug.Log("Joined!");
     }
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        ErrorText.text = "Tried to join Arena, but failed!\n" + message;
-        MenuManager.OpenMenu(ErrorMenu);
+        MenuManager.OpenErrorMenu("Tried to join Arena, but failed!\n" + message);
         Debug.Log("Tried to join Arena, but failed!");
     }
     //================================================================
@@ -163,7 +147,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             roomOptions.MaxPlayers = (byte)maxRoomPlayers; // for example
             PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions);
         }
-
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -174,8 +157,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.JoinRoom("TrainingGround"); //if joined successfully, OnJoinedRoom() will be called
             return;
         }
-        ErrorText.text = "Tried to join Arena, but failed!\n" + message;
-        MenuManager.OpenMenu(ErrorMenu);
+        MenuManager.OpenErrorMenu("Tried to join Arena, but failed!\n" + message);
         Debug.Log("Tried to join Arena, but failed!" + message);
     }
 
@@ -184,12 +166,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         MenuManager.OpenMenu(LoadingMenu);
         PhotonNetwork.JoinRoom(roomInfo.Name); //if joined successfully, OnJoinedRoom() will be called
-
     }
 
     public override void OnJoinedRoom()
     {
-        CheckName(PhotonNetwork.PlayerList);
+        if (!CheckPlayer(PhotonNetwork.PlayerList)) { LeaveRoom(false); return; }
+        PhotonNetwork.AutomaticallySyncScene = true; //make sure the scene is updated
         MenuManager.OpenMenu(RoomMenu);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -216,7 +198,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.CurrentRoom.IsVisible = false;//player cannnot join from "find Room"
             startGameNotice.text = "All players can join to 'TrainingGround', No winner in this mode";
-
         }
         else
         {
@@ -230,42 +211,35 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 startGameButton.SetActive(false); startGameNotice.text = "waiting the Host Start the Game...\n \nNotice that once the game start, no players can join or rejoin this room";
             }
         }
-
     }
-    void CheckName(Player[] players)
+    bool CheckPlayer(Player[] players)
     {
         if (players.Length > maxRoomPlayers)// maximum number of players
         {
             Debug.Log("Tried to join Arena, but failed because full room!");
             MenuManager.checkInfoOK = false;
 
-            MenuManager.PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
-              + "because the room reached maxium " + maxRoomPlayers + " players!";
-            LeaveRoom();
+            MenuManager.OpenErrorMenu("Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+              + "because the room reached maxium " + maxRoomPlayers + " players!");
+            return false;
         }
-        List<Player> checkList = new List<Player>();
-        foreach (Player player in players)
-        {
-            checkList.Add(player);
-        }
+
         int index = 0;
-        foreach (Player player in checkList)
+        foreach (Player player in players)
         {
             if (PhotonNetwork.NickName == player.NickName) { index++; }
 
             if (index >= 2)
             {
-                // ErrorText.text = "Tried to join Arena, but failed!\n" + "because your Name: " + PhotonNetwork.NickName + "is same as another player.";
-                // MenuManager.OpenMenu(ErrorMenu);
                 Debug.Log("Tried to join Arena, but failed because dupicate name!");
                 MenuManager.checkInfoOK = false;
                 MenuManager.PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
                  + "because your Name: '" + PhotonNetwork.NickName + "' is same as another player."; ;
-                LeaveRoom();
-                index = 0;
-                return;
+                MenuManager.OpenErrorMenu("Tried to join Arena, but failed!\n" + "because your Name: " + PhotonNetwork.NickName + "is same as another player.");
+                return false;
             }
         }
+        return true;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
@@ -349,18 +323,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     //================================================================
-    public void LeaveRoom()
+    public void LeaveRoom(bool isClick)
     {
-
         PhotonNetwork.LeaveRoom();
         MenuManager.OpenMenu(LoadingMenu);
+        if (isClick) { MenuManager.OpenMenu(Start_Debug_Meun); }
         Debug.Log("Leaved Room");
     }
 
-    public override void OnLeftRoom() // when current player leaves current room successfully
-    {
-        MenuManager.OpenMenu(Start_Debug_Meun);
-    }
+
+    // public override void OnLeftRoom() // when current player leaves current room successfully
+    // {
+    //     MenuManager.OpenMenu(Start_Debug_Meun);
+    // }
 
     public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved, let new master client handle the start game right
     {
@@ -374,7 +349,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
 
         // PhotonNetwork.Disconnect();
-
+        MenuManager.OpenMenu(Start_Debug_Meun);
         Debug.Log("ForceQuit");
     }
     public void JoinTrainingGround()

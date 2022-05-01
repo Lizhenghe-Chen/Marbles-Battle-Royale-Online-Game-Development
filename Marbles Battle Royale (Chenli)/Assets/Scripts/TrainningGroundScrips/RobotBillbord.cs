@@ -5,10 +5,10 @@ using UnityEngine;
 public class RobotBillbord : MonoBehaviour
 {
     [SerializeField] Camera cam;
-    [SerializeField] Transform Player;
+    [SerializeField] Transform target;
     void Start()
     {
-        Player = transform.parent;
+        target = transform.parent;
     }
 
     // Update is called once per frame
@@ -16,12 +16,7 @@ public class RobotBillbord : MonoBehaviour
     {
         if (cam == null) { cam = FindObjectOfType<Camera>(); return; }
         transform.LookAt(cam.transform);
-        Billboard.BillBoardFollow(Player, this.transform, 2);
+        Billboard.BillBoardFollow(target, this.transform, 2);
     }
-    // public void BillBoardFollow()
-    // {
-    //     var aboveOffset = 2 * Player.transform.localScale.y;
-    //     Vector3 target = new Vector3(Player.position.x, Player.position.y + aboveOffset, Player.position.z);
-    //     transform.position = Vector3.MoveTowards(transform.position, target, 100);
-    // }
+
 }

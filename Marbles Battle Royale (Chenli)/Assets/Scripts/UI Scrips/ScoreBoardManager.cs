@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
+
 public class ScoreBoardManager : MonoBehaviourPunCallbacks
 {
     //public static ScoreBoardManager Instance ;

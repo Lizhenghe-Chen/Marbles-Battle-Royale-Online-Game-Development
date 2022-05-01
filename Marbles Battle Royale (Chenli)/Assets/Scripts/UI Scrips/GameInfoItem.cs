@@ -6,16 +6,11 @@ public class GameInfoItem : MonoBehaviour
 {
     public TMP_Text gameInfoMessage;
     public string message;
-    [SerializeField] float coolingTime = 5, time = 0;//time to remove the item
-    void Update()
+    [SerializeField]
+    float coolingTime = 5;//time to remove the item
+    void Start()
     {
-        time += Time.deltaTime;
-        if (time >= coolingTime)
-        {
-            time = coolingTime;
-            Destroy(this.gameObject);
-            //time = 0;
-        }
+        Invoke("Destory", coolingTime);
     }
     public GameInfoItem(string message)
     {
@@ -29,7 +24,6 @@ public class GameInfoItem : MonoBehaviour
     {
         Debug.LogWarning("gameInfoMessage Initialize :" + message);
         gameInfoMessage.text = message;
-
-
     }
+    void Destory() { Destroy(this.gameObject); }
 }

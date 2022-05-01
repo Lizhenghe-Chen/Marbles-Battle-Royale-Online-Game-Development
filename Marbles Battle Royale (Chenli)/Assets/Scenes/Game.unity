@@ -8,8 +8,8 @@ OcclusionCullingSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
-  m_SceneGUID: 00000000000000000000000000000000
-  m_OcclusionCullingData: {fileID: 0}
+  m_SceneGUID: 5c3f7702035942d4094a98f5f8f3bb55
+  m_OcclusionCullingData: {fileID: 36300000, guid: 542b5a105fc973f4fb396d78beac66b5, type: 2}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -8241,7 +8241,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 92c17a5c12d45e5428968dec01f779b5, type: 2}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: attackRange
-      value: 1500
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: loopMovement
@@ -15184,9 +15184,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1881180804}
     m_Modifications:
+    - target: {fileID: 102450, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 130522, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 144150, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 161448, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
       propertyPath: m_Name
       value: Clouds_Swirls_G1
+      objectReference: {fileID: 0}
+    - target: {fileID: 161448, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 173088, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 437224, guid: b94cc7cff6b6e2645a5e7c1ce686314b, type: 3}
       propertyPath: m_RootOrder
@@ -20711,7 +20731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: attackRange
-      value: 5000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: loopMovement
@@ -28949,6 +28969,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!114 &674226794
 MonoBehaviour:
@@ -39859,9 +39880,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1881180804}
     m_Modifications:
+    - target: {fileID: 108268, guid: 01bebc0732355504095ed95d90508654, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 139730, guid: 01bebc0732355504095ed95d90508654, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 176018, guid: 01bebc0732355504095ed95d90508654, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 184318, guid: 01bebc0732355504095ed95d90508654, type: 3}
       propertyPath: m_Name
       value: Clouds_Stratus_G1
+      objectReference: {fileID: 0}
+    - target: {fileID: 184318, guid: 01bebc0732355504095ed95d90508654, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 456514, guid: 01bebc0732355504095ed95d90508654, type: 3}
       propertyPath: m_RootOrder
@@ -47502,7 +47539,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 18
   m_IsActive: 1
 --- !u!108 &1058005965
 Light:
@@ -48682,6 +48719,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!1 &1084330693
 GameObject:
@@ -63987,6 +64025,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2044286531139300819, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2044286531139300819, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2044286531139300819, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2044286531139300819, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0.314
+      objectReference: {fileID: 0}
+    - target: {fileID: 2044286531139300819, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2141850061613595054, guid: e4db808d3dab6a546a274f019387f96d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.66442955
@@ -64764,6 +64822,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!114 &1472385574
 MonoBehaviour:
@@ -65629,6 +65688,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!114 &1482037582
 MonoBehaviour:
@@ -70890,9 +70950,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1881180804}
     m_Modifications:
+    - target: {fileID: 145310, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 156894, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 158864, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 182504, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 188182, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 189866, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
       propertyPath: m_Name
       value: Clouds_Strato_G2
+      objectReference: {fileID: 0}
+    - target: {fileID: 189866, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 196978, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 472720, guid: 79f3726e667d7254296b8aef52d0f074, type: 3}
       propertyPath: m_RootOrder
@@ -74218,7 +74306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: attackRange
-      value: 100
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
+      propertyPath: loopMovement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5721878304234257810, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: m_Constraints
@@ -76351,7 +76443,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: ba86989a2b8cb2b448364b5391e7b0ff, type: 2}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: attackRange
-      value: 1500
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
+      propertyPath: loopMovement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8265380607961242576, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: m_RootOrder
@@ -77228,7 +77324,7 @@ Terrain:
   m_DetailObjectDistance: 80
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
+  m_SplatMapDistance: 50
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -78379,7 +78475,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 18
   m_IsActive: 0
 --- !u!114 &1773824840
 MonoBehaviour:
@@ -82136,7 +82232,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: attackRange
-      value: 1500
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3226363524475017750, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
+      propertyPath: loopMovement
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8265380607961242576, guid: 6ba1e93c43b25be4fab0df38f6c6496a, type: 3}
       propertyPath: m_RootOrder
@@ -83028,7 +83128,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 18
   m_IsActive: 1
 --- !u!4 &1881180804
 Transform:
@@ -88747,6 +88847,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!1001 &2026627553
 PrefabInstance:

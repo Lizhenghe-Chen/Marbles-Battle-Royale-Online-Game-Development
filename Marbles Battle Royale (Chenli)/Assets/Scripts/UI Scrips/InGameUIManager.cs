@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Cinemachine;
+using UnityEngine.Rendering.PostProcessing;
 public class InGameUIManager : MonoBehaviour
 {
     [Header("InGameUIList & InGameUICanvas need Manually attach: ")]
@@ -17,13 +18,26 @@ public class InGameUIManager : MonoBehaviour
     private RoomManager roomManager;
     [SerializeField] private GameObject InGameUI, ControlTipsUI, ControlTipsNotice;
     [SerializeField] private Image PlayerUIhealthBarImage;
+    [SerializeField] PostProcessVolume postProcessVolume;
+    [SerializeField] DepthOfField df;
 
+    public Slider focusDistanceSlider, aptureSlider, focalLengthSlider;
     private void Awake()
     {
+
         //Debug.Log("Paraent " + transform.parent);
         photonView = transform.parent.parent.GetComponent<PhotonView>();
         roomManager = GameObject.Find("RoomManager").GetComponent<RoomManager>();
-
+        if (photonView.IsMine)
+        {
+            // Billboard.enabled = false; //this make sure player no need to see their own billboard
+            Destroy(this.transform.parent.Find("BillBoard").gameObject);
+        }
+        else
+        {
+            Destroy(this.transform.parent.Find("ScoreBoard").gameObject);
+            Destroy(this.gameObject);//make sure the UI Canvas panel not messed up when play online
+        }
         InGameUI = transform.Find("InGameMenu").gameObject;
         ControlTipsUI = transform.Find("ControlTips").gameObject;
         ControlTipsNotice = transform.Find("ControlTipsNotice").gameObject;
@@ -36,20 +50,22 @@ public class InGameUIManager : MonoBehaviour
         playerManager = player.GetComponent<MovementController>().playerManager;
         ControlTipsNotice.SetActive(false);
         PlayerUIhealthBarImage = this.transform.Find("HealthbarBackground/Healthbar").GetComponent<Image>();
-        if (photonView.IsMine)
-        {
-            // Billboard.enabled = false; //this make sure player no need to see their own billboard
-            Destroy(this.transform.parent.Find("BillBoard").gameObject);
-        }
-        else
-        {
-            Destroy(this.transform.parent.Find("ScoreBoard").gameObject);
-            Destroy(this.gameObject);//make sure the UI panel not messed up when play online
-        }
+
+        postProcessVolume = GameObject.Find("Post_Process Volum").GetComponent<PostProcessVolume>();
+        postProcessVolume.sharedProfile.TryGetSettings<DepthOfField>(out df);
+
+        focusDistanceSlider.value = df.focusDistance.value;
+        focusDistanceSlider.interactable = false;
+        aptureSlider.value = df.aperture.value;
+        focalLengthSlider.value = df.focalLength.value;
+
+
+
     }
 
     void Start()
     {
+
 
         if (!roomManager.isTrainingGround) { ContrilTips(); }//otherwise no showup when game start
 
@@ -88,7 +104,7 @@ public class InGameUIManager : MonoBehaviour
             InGameUI.SetActive(false);
             virtualCamera.m_YAxis.m_MaxSpeed = m_YAxis.m_MaxSpeed;
             virtualCamera.m_XAxis.m_MaxSpeed = m_XAxis.m_MaxSpeed;
-           // movementController.enabled = true;
+            // movementController.enabled = true;
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -98,7 +114,7 @@ public class InGameUIManager : MonoBehaviour
             InGameUI.SetActive(true);
             virtualCamera.m_YAxis.m_MaxSpeed = 0;
             virtualCamera.m_XAxis.m_MaxSpeed = 0;
-           // movementController.enabled = false;
+            // movementController.enabled = false;
 
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -144,14 +160,12 @@ public class InGameUIManager : MonoBehaviour
         if (billboardvalue >= 0.6f)
         {
             healthBarImage.color = goodHealth;
-
         }
         else if (billboardvalue < 0.6f && billboardvalue >= 0.3f)
         {
             healthBarImage.color = mediumHealth;
         }
         else { healthBarImage.color = badHealth; }
-
         healthBarImage.fillAmount = billboardvalue;
     }
     public void LeaveRoom()
@@ -165,5 +179,17 @@ public class InGameUIManager : MonoBehaviour
         // //if (PhotonNetwork.CurrentRoom != null) { PhotonNetwork.Disconnect(); }
         //  SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
         // Debug.Log("Leaved Room");
+    }
+    public void SetFocusDistance()
+    {
+        df.focusDistance.value = focusDistanceSlider.value;
+    }
+    public void SetFocalLength()
+    {
+        df.focalLength.value = focalLengthSlider.value;
+    }
+    public void SetApture()
+    {
+        df.aperture.value = aptureSlider.value;
     }
 }

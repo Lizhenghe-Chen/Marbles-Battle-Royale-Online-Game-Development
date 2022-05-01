@@ -115,7 +115,6 @@ MonoBehaviour:
   photonView: {fileID: 0}
   horizontalInput: 0
   verticalInput: 0
-  LeftLifeText: {fileID: 0}
   initial_torque: 6
   speedUp_torque: 0
 --- !u!114 &342566022846912038
@@ -132,7 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sliteForce: 1
   extra_gravity: 4
-  Grounded: 0
+  combinedGrounded: 0
   OnCollisionGrounded: 0
   jumpForce: 350
   rushForce: 600
@@ -193,7 +192,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!135 &342566022846912059
@@ -375,7 +374,7 @@ MonoBehaviour:
     InterpolateLerpSpeed: 5
   m_ScaleModel:
     SynchronizeEnabled: 1
-    InterpolateOption: 1
+    InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 0.2
     InterpolateLerpSpeed: 0.2
 --- !u!1 &342566022846912003
@@ -507,7 +506,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   postProcessVolume: {fileID: 0}
-  playerPosition: {fileID: 0}
+  inGameUIManager: {fileID: 0}
+  df: {fileID: 0}
+  player: {fileID: 0}
   disdance: 0
   playerRadius: 0
   total_Offset: 0
@@ -520,7 +521,6 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  pr: {fileID: 0}
 --- !u!114 &4053852259066319654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,10 +561,10 @@ MonoBehaviour:
   m_LegacyBlendHint: 0
   m_YAxis:
     Value: 0.5
-    m_SpeedMode: 0
-    m_MaxSpeed: 5
-    m_AccelTime: 0.2
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.1
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
     m_InvertInput: 1
@@ -585,10 +585,10 @@ MonoBehaviour:
     m_LegacyVelocityFilterStrength: -1
   m_XAxis:
     Value: 90
-    m_SpeedMode: 0
-    m_MaxSpeed: 400
-    m_AccelTime: 0.2
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 10
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
     m_InvertInput: 0
@@ -1269,7 +1269,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616462140596549213}
-  m_LocalRotation: {x: -0.14718768, y: -0.17403847, z: 0.36863053, w: 0.9011981}
+  m_LocalRotation: {x: -0.14718767, y: -0.17403845, z: 0.36863053, w: 0.901198}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3.1737962, y: 3.173797, z: 3.173797}
   m_ConstrainProportionsScale: 0

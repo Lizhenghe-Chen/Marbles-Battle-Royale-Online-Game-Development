@@ -154,7 +154,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229564754874404694}
-  m_LocalRotation: {x: 0.38269392, y: -0.7985479, z: 0.45028198, w: 0.11451107}
+  m_LocalRotation: {x: 0.38269392, y: -0.7985479, z: 0.45028198, w: 0.11451111}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -331,7 +331,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2297554193076430713}
-  m_LocalRotation: {x: 0.3097416, y: -0.9100775, z: 0.11041526, w: 0.25224504}
+  m_LocalRotation: {x: 0.3097416, y: -0.9100775, z: 0.11041527, w: 0.25224504}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3.1737962, y: 3.1737974, z: 3.1737976}
   m_ConstrainProportionsScale: 0
@@ -698,7 +698,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!135 &5270639299678529375
@@ -733,7 +733,6 @@ MonoBehaviour:
   photonView: {fileID: 0}
   horizontalInput: 0
   verticalInput: 0
-  LeftLifeText: {fileID: 0}
   initial_torque: 8
   speedUp_torque: 0
 --- !u!114 &5270639299678529373
@@ -750,7 +749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sliteForce: 1
   extra_gravity: 4
-  Grounded: 0
+  combinedGrounded: 0
   OnCollisionGrounded: 0
   jumpForce: 300
   rushForce: 450
@@ -868,7 +867,7 @@ MonoBehaviour:
     InterpolateLerpSpeed: 5
   m_ScaleModel:
     SynchronizeEnabled: 1
-    InterpolateOption: 1
+    InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 0.2
     InterpolateLerpSpeed: 0.2
 --- !u!82 &8982466917492000825
@@ -1101,7 +1100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   postProcessVolume: {fileID: 0}
-  playerPosition: {fileID: 0}
+  inGameUIManager: {fileID: 0}
+  df: {fileID: 0}
+  player: {fileID: 0}
   disdance: 0
   playerRadius: 0
   total_Offset: 0
@@ -1114,7 +1115,6 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  pr: {fileID: 0}
 --- !u!114 &4058948272806894723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,10 +1155,10 @@ MonoBehaviour:
   m_LegacyBlendHint: 0
   m_YAxis:
     Value: 0.5
-    m_SpeedMode: 0
-    m_MaxSpeed: 5
-    m_AccelTime: 0.2
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.1
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
     m_InvertInput: 1
@@ -1179,10 +1179,10 @@ MonoBehaviour:
     m_LegacyVelocityFilterStrength: -1
   m_XAxis:
     Value: -45.230606
-    m_SpeedMode: 0
-    m_MaxSpeed: 400
-    m_AccelTime: 0.2
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 10
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
     m_InvertInput: 0
@@ -1273,7 +1273,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5069264907294918945}
-  m_LocalRotation: {x: 0.3826939, y: -0.7985479, z: 0.45028198, w: 0.11451107}
+  m_LocalRotation: {x: 0.3826939, y: -0.7985479, z: 0.45028198, w: 0.11451119}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3.1737962, y: 3.1737974, z: 3.1737976}
   m_ConstrainProportionsScale: 0
@@ -6310,8 +6310,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8968064491589740216}
-  m_LocalRotation: {x: 0.3826939, y: -0.798548, z: 0.45028198, w: 0.11451119}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.37953085, y: -0.61887616, z: 0.5136789, w: 0.4572556}
+  m_LocalPosition: {x: 8.214532, y: 4.282306, z: -12.502909}
   m_LocalScale: {x: 3.1737962, y: 3.1737974, z: 3.1737976}
   m_ConstrainProportionsScale: 0
   m_Children:

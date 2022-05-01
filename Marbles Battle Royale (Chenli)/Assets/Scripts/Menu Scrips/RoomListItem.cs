@@ -6,8 +6,6 @@ using Photon.Realtime;
 public class RoomListItem : MonoBehaviour
 {
     public TMP_Text roomName;
-
-
     public RoomInfo info;
 
     public void SetUp(RoomInfo roomInfo)
@@ -20,5 +18,4 @@ public class RoomListItem : MonoBehaviour
     {
         NetworkManager.Instance.JoinRoom(info);
     }
-
 }

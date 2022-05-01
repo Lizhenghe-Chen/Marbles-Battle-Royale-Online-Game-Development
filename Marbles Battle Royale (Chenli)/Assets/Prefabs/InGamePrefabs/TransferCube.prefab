@@ -19,7 +19,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 18
   m_IsActive: 1
 --- !u!4 &2431311891307102345
 Transform:
@@ -138,6 +138,7 @@ MonoBehaviour:
   transitionTarget: {fileID: 0}
   Player: {fileID: 0}
   photonView: {fileID: 0}
+  GameInfoPhotonView: {fileID: 0}
   GameInfoManager: {fileID: 0}
 --- !u!1 &4722889293440102947
 GameObject:
@@ -155,7 +156,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 18
   m_IsActive: 1
 --- !u!224 &3177073543067972837
 RectTransform:

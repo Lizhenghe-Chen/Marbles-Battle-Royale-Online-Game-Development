@@ -3,24 +3,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;//will use Player Type
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
+using System.Collections;
+
 public class RobotController : MonoBehaviourPunCallbacks
 {
-    [SerializeField] Transform Player;
+    public GameObject Target;
+    public bool hasTarget;
+    public float findTargetTimer = 3f;
     PhotonView robotPhotonView;
-    [SerializeField] Rigidbody rb; // player
-    [SerializeField] Transform Eye;
-    [SerializeField] Image healthBarImage;
+    private Rigidbody rb; // player
+    [SerializeField] private Transform Eye;
+    private Image healthBarImage;
     [Tooltip("loopMovement and loopRush should enable in same time to get best direction")]
-    [SerializeField] private bool loopMovement, loopJump, loopRush; //
+    [SerializeField] private bool loopMovement, loopRush; //
     [SerializeField]
     private coolingTimeRange JumpCoolingTimeRange, RushCoolingTimeRange;
     [SerializeField]
-    float RushCoolingTime = 3, RushTimer, JumpCoolingTime = 3, JumpTimer,
+    float RushCoolingTime = 3, JumpCoolingTime = 3,
     jumpforce = 200, rushForce = 400, attackRange = 50;//player jump cooling time
 
     //Create a custom struct and apply [Serializable] attribute to it
@@ -36,11 +35,9 @@ public class RobotController : MonoBehaviourPunCallbacks
     public float robotCurrentHealth;
     public float billboardvalue;
     public Vector3 startPointPosition;
-    public GameObject Enemy;
-    public bool hasTarget;
-
     public Vector3 initialScale;
     public float maxScale = 4, minScale = 0.2f;
+    public Vector3 scaleSpeed = new Vector3(0.001f, 0.001f, 0.001f);
     [SerializeField] GameInfoManager GameInfoManager;
     void Awake() { robotPhotonView = GetComponent<PhotonView>(); }
     void Start()
@@ -51,8 +48,10 @@ public class RobotController : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
+            StartCoroutine(CheckEnemy());
+            StartCoroutine(WaitRush());
+            StartCoroutine(WaitJump());
             startPointPosition = this.transform.position;
-            Player = this.transform;
             GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
             robotCurrentHealth = robotHealth;
             //billboardvalue = robotCurrentHealth / robotHealth;
@@ -66,19 +65,16 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             // robotPhotonView.RPC("SendHealthData", RpcTarget.All, robotCurrentHealth, billboardvalue);
             belowDeathAltitudeOrDead();
-            if (loopRush || loopMovement)
-            {
-                CheckEnemy();
-                if (hasTarget) { Eye.transform.LookAt(Enemy.transform); } else { return; }
-            }
-            LoopJump();
-            LoopRush();
-            LoopMovement();
+
+            if (hasTarget) { Eye.transform.LookAt(Target.transform); }
+            //LoopJump();
+            //LoopRush();
+            Movement();
         }
 
         billboardvalue = robotCurrentHealth / robotHealth;
-   
-         InGameUIManager.SetHealthBar(healthBarImage, billboardvalue);
+
+        InGameUIManager.SetHealthBar(healthBarImage, billboardvalue);
     }
     void FixedUpdate()
     {
@@ -89,11 +85,11 @@ public class RobotController : MonoBehaviourPunCallbacks
         }
         if (transform.localScale.x > initialScale.x)
         {
-            transform.localScale -= new Vector3(0.001f, 0.001f, 0.001f);
+            transform.localScale -= scaleSpeed;
         }
         if (transform.localScale.x < initialScale.x)
         {
-            transform.localScale += new Vector3(0.001f, 0.001f, 0.001f);
+            transform.localScale += scaleSpeed;
         }
 
     }
@@ -116,7 +112,7 @@ public class RobotController : MonoBehaviourPunCallbacks
         { return; }
 
         // var hitDirection = System.Math.Round(Vector3.Dot(Player_Velocity, other_Player_Velocity), 3);
-        if (CollisionDetect.judgeDamage(robotVelocity, other_Player_Velocity))
+        if (robotVelocity.magnitude < other_Player_Velocity.magnitude)
         {
             string other_Player_Name;
             var finalDamage = other.relativeVelocity.magnitude * 1.5f * other.collider.GetComponent<Rigidbody>().mass;//let different type of ball have different damage
@@ -152,69 +148,96 @@ public class RobotController : MonoBehaviourPunCallbacks
         }
     }
 
-    //https://docs.unity3d.com/ScriptReference/GameObject.FindGameObjectsWithTag.html
-    public void LoopJump()
+    IEnumerator WaitJump()
     {
-        if (loopJump)
+        while (true)
         {
-            JumpTimer += Time.deltaTime;
-            if (JumpTimer >= JumpCoolingTime)
+            if (hasTarget)
             {
-                JumpTimer = JumpCoolingTime;
                 rb.AddForce(Vector3.up * jumpforce);
                 JumpCoolingTime = UnityEngine.Random.Range(JumpCoolingTimeRange.min, JumpCoolingTimeRange.max);
-                JumpTimer = 0;
             }
+            yield return new WaitForSeconds(JumpCoolingTime);//every 5 seconds find the closest enemy
         }
     }
-    public void LoopRush()
+    IEnumerator WaitRush()
     {
-        if (loopRush)
+        while (true)
         {
-            RushTimer += Time.deltaTime;
-            if (RushTimer >= RushCoolingTime)
+            if (hasTarget)
             {
-                RushTimer = RushCoolingTime;
                 rb.AddForce(Eye.transform.forward * rushForce);
                 RushCoolingTime = UnityEngine.Random.Range(RushCoolingTimeRange.min, RushCoolingTimeRange.max);
-                RushTimer = 0;
             }
+            yield return new WaitForSeconds(RushCoolingTime);//every 5 seconds find the closest enemy
         }
     }
-    public void LoopMovement()
+
+    IEnumerator CheckEnemy()
     {
-        if (loopMovement)
+        while (loopRush || loopMovement)//only do below if robot need rush and move
+        {
+            Target = FindClosestEnemy();
+            hasTarget = (Target == null) ? false : true;
+            yield return new WaitForSeconds(5f);      //every 5 seconds find the closest enemy
+        }
+    }
+    // public void LoopRush()
+    // {
+    //     if (loopRush)
+    //     {
+    //         RushTimer += Time.deltaTime;
+    //         if (RushTimer >= RushCoolingTime)
+    //         {
+    //             RushTimer = RushCoolingTime;
+    //             rb.AddForce(Eye.transform.forward * rushForce);
+    //             RushCoolingTime = UnityEngine.Random.Range(RushCoolingTimeRange.min, RushCoolingTimeRange.max);
+    //             RushTimer = 0;
+    //         }
+    //     }
+    // }
+    // public void LoopJump()
+    // {
+    //     if (loopJump)
+    //     {
+    //         JumpTimer += Time.deltaTime;
+    //         if (JumpTimer >= JumpCoolingTime)
+    //         {
+    //             JumpTimer = JumpCoolingTime;
+    //             rb.AddForce(Vector3.up * jumpforce);
+    //             JumpCoolingTime = UnityEngine.Random.Range(JumpCoolingTimeRange.min, JumpCoolingTimeRange.max);
+    //             JumpTimer = 0;
+    //         }
+    //     }
+    // }
+    public void Movement()
+    {
+        if (loopMovement && hasTarget)
         {
             rb.AddTorque(Eye.transform.right * RushCoolingTime);
         }
     }
-    public void CheckEnemy()
-    {
-        if (loopJump || loopRush)
-        {
-            Enemy = FindClosestEnemy();
-            if (Enemy == null) { hasTarget = false; } else { hasTarget = true; }
-        }
-    }
+
+
     public GameObject FindClosestEnemy()
     {
-        GameObject[] gos;
-        gos = GameObject.FindGameObjectsWithTag("Player");
-        GameObject closest = null;
+        //https://docs.unity3d.com/ScriptReference/GameObject.FindGameObjectsWithTag.html
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        GameObject closestTarget = null;
         var distance = attackRange;
         Vector3 position = transform.position;
-        foreach (GameObject go in gos)
+        foreach (GameObject player in players)
         {
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
+            float pointsDistance = Vector3.Distance(player.transform.position, position);
+            if (pointsDistance < distance)
             {
-                closest = go;
-                distance = curDistance;
+                closestTarget = player;
+                distance = pointsDistance;
             }
         }
-        // if (Vector3.Distance(transform.position, closest.transform.position) < distance) { }
-        return closest;
+        // if (Vector3.Distance(transform.position, closestTarget.transform.position) < distance) { }
+        Array.Clear(players, 0, players.Length);
+        return closestTarget;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
@@ -225,7 +248,15 @@ public class RobotController : MonoBehaviourPunCallbacks
     }
     public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved
     {
-        GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(CheckEnemy());
+            StartCoroutine(WaitRush());
+            StartCoroutine(WaitJump());
+            GameInfoManager = GameObject.Find("GameInfoCanvas/GameInfo").GetComponent<GameInfoManager>();
+            robotCurrentHealth = robotHealth;
+            //billboardvalue = robotCurrentHealth / robotHealth;
+        }
     }
     [PunRPC]
     void SendHealthData(float _currentHealth, float _billboardvalue)

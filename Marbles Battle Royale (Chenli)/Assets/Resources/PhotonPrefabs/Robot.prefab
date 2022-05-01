@@ -5084,9 +5084,9 @@ GameObject:
   - component: {fileID: 8265380607961242576}
   - component: {fileID: 8265380607961242602}
   - component: {fileID: 8265380607961242603}
+  - component: {fileID: 3226363524475017750}
   - component: {fileID: 8265380607961242601}
   - component: {fileID: 8265380607961242598}
-  - component: {fileID: 3226363524475017750}
   - component: {fileID: 1203677899032850568}
   - component: {fileID: 3168131873402986103}
   - component: {fileID: 4107263324001561963}
@@ -5166,6 +5166,44 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3226363524475017750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8265380607961242588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10898a4985b3da841a964823c7ffd469, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  hasTarget: 0
+  findTargetTimer: 3
+  Eye: {fileID: 7109923631522093665}
+  loopMovement: 0
+  loopRush: 1
+  JumpCoolingTimeRange:
+    min: 3
+    max: 6
+  RushCoolingTimeRange:
+    min: 0
+    max: 8
+  RushCoolingTime: 3
+  JumpCoolingTime: 3
+  jumpforce: 300
+  rushForce: 400
+  attackRange: 50
+  robotVelocity: {x: 0, y: 0, z: 0}
+  robotCurrentHealth: 100
+  billboardvalue: 0
+  startPointPosition: {x: 0, y: 0, z: 0}
+  initialScale: {x: 0, y: 0, z: 0}
+  maxScale: 4
+  minScale: 0.2
+  scaleSpeed: {x: 0.001, y: 0.001, z: 0.001}
+  GameInfoManager: {fileID: 0}
 --- !u!54 &8265380607961242601
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5195,48 +5233,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3226363524475017750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265380607961242588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10898a4985b3da841a964823c7ffd469, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  rb: {fileID: 0}
-  Eye: {fileID: 7109923631522093665}
-  healthBarImage: {fileID: 0}
-  loopMovement: 1
-  loopJump: 1
-  loopRush: 1
-  JumpCoolingTimeRange:
-    min: 3
-    max: 6
-  RushCoolingTimeRange:
-    min: 0
-    max: 8
-  RushCoolingTime: 3
-  RushTimer: 0
-  JumpCoolingTime: 3
-  JumpTimer: 0
-  jumpforce: 300
-  rushForce: 400
-  attackRange: 50
-  robotVelocity: {x: 0, y: 0, z: 0}
-  robotCurrentHealth: 100
-  billboardvalue: 0
-  startPointPosition: {x: 0, y: 0, z: 0}
-  Enemy: {fileID: 0}
-  hasTarget: 0
-  initialScale: {x: 0, y: 0, z: 0}
-  maxScale: 4
-  minScale: 0.2
-  GameInfoManager: {fileID: 0}
 --- !u!114 &1203677899032850568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5701,4 +5697,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
-  Player: {fileID: 0}
+  target: {fileID: 0}

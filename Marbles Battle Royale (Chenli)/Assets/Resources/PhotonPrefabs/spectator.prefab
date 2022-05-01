@@ -376,10 +376,10 @@ MonoBehaviour:
   m_RecenterTarget: 2
   m_VerticalAxis:
     Value: 0
-    m_SpeedMode: 0
-    m_MaxSpeed: 300
-    m_AccelTime: 0.3
-    m_DecelTime: 0.3
+    m_SpeedMode: 1
+    m_MaxSpeed: 10
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
     m_InvertInput: 1
@@ -400,10 +400,10 @@ MonoBehaviour:
     m_LegacyVelocityFilterStrength: -1
   m_HorizontalAxis:
     Value: 0
-    m_SpeedMode: 0
-    m_MaxSpeed: 300
-    m_AccelTime: 0.3
-    m_DecelTime: 0.3
+    m_SpeedMode: 1
+    m_MaxSpeed: 10
+    m_AccelTime: 2
+    m_DecelTime: 2
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
     m_InvertInput: 0
@@ -2820,7 +2820,6 @@ GameObject:
   - component: {fileID: 5615045726267010293}
   - component: {fileID: 7753851112071973718}
   - component: {fileID: 1164044287792155945}
-  - component: {fileID: 8552762316914453112}
   - component: {fileID: 7539871855931694201}
   - component: {fileID: 302488059764776338}
   m_Layer: 8
@@ -2863,6 +2862,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   cam: {fileID: 6216450237859688838}
+  playerManager: {fileID: 0}
   initial_speed: 5
   horizontalInput: 0
   verticalInput: 0
@@ -2894,23 +2894,9 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!136 &8552762316914453112
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7053683289547575773}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 0.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &7539871855931694201
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2919,10 +2905,10 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7053683289547575773}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.1
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &302488059764776338
 MonoBehaviour:

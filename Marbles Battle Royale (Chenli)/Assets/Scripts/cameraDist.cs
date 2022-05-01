@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
 //This File shoulbe attach to Camera
 public class cameraDist : MonoBehaviour
 {
     [Header("**Below Parameters should find by themsleves at the Start()**\n")]
     [SerializeField] PostProcessVolume postProcessVolume;
-    [SerializeField] Transform playerPosition;
+    [SerializeField] InGameUIManager inGameUIManager;
+    [SerializeField] DepthOfField df;
+    [SerializeField] Transform player;
     [SerializeField] float disdance; //for postProcessVolume Depth od Field use
     [SerializeField] float playerRadius;
     float maxRadius = 10; //should >0
@@ -19,20 +22,23 @@ public class cameraDist : MonoBehaviour
     private CinemachineFreeLook virtualCamera;
     [SerializeField] float total_Offset, smoothSpeed = 2f;//distance between player and camera
     [SerializeField] float[] currentRadius = { 0, 0, 0 }, currentHeight = { 0, 0, 0 };//the size should same as virtualCamera.m_Orbits.Length
-    [SerializeField] private DepthOfField pr;
+
 
     void Start()
     {
         virtualCamera = this.GetComponent<CinemachineFreeLook>();
         postProcessVolume = GameObject.Find("Post_Process Volum").GetComponent<PostProcessVolume>();
-        playerPosition = transform.parent;
-        playerRadius = playerPosition.GetComponent<SphereCollider>().radius;
+        player = transform.parent;
+        inGameUIManager = player.Find("UI/Canvas").GetComponent<InGameUIManager>();
+        playerRadius = player.GetComponent<SphereCollider>().radius;
         for (int i = 0; i < virtualCamera.m_Orbits.Length; i++)
         {
             currentRadius[i] = virtualCamera.m_Orbits[i].m_Radius;
             currentHeight[i] = virtualCamera.m_Orbits[i].m_Height;
         }
-        postProcessVolume.sharedProfile.TryGetSettings<DepthOfField>(out pr);
+
+        postProcessVolume.sharedProfile.TryGetSettings<DepthOfField>(out df);
+
     }
     void Update()
     {
@@ -43,10 +49,8 @@ public class cameraDist : MonoBehaviour
     }
     void UpdatePS()//post-processing
     {
-        disdance = Vector3.Distance(playerPosition.position, transform.position);
-
-        // pr.focusDistance.value = disdance - playerRadius;
-        pr.focusDistance.value = disdance;
+        //  disdance = Vector3.Distance(playerPosition.position, transform.position);
+        inGameUIManager.focusDistanceSlider.value = df.focusDistance.value = Vector3.Distance(player.position, transform.position);
     }
     void ScrollWheeldetect()
     {

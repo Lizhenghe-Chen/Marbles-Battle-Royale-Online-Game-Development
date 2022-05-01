@@ -30,7 +30,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             Destroy(gameObject); //make sure there is only one RoomManager Instance
             return;
         }
-        Instance = this;
+        Instance = this;  
         DontDestroyOnLoad(gameObject); //if there is only one,
 
         keepSetting = GameObject.Find("KeepSetting").GetComponent<KeepSetting>();
@@ -58,15 +58,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)//https://docs.unity3d.com/ScriptReference/SceneManagement.SceneManager-sceneLoaded.html
     {
         if (
             scene.buildIndex == 1 // We're in the game scene
         )
         {
-             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"),
-                 Vector3.zero,
-                 Quaternion.identity);
+            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
         }
     }
     public void LeaveRoom()

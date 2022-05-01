@@ -67,8 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c8540aded5ae94e96404f8df3df871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  player: {fileID: 0}
   deadPosition: {x: 0, y: 0, z: 0}
+  PlayerSelection: 
   RoomManager: {fileID: 0}
   keepSetting: {fileID: 0}
   GameInfoManager: {fileID: 0}
@@ -84,7 +85,7 @@ MonoBehaviour:
   isDead: 0
   billboardvalue: 0
   maxLife: 5
-  leftLifeTextContent: 
+  LeftLifeText: {fileID: 0}
   deathAltitude: -20
   initialScale: {x: 0, y: 0, z: 0}
   takeDamageMask: {fileID: 0}

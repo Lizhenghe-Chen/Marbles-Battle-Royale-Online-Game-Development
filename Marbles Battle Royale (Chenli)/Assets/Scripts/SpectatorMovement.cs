@@ -10,6 +10,7 @@ public class SpectatorMovement : MonoBehaviour
 {
     [SerializeField] Rigidbody rb; // player
     [SerializeField] Camera cam;
+    [SerializeField] PlayerManager playerManager;
     [SerializeField][Range(1f, 30f)] float initial_speed = 5f;
     private const float speedUpMultiplier = 5;
 
@@ -38,6 +39,7 @@ public class SpectatorMovement : MonoBehaviour
             Destroy(gameObject); //this make sure that the camera compoments will not mess up
             return;
         }
+        playerManager = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManager>();
         canvas = transform.Find("Canvas").GetComponent<Canvas>();
         rb = GetComponent<Rigidbody>();
         FadeIn_OutImage.GetComponent<AnimateLoading>().LoadingLevel();
@@ -63,57 +65,50 @@ public class SpectatorMovement : MonoBehaviour
         UpdatePS();
 
     }
-    void UpDownCommand()
+    void UpDownCommand(float speed)
     {
         //Debug.Log(CollisionTrigger.onTheGround);
         if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E))
         {
-            rb.AddForce(Vector3.up * initial_speed);
+            rb.AddForce(Vector3.up * speed);
 
             //  Debug.Log("Space pressed and UP");
         }
         if (Input.GetKey(KeyCode.Q))
         {
-            rb.AddForce(-Vector3.up * initial_speed);
+            rb.AddForce(-Vector3.up * speed);
 
             //   Debug.Log(a + "Space pressed and jump" + jumpCount);
         }
     }
     void MovingCommand()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        if (Input.GetKey(KeyCode.Period) && initial_speed < 30f) { initial_speed += 1f; }
-        if (Input.GetKey(KeyCode.Comma) && initial_speed > 1f) { initial_speed -= 1f; }
-
         if (Input.GetKey(KeyCode.Tab) || Input.GetMouseButton(1))
         {
             rb.velocity = Vector3.zero;
             return;
         }
-        var speed = (Input.GetKey(KeyCode.LeftShift)) ? speedUpMultiplier * initial_speed : initial_speed;
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+        if (Input.GetKey(KeyCode.Period) && initial_speed < 30f) { initial_speed += 1f; }
+        if (Input.GetKey(KeyCode.Comma) && initial_speed > 1f) { initial_speed -= 1f; }
+
+        float speed = (Input.GetKey(KeyCode.LeftShift)) ? speedUpMultiplier * initial_speed : initial_speed;
 
         rb.AddForce(cam.transform.forward * speed * verticalInput);
         rb.AddForce(cam.transform.right * speed * horizontalInput);
-        UpDownCommand();
+        UpDownCommand(speed);
     }
     public void LeaveRoom()
     {
-        Destroy(GameObject.Find("RoomManager").gameObject);
-        //PhotonNetwork.Disconnect();
-        // PhotonNetwork.LeaveRoom();
-        //PhotonNetwork.LoadLevel(0);
-        PhotonNetwork.LeaveRoom();
-        //if (PhotonNetwork.CurrentRoom != null) { PhotonNetwork.Disconnect(); }
-        SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
-        Debug.Log("Leaved Room");
+        playerManager.LeaveRoom();
     }
     void Menu_Cursor()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             menueOpen = !menueOpen;
-            if (menueOpen) { rb.velocity = Vector3.zero; }
+            //if (menueOpen) { rb.velocity = Vector3.zero; }
             CinemachineCameraCtrl.GetComponent<CinemachineVirtualCamera>().enabled = !menueOpen;
             canvas.enabled = menueOpen;
             Cursor.visible = menueOpen;

@@ -9,7 +9,7 @@ public class MenuManager : MonoBehaviour
 {
     public TMP_Text PlayerSelection;
     [SerializeField] TMP_InputField userNameInput, roomNameInput;
-
+    [SerializeField] TMP_Text ErrorText;
     [SerializeField] Animator aimator;
     public GameObject[] menuList;
     public bool checkInfoOK = false;
@@ -40,51 +40,37 @@ public class MenuManager : MonoBehaviour
 
     void Update()
     {
-        SelectPlayer();
+        if (SceneManager.GetActiveScene().buildIndex == 0 && TitledMenu.activeSelf) { SelectPlayer(); }
     }
 
     public void OpenMenu(GameObject menuName)
     {
-        CheckInfo();
-        if (!checkInfoOK && menuName != TitledMenu && menuName.name != "LoadingMenu")
+        CheckInfo();//check if the info (Nickname, character selection) are correct
+        if (!checkInfoOK && menuName != TitledMenu && menuName != menuList[0])
         {
-            aimator.Play("Warning", 0, 0);
             return;
-            // Debug.LogError("Play");
         }
-        //Debug.Log("Go to " + menuName);
+        //each time refresh the whole menu list, close all the menus except the one want to open:
         foreach (GameObject menu in menuList)
         {
-            if (menu == menuName)
-            {
-                //    if (menu.name == "TitleMenu") { roomNameInput.text = "TestRoom"; }
-                menu.SetActive(true);
-            }
-            else
-            {
-                menu.SetActive(false);
-            }
+            if (menu == menuName) { menu.SetActive(true); }
+            else menu.SetActive(false); //close all the menus except the one want to open
         }
     }
-    public void OpenConnectionFailedMenu(GameObject menuName)
+    //open error menu
+    public void OpenErrorMenu(string errorMessage)
     {
+        ErrorText.text = errorMessage;
         foreach (GameObject menu in menuList)
         {
-            if (menu == menuName)
-            {
-                //    if (menu.name == "TitleMenu") { roomNameInput.text = "TestRoom"; }
-                menu.SetActive(true);
-            }
-            else
-            {
-                menu.SetActive(false);
-            }
+            if (menu == menuList[4]) { menu.SetActive(true); }
+            else menu.SetActive(false); //close all the menus except the one want to open
         }
     }
+
 
     public void CheckInfo()
     {
-
         if (string.IsNullOrEmpty(playerType))
         {
             PlayerSelection.text = "Please select a player first!";
@@ -99,6 +85,7 @@ public class MenuManager : MonoBehaviour
         if (!checkInfoOK)
         {
             PlayerSelection.color = Color.red;
+            aimator.Play("Warning", 0, 0);
         }
         else
         {
@@ -108,36 +95,39 @@ public class MenuManager : MonoBehaviour
             PlayerSelection.text = playerType;
             PhotonNetwork.NickName = userNameInput.text;
         }
-
     }
     void SelectPlayer()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //the ray shoot from camera throught the mousePosition
-                RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //the ray shoot from camera throught the mousePosition
+            // RaycastHit[] m_Results = new RaycastHit[1];
+            // Physics.RaycastNonAlloc(ray, m_Results);
 
-                if (Physics.Raycast(ray, out hit))
+            // if (m_Results[0].collider.gameObject.tag == "Player")
+            // {
+            //     buttonSound.Play();
+            //     playerType = m_Results[0].collider.gameObject.name;
+            //     characterDetails.text = GenerateIntro(playerType);
+            // }
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform && hit.collider.tag == "Player")//if hit object's collider and is tagged as "Player" 
                 {
-                    //Select stage
-                    if (hit.transform && hit.transform.tag == "Player")
-                    {
-                        buttonSound.Play();
-                        playerType = hit.transform.gameObject.name;
-                        characterDetails.text = GenerateIntro(playerType);
-                    }
+                    buttonSound.Play();
+                    playerType = hit.transform.gameObject.name;
+                    characterDetails.text = GenerateIntro(playerType);
                 }
-                CheckInfo();
             }
+            CheckInfo();
         }
     }
+
     public string GenerateIntro(string playerType)
     {
         GameObject prefab = (GameObject)Resources.Load(Path.Combine("PhotonPrefabs", playerType), typeof(GameObject));
         string message = prefab.name + "\n";
-
         message += "Move Speed:\t" + prefab.GetComponent<MovementController>().initial_torque + "\n";
         message += "Rush Force:\t" + prefab.GetComponent<JumpController>().rushForce + "\n";
         message += "Jump Force:\t" + prefab.GetComponent<JumpController>().jumpForce + "\n";

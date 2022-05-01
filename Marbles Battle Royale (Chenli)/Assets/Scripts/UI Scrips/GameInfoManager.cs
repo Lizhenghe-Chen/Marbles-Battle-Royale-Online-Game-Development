@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
+
 public class GameInfoManager : MonoBehaviour
 {
     // Start is called before the first frame update

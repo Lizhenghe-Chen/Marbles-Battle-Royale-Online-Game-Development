@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
+
 public class JumpController : MonoBehaviour
 {
     Vector3 target;
@@ -20,7 +16,7 @@ public class JumpController : MonoBehaviour
     public float extra_gravity = 10f;
     private MovementController movementController;
     private CollisionTrigger CollisionTrigger;
-    public bool Grounded, OnCollisionGrounded;
+    public bool combinedGrounded, OnCollisionGrounded;
     PlayerManager playerManager;
     //===============================
     public float jumpForce, rushForce;
@@ -31,7 +27,7 @@ public class JumpController : MonoBehaviour
     public Transform Camera;
     //===============================
     public AudioSource audioSource;
-    public AudioClip footStep,grounding, hitSound, brakeSound, jumpSound, rushSound;
+    public AudioClip footStep, grounding, hitSound, brakeSound, jumpSound, rushSound;
     public float Velocity, AngularVelocity;
     // public bool playHitSound = false, playRushSound = false, playJumpSound = false;
     //============For tranning Ground Fetch===================
@@ -79,33 +75,27 @@ public class JumpController : MonoBehaviour
         {
             return;
         }
-
         GiveLittileForce();
     }
 
     void Update()
     {
         PlaySounds();//all players in the game should do this, so above the photonView.IsMine
-        //   isPlaying = audioSource.isPlaying;
         if (!photonView.IsMine)
         {
             return;
         }
-
         JumpMethod();
         RushMethod();
     }
 
     void OnCollisionStay(Collision col)
     {
-        //   if (col.collider.tag == "Terrain")
         OnCollisionGrounded = true;
     }
     void OnCollisionExit(Collision col)
     {
-        //  if (col.collider.tag == "Terrain")
         OnCollisionGrounded = false;
-        //  Debug.Log( " In the Air" );
     }
     void GiveLittileForce()
     {
@@ -118,46 +108,43 @@ public class JumpController : MonoBehaviour
         }
     }
 
-
-
-    // public bool onTheGround()//a combination of tuch and raycast
-    // {
-    //     Ray checkGround = new Ray(transform.position, Vector3.down);
-    //     RaycastHit hit;
-    //     Color rayColor;
-    //     if (Physics.Raycast(checkGround, out hit, jumpThreshold) || (!Physics.Raycast(checkGround, out hit, jumpThreshold) && OnCollisionGrounded))
-    //     {
-    //         Grounded = true;
-    //         rayColor = Color.green;
-    //         //Debug.Log("i'm grounded");
-    //     }
-    //     else
-    //     {
-    //         Grounded = false;
-    //         rayColor = Color.red;
-    //         //Debug.Log("not grounded");
-    //     }
-    //     Debug
-    //         .DrawRay(transform.position, Vector3.down, rayColor, jumpThreshold);
-
-    //     return Grounded;
-    // }
-    void JumpMethod()
+    public bool onTheGround()//a combination of touch and raycast
+    {
+        bool isRayGrounded = Physics.Raycast(transform.position, Vector3.down, jumpThreshold);
+        Color rayColor;
+        if (isRayGrounded ||( !isRayGrounded && OnCollisionGrounded))
+        {
+            combinedGrounded = true;
+            rayColor = Color.green;
+            //Debug.Log("i'm grounded");
+        }
+        else
+        {
+            combinedGrounded = false;
+            rayColor = Color.red;
+            //Debug.Log("not grounded");
+        }
+        Debug.DrawRay(transform.position, Vector3.down, rayColor, jumpThreshold);
+        return combinedGrounded;
+    }
+    void JumpMethod()//put this method in FixedUpdate to accumulate time
     {
 
         if (JumpTime >= JumpcoolingTime)
         {
-            JumpCommand();
+            JumpCommand();//allow the user to jump
             return;
         }
         JumpTime += Time.deltaTime;
+        //fill the jump loading bar for user to see:
         fillValue = JumpTime / JumpcoolingTime;
         jumpPanel.fillAmount = fillValue;
     }
     void JumpCommand()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && OnCollisionGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (!onTheGround()) { return; }
             photonView.RPC("globalSoundTrigger", RpcTarget.All, "jump");
 
             rg.AddForce(Vector3.up * jumpForce);
@@ -171,7 +158,6 @@ public class JumpController : MonoBehaviour
     }
     void RushMethod()
     {
-
         if (Rushtime >= RushcoolingTime)
         {
             if (isMenuOpen) { return; }

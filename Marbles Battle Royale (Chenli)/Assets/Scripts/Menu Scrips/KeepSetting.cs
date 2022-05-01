@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
-
+using Photon.Pun;
+using UnityEngine.SceneManagement;
 /*this script just like an temporary files that will loss after game restart  */
-public class KeepSetting : MonoBehaviour
+public class KeepSetting : MonoBehaviourPunCallbacks
 {
     public static KeepSetting Instance;
     public bool playBackGroundMusic;
     public bool showTutorial = true;
+    public bool returnFromGame = false;
     [Range(0f, 1f)] public float backGroundMusicVolume = 0.5f;
     // public Toggle playBackGroundMusictoggle;
     // public Slider backGroundMusicVolumeSlider;
@@ -48,9 +45,23 @@ public class KeepSetting : MonoBehaviour
     {
         if (KeepSetting.Instance != null)
         {
-            start++;
             playBackGroundMusic = KeepSetting.Instance.playBackGroundMusic;
         }
     }
+    public void LeaveRoom()
+    {
+        Destroy(GameObject.Find("RoomManager").gameObject);
+        // PhotonNetwork.Destroy(player);
+        // PhotonNetwork.Destroy(this.gameObject);
+        returnFromGame = true;
+        PhotonNetwork.LeaveRoom();
 
+        Debug.Log("Leaved Room");
+    }
+    public override void OnLeftRoom()
+    {
+        SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
+
+        base.OnLeftRoom();
+    }
 }

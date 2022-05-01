@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using TMPro;
-/*
-* Copyright (C) 2022 Author: Lizhenghe.Chen.
-* For personal study or educational use.
-* Email: Lizhenghe.Chen@qq.com
-*/
+
 public class MovementController : MonoBehaviour
 {
 
@@ -25,7 +21,7 @@ public class MovementController : MonoBehaviour
     //===============================
     [Header("**Below for players rush function,rushPane need attach menually **\n")]
 
-    [SerializeField] TMP_Text LeftLifeText;
+
     [Tooltip("control payer's moving speed, speedUp speed(timer) and rush force")]
     public float initial_torque, speedUp_torque;
     private const float torque_multiplier = 3;
@@ -67,7 +63,6 @@ public class MovementController : MonoBehaviour
 
         collisionDetect = GetComponent<CollisionDetect>();
         Camera = transform.Find("ThirdPersonCamera/MainCamera");
-        LeftLifeText = transform.Find("UI/Canvas/LeftLifeText").GetComponent<TMP_Text>();
         speedUp_torque = initial_torque * torque_multiplier;
     }
 

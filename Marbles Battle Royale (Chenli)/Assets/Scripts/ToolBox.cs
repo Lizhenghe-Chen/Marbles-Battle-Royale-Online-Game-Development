@@ -50,7 +50,7 @@ public class ToolBox : MonoBehaviour
             Player = other.transform;
             var otherPlayerManager = Player.GetComponent<MovementController>().playerManager;
             otherPlayerManager.maxLife++;
-            otherPlayerManager.leftLifeTextContent = "Rest Life: " + (otherPlayerManager.maxLife - otherPlayerManager.deathCount - 1);
+            otherPlayerManager.SetLifeText();
             photonView.RPC("DestroyForAll", RpcTarget.All);
             //DestroyForAll();//destroy this game object for all players
             //PhotonNetwork.Destroy(this.gameObject);
