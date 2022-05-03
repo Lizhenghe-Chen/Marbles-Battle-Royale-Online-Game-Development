@@ -29,15 +29,7 @@ public class CollisionTrigger : MonoBehaviour
 
     public static Vector3 camVector;
 
-    // Update is called once per frame
-    void Update()
-    {
-        // if (onTheGround == true) {
-        //     Debug.Log("On the Ground");
-        // } else {
-        //     Debug.Log("Not On the Ground");
-        // }
-    }
+
 
     private void OnTriggerEnter(Collider other)
     {

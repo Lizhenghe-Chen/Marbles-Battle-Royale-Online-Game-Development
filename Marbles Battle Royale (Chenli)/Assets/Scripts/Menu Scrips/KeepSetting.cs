@@ -60,6 +60,8 @@ public class KeepSetting : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
+        if (SceneManager.GetActiveScene().buildIndex == 0) { return; }
+        
         SceneManager.LoadScene(0); //Level 0 is the start menu, Level 1 is the Gaming Scene
 
         base.OnLeftRoom();

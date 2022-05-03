@@ -24,11 +24,6 @@ public class GameSetting : MonoBehaviour
         ChangeQualityLevel();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void ChangeQualityLevel()
     {
         postProcessVolume = GameObject.Find("Post_Process Volum").GetComponent<PostProcessVolume>();

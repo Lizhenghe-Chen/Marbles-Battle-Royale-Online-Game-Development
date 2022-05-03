@@ -67,14 +67,10 @@ public class CollisionDetect : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
 
-    }
     void FixedUpdate()
     {
-
+ Player_Velocity = rb.velocity;//since the collision will get the late velocity that give wrong damage, so we need to get the velocity in fixed update (earlier)
         if (!photonView.IsMine)
         {
             return;
@@ -93,11 +89,7 @@ public class CollisionDetect : MonoBehaviour
         }
         // healthBarImage.fillAmount = billboardvalue;
     }
-    void Update()
-    {
-        Player_Velocity = rb.velocity;//since the collision will get the late velocity that give wrong damage, so we need to get the velocity in fixed update (earlier)
-    }
-
+  
     // void OnCollisionStay(Collision collision)
     // {
     //     if (collision.collider.name == "funnel")
@@ -196,6 +188,7 @@ public class CollisionDetect : MonoBehaviour
             rb.velocity += other.gameObject.GetComponent<getspeed>().ObjVelocity;
             //other.gameObject.GetComponent<getspeed>().enabled = false;
         }
+        
         if (other.name == "HealthArea") { inHealthArea = false; Debug.LogWarning("Outside HealthArea"); }
     }
 

@@ -12,11 +12,6 @@ public class AnimateLoading : MonoBehaviour
         // transform.enabled = true;
         //  this.gameObject.SetActive(true);
     }
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     //https://docs.unity3d.com/ScriptReference/Animator.Play.html
     public void LeavingLevel()

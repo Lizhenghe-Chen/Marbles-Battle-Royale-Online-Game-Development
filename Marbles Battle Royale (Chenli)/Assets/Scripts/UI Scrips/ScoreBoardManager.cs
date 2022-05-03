@@ -46,20 +46,6 @@ public class ScoreBoardManager : MonoBehaviourPunCallbacks
         // foreach (ScoreBoardItem item in list) { Debug.Log(item.ToString()); }
 
     }
-    void Update()
-    {
-        //if (!playerPhotonView.IsMine) { return; }
-        // Refresh();
-        // if (GameObject.FindGameObjectsWithTag("PlayerManager").Length != scoreBoardItems.Count)//some player enter or leave the game
-        // {
-
-        //     Refresh();//insted loop, AllRefreshScoreBoard() in other scripts can reduce cpu pressure
-        // }
-    }
-    void LateUpdate()
-    {
-
-    }
     // [PunRPC]
     // public void AllRefresh()//this will send messages to all players in a room
     // {

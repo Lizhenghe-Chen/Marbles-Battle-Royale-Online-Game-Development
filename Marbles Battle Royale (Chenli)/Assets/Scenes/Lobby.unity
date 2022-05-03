@@ -25608,7 +25608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 61566139d5c1f844aaa682fa50106e58, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.99
+      value: 3.58
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 61566139d5c1f844aaa682fa50106e58, type: 3}
       propertyPath: m_LocalPosition.y
@@ -26134,7 +26134,7 @@ MonoBehaviour:
   PlayerSelection: {fileID: 755670982}
   userNameInput: {fileID: 0}
   roomNameInput: {fileID: 0}
-  ErrorText: {fileID: 0}
+  ErrorText: {fileID: 229330507}
   aimator: {fileID: 1070341792}
   menuList:
   - {fileID: 1144181241}

@@ -60,12 +60,9 @@ public class MenuManager : MonoBehaviour
     //open error menu
     public void OpenErrorMenu(string errorMessage)
     {
+        Debug.Log("OpenErrorMenu");
         ErrorText.text = errorMessage;
-        foreach (GameObject menu in menuList)
-        {
-            if (menu == menuList[4]) { menu.SetActive(true); }
-            else menu.SetActive(false); //close all the menus except the one want to open
-        }
+        OpenMenu(menuList[4]);
     }
 
 

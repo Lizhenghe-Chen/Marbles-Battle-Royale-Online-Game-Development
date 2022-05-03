@@ -329,8 +329,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     }
     public void LeaveRoom()
     {
-        Destroy(GameObject.Find("RoomManager").gameObject);
+       
         KeepSetting.Instance.LeaveRoom();
+        Destroy(gameObject);
         // PhotonNetwork.Destroy(player);
         // PhotonNetwork.Destroy(this.gameObject);
         // keepSetting.returnFromGame = true;

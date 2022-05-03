@@ -22,18 +22,9 @@ public class TouchUp : MonoBehaviour
     public bool invert = false;
     bool isColliding = false;
 
-    // private void Awake()
-    // {
-    //     if (this.tag == "elevator")
-    //     {
-    //         //   this.enabled = false;
-    //     }
-    // }
-
     void Start()
     {
         initial_location = this.transform.position;
-
     }
 
     // Update is called once per frame

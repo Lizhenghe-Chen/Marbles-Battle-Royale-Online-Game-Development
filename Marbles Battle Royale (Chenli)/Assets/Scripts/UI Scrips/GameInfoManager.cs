@@ -34,7 +34,7 @@ public class GameInfoManager : MonoBehaviour
     public void Refresh(string message)//local message
     {
         AddGameInfoItem(message);
-        CheckPlayerList();
+
     }
 
     public void LRefresh(string message) { if (pV.IsMine) { AddGameInfoItem(message); } }
@@ -49,11 +49,13 @@ public class GameInfoManager : MonoBehaviour
     public void RefreshScoreBoard()
     {
         scoreBoardManager.Refresh();
+        CheckPlayerList();
         // Invoke("InvokeScoreBoard", 0.5f);
     }
 
     public void CheckPlayerList()
     {
+        Debug.Log("CheckPlayerList");
         playerList = GameObject.FindGameObjectsWithTag("Player");
         if (playerList.Length <= 0)
         {

@@ -69,7 +69,7 @@ public class RobotController : MonoBehaviourPunCallbacks
             if (hasTarget) { Eye.transform.LookAt(Target.transform); }
             //LoopJump();
             //LoopRush();
-            Movement();
+
         }
 
         billboardvalue = robotCurrentHealth / robotHealth;
@@ -83,6 +83,7 @@ public class RobotController : MonoBehaviourPunCallbacks
         {
             return;
         }
+        Movement();
         if (transform.localScale.x > initialScale.x)
         {
             transform.localScale -= scaleSpeed;

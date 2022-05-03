@@ -99,23 +99,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Master");
-
         if (keepSetting.start == 0)
         {
-            MenuManager.OpenMenu(Start_Debug_Meun);
+
             userNameInput.text = "Player" + Random.Range(0, 99).ToString("00");
+            MenuManager.OpenMenu(Start_Debug_Meun);
         }
         else if (keepSetting.returnFromGame)
         {
-            MenuManager.OpenMenu(Start_Debug_Meun);
+
             keepSetting.returnFromGame = false;
+            MenuManager.OpenMenu(Start_Debug_Meun);
+
         }
-        keepSetting.start++;
+        else if (!keepSetting.returnFromGame) { Debug.Log("EMM"); }
+
         PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
     {
+
+
+        keepSetting.start++;
         infoText.text = "connected to server: " + PhotonNetwork.CloudRegion;
         PhotonNetwork.NickName = userNameInput.text;
         cachedRoomList.Clear();
@@ -170,7 +176,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        if (!CheckPlayer(PhotonNetwork.PlayerList)) { LeaveRoom(false); return; }
+        (bool iscorrect, string errormessage) = CheckPlayer(PhotonNetwork.PlayerList);
+        if (!iscorrect)
+        {
+            LeaveRoom(false);
+            MenuManager.OpenErrorMenu(errormessage); return;
+        }
         PhotonNetwork.AutomaticallySyncScene = true; //make sure the scene is updated
         MenuManager.OpenMenu(RoomMenu);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
@@ -212,16 +223,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
     }
-    bool CheckPlayer(Player[] players)
+    (bool iscorrect, string errormessage) CheckPlayer(Player[] players)
     {
+        string errormessage;
         if (players.Length > maxRoomPlayers)// maximum number of players
         {
             Debug.Log("Tried to join Arena, but failed because full room!");
             MenuManager.checkInfoOK = false;
-
-            MenuManager.OpenErrorMenu("Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
-              + "because the room reached maxium " + maxRoomPlayers + " players!");
-            return false;
+            errormessage = ("Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+             + "because the room reached maxium " + maxRoomPlayers + " players!");
+            return (false, errormessage);
         }
 
         int index = 0;
@@ -233,13 +244,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 Debug.Log("Tried to join Arena, but failed because dupicate name!");
                 MenuManager.checkInfoOK = false;
-                MenuManager.PlayerSelection.text = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
+                errormessage = "Tried to join room '" + PhotonNetwork.CurrentRoom.Name + "' but failed!\n"
                  + "because your Name: '" + PhotonNetwork.NickName + "' is same as another player."; ;
                 MenuManager.OpenErrorMenu("Tried to join Arena, but failed!\n" + "because your Name: " + PhotonNetwork.NickName + "is same as another player.");
-                return false;
+                return (false, errormessage);
             }
         }
-        return true;
+        return (true, "Everything is OK!");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer) //when other players join this room
@@ -264,7 +275,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("value: " + item.Value.ToString());
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(item.Value);
         }
-        Debug.Log("======");
 
     }
     //   https://doc.photonengine.com/en-us/pun/current/lobby-and-matchmaking/matchmaking-and-lobby
@@ -284,14 +294,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
     }
-    public override void OnLeftLobby()
-    {
-        cachedRoomList.Clear();
-    }
-    public override void OnDisconnected(DisconnectCause cause)
-    {
-        cachedRoomList.Clear();
-    }
+
     // public Toggle m_Toggle;
 
     public void StartGame()
@@ -324,34 +327,40 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     //================================================================
     public void LeaveRoom(bool isClick)
-    {
-        PhotonNetwork.LeaveRoom();
+    { //Destroy(GameObject.Find("RoomManager").gameObject);
         MenuManager.OpenMenu(LoadingMenu);
-        if (isClick) { MenuManager.OpenMenu(Start_Debug_Meun); }
+        PhotonNetwork.LeaveRoom();
+        keepSetting.returnFromGame = isClick;
+    }
+    public void ForceQuit()
+    {
+        PhotonNetwork.Disconnect();
+        Debug.Log("ForceQuit");
+    }
+    public override void OnLeftRoom() // when other player leaves current room successfully.this happen locacally
+    {
         Debug.Log("Leaved Room");
     }
-
 
     // public override void OnLeftRoom() // when current player leaves current room successfully
     // {
     //     MenuManager.OpenMenu(Start_Debug_Meun);
     // }
 
+    public override void OnLeftLobby()
+    {
+        cachedRoomList.Clear();
+    }
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        cachedRoomList.Clear();
+    }
     public override void OnMasterClientSwitched(Player newMasterClient) //after master client leaved, let new master client handle the start game right
     {
         IsMasterInfo();
     }
     //================================================================
-    public void ForceQuit()
-    {
-        Destroy(GameObject.Find("RoomManager").gameObject);
-        PhotonNetwork.LoadLevel(0);
-        PhotonNetwork.LeaveRoom();
 
-        // PhotonNetwork.Disconnect();
-        MenuManager.OpenMenu(Start_Debug_Meun);
-        Debug.Log("ForceQuit");
-    }
     public void JoinTrainingGround()
     {
 
@@ -360,6 +369,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // PhotonNetwork.CreateRoom("TrainingGround");
         // CheckName();
         roomManager.isTrainingGround = true;
+
         // PhotonNetwork.LoadLevel(1);
     }
     public void JoinNormalRoom()
