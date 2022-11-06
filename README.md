@@ -1,7 +1,7 @@
 # Marbles-Battle-Royale-Online-Game-Development
 This is an individual online game development using Unity and Photon.
 
-# [Check Website!](https://doggychen.com/personal-unity-online-game-development/)
+# [Download Game!](https://lizhenghe-chen.itch.io/marbles-battle-royale)
 
 ![Screenshot 2022-04-02 114614](https://user-images.githubusercontent.com/61171413/164069962-65a22f99-92d2-44cb-a9a4-5543c8ad3c24.png)
 
